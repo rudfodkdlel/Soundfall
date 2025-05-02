@@ -1,5 +1,6 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
+#include "Metronome.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -9,6 +10,16 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+	CMetronome::METRONOME_DESC				metDesc{};
+
+	metDesc.fX = g_iWinSizeX * 0.5f;
+	metDesc.fY = g_iWinSizeY * 0.5f + 200.f;
+	metDesc.fSizeX = 100.f;
+	metDesc.fSizeY = 100.f;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome"),
+		static_cast<_uint>(LEVEL::LEVEL_GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

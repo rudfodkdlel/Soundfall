@@ -8,6 +8,8 @@
 //#include "player.h"
 //#include "Effect.h"
 //#include "Sky.h"
+#include "Metronome.h"
+#include "Metronome_Counter.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice { pDevice }
@@ -108,6 +110,17 @@ HRESULT CLoader::Loading_For_Logo()
 HRESULT CLoader::Loading_For_GamePlay()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Metronome_Center_Anchor.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_Metronome_Counter"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Metronome_Counter.png"), 1))))
+		return E_FAIL;
+
+
+
 	///* For.Prototype_Component_Texture_Terrain */
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
 	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_2D, TEXT("../Bin/Resources/Textures/Terrain/Tile0.jpg"), 1))))
@@ -130,6 +143,16 @@ HRESULT CLoader::Loading_For_GamePlay()
 	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
+
+	/* For.Prototype_GameObject_Metronome */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome"),
+		CMetronome::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
+		CMetronome_Counter::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	/* For.Prototype_Component_VIBuffer_Terrain */
 	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pGraphic_Device, 256, 256))))

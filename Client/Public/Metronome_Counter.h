@@ -14,10 +14,11 @@ BEGIN(Client)
 class CMetronome_Counter final : public CUIObject
 {
 public:
-	typedef struct tagBackGroundDesc : public CUIObject::UIOBJECT_DESC
+	typedef struct tagMetCounterGroundDesc : public CUIObject::UIOBJECT_DESC
 	{
-
-	}BACKGROUND_DESC;
+		_float3 vDir;
+		_float fStartPoint;
+	}METRONOME_COUNTER_DESC;
 
 private:
 	CMetronome_Counter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -37,6 +38,10 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
+private:
+	_float		m_fStartPoint = {};
+	_float3		m_vDir = {};
+	_float		m_fSpeed = {};
 private:
 	HRESULT Ready_Components();
 
