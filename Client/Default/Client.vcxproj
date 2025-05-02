@@ -156,8 +156,8 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
-    <ClInclude Include="..\public\CMetronome.h" />
-    <ClInclude Include="..\Public\CMetronome_Counter.h" />
+    <ClInclude Include="..\public\Metronome.h" />
+    <ClInclude Include="..\Public\Metronome_Counter.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -170,8 +170,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
-    <ClCompile Include="..\private\CMetronome.cpp" />
-    <ClCompile Include="..\private\CMetronome_Counter.cpp" />
+    <ClCompile Include="..\private\Metronome.cpp" />
+    <ClCompile Include="..\private\Metronome_Counter.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />

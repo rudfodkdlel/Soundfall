@@ -81,10 +81,10 @@
     <ClInclude Include="..\public\BackGround.h">
       <Filter>03. UI\00.BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CMetronome.h">
+    <ClInclude Include="..\public\Metronome.h">
       <Filter>03. UI\Metronome</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CMetronome_Counter.h">
+    <ClInclude Include="..\Public\Metronome_Counter.h">
       <Filter>03. UI\Metronome\Counter</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,10 +123,10 @@
     <ClCompile Include="..\private\BackGround.cpp">
       <Filter>03. UI\00.BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CMetronome.cpp">
+    <ClCompile Include="..\private\Metronome.cpp">
       <Filter>03. UI\Metronome</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CMetronome_Counter.cpp">
+    <ClCompile Include="..\private\Metronome_Counter.cpp">
       <Filter>03. UI\Metronome\Counter</Filter>
     </ClCompile>
   </ItemGroup>
