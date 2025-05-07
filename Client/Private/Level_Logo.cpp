@@ -12,7 +12,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 HRESULT CLevel_Logo::Initialize()
-{
+{ 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -42,10 +42,10 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _wstring strLayerTag)
 
 	BackGroundDesc.fX = g_iWinSizeX * 0.5f;
 	BackGroundDesc.fY = g_iWinSizeY * 0.5f;
-	BackGroundDesc.fSizeX = 200.0f;
-	BackGroundDesc.fSizeY = 200.0f;	
+	BackGroundDesc.fSizeX = g_iWinSizeX;
+	BackGroundDesc.fSizeY = g_iWinSizeY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_LOGO), TEXT("Prototype_GameObject_BackGround"),
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_BackGround"),
 		static_cast<_uint>(LEVEL::LEVEL_LOGO), strLayerTag, &BackGroundDesc)))
 		return E_FAIL;
 

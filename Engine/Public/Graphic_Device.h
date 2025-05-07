@@ -23,7 +23,7 @@ public:
 
 	/* 백버퍼를 지운다. */
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
-
+	`
 	/* 깊이버퍼 + 스텐실버퍼를 지운다. */
 	HRESULT Clear_DepthStencil_View();
 	

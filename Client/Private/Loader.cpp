@@ -35,6 +35,9 @@ _uint APIENTRY LoadingMain(void* pArg)
 
 HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 {
+	if(nullptr != m_hThread)
+		WaitForSingleObject(m_hThread, INFINITE);
+
 	m_eNextLevelID = eNextLevelID;
 
 	InitializeCriticalSection(&m_CriticalSection);
@@ -48,12 +51,15 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 
 HRESULT CLoader::Loading()
 {
-	CoInitializeEx(nullptr, 0);	
+	HRESULT		hr = CoInitializeEx(nullptr, 0);
+	if (FAILED(hr)) {
+		OutputDebugString(L"CoInitializeEx 실패\n");
+		return E_FAIL;
+	}
 
 	EnterCriticalSection(&m_CriticalSection);
 
-	HRESULT		hr = {};
-
+	hr = S_OK;
 	switch (m_eNextLevelID)
 	{
 	case LEVEL::LEVEL_LOGO:
@@ -65,12 +71,12 @@ HRESULT CLoader::Loading()
 		break;
 	}
 
-	if (FAILED(hr))
-		return E_FAIL;
+	
 
 	LeaveCriticalSection(&m_CriticalSection);
 
-
+	if (FAILED(hr))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -80,9 +86,16 @@ HRESULT CLoader::Loading_For_Logo()
 	
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 	/* For.Prototype_Component_Texture_BackGround*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_LOGO), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
+	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_BackGround"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default%d.dds"), 1))))
+	//	return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Logo/BackGround.dds"), 1))))
 		return E_FAIL;
+
+
+	
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
@@ -96,9 +109,12 @@ HRESULT CLoader::Loading_For_Logo()
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_LOGO), TEXT("Prototype_GameObject_BackGround"),
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_BackGround"),
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	
+
 	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -111,15 +127,14 @@ HRESULT CLoader::Loading_For_GamePlay()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Metronome_Center_Anchor.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Anchor.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_Metronome_Counter"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Metronome_Counter.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Counter.dds"), 1))))
 		return E_FAIL;
-
-
 
 	///* For.Prototype_Component_Texture_Terrain */
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
