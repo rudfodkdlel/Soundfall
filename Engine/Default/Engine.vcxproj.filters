@@ -88,6 +88,30 @@
     <ClInclude Include="..\public\Input_Device.h">
       <Filter>00.System\01.Device\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imconfig.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imgui.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imgui_internal.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_rectpack.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_textedit.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_truetype.h">
+      <Filter>Exteral Libraries</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\backends\imgui_impl_dx11.h">
+      <Filter>Exteral Libraries\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\Imgui\backends\imgui_impl_win32.h">
+      <Filter>Exteral Libraries\backends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -161,6 +185,30 @@
     </ClCompile>
     <ClCompile Include="..\private\Input_Device.cpp">
       <Filter>00.System\01.Device\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui.cpp">
+      <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_demo.cpp">
+      <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_draw.cpp">
+      <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_tables.cpp">
+      <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_widgets.cpp">
+      <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\backends\imgui_impl_dx11.cpp">
+      <Filter>Exteral Libraries\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\External Libraries\Imgui\backends\imgui_impl_win32.cpp">
+      <Filter>Exteral Libraries\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JusinSRTeamJW\External Libraries\ImGuizmo-master\ImGuizmo.cpp">
+      <Filter>Exteral Libraries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +307,12 @@
     </Filter>
     <Filter Include="00.System\01.Device\Input">
       <UniqueIdentifier>{3d787adc-839c-4d8c-9712-8247c2ae92c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exteral Libraries">
+      <UniqueIdentifier>{7edf4c6a-2c53-4313-9a1e-d4c845274260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exteral Libraries\backends">
+      <UniqueIdentifier>{54bafefd-1c52-4968-be86-d74af45d07a7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

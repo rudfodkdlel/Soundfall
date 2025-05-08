@@ -31,9 +31,9 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	{
 		// ¸ÊÅø·Î ÀÌµ¿
 
-		/*if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::EDIT))))
-			return;*/
+			return;
 		
 	}
 }

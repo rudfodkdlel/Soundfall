@@ -17,6 +17,14 @@
 #include <d3dcompiler.h>
 using namespace DirectX;
 
+#pragma region IMGUI
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+#include "../../External Libraries/ImGuizmo-master/ImGuizmo.h" 
+#pragma endregion
+
 #include <string>
 #include <map>
 #include <list>

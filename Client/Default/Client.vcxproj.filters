@@ -52,6 +52,9 @@
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{287ab26d-b142-4ba0-853b-86f885a5eedc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Imgui">
+      <UniqueIdentifier>{2ce9f54c-531a-4b3c-bd5d-df99f45fdf0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -102,6 +105,12 @@
     <ClInclude Include="..\public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\MyImgui.h">
+      <Filter>96. Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Edit.h">
+      <Filter>01.Levels\Edit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -149,6 +158,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Terrain.cpp">
       <Filter>02.GameObjects\01.Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MyImgui.cpp">
+      <Filter>96. Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Edit.cpp">
+      <Filter>01.Levels\Edit</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

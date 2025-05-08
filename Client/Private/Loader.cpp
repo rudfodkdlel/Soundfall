@@ -67,6 +67,9 @@ HRESULT CLoader::Loading()
 	case LEVEL::GAMEPLAY:
 		hr = Loading_For_GamePlay();
 		break;
+	case LEVEL::EDIT:
+		hr = Loading_For_Edit();
+		break;
 	}
 
 	
@@ -210,6 +213,24 @@ HRESULT CLoader::Loading_For_GamePlay()
 	//	CEffect::Create(m_pGraphic_Device))))
 	//	return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Edit()
+{
+
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

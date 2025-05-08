@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../public/;$(SolutionDir)External Libraries\imgui\;$(SolutionDir)External Libraries\imgui\backends</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -145,6 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\External Libraries\Imgui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imconfig.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imgui.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\External Libraries\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\public\Camera.h" />
     <ClInclude Include="..\public\Component.h" />
@@ -176,6 +184,14 @@
     <ClInclude Include="..\public\VIBuffer_Terrain.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\JusinSRTeamJW\External Libraries\ImGuizmo-master\ImGuizmo.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\External Libraries\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
