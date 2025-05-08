@@ -56,8 +56,8 @@ void CMetronome::Update(_float fTimeDelta)
 		countDesc.vDir = _float3(1.f, 0.f, 0.f);
 		countDesc.fStartPoint = countDesc.fX;
 
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-			static_cast<_uint>(LEVEL::LEVEL_GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
+			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
 			return;
 
 
@@ -65,8 +65,8 @@ void CMetronome::Update(_float fTimeDelta)
 		countDesc.vDir = _float3(-1.f, 0.f, 0.f);
 		countDesc.fStartPoint = countDesc.fX;
 
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-			static_cast<_uint>(LEVEL::LEVEL_GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
+			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
 			return;
 
 		m_iNumCount += 2;
@@ -107,15 +107,15 @@ HRESULT CMetronome::Render()
 HRESULT CMetronome::Ready_Components()
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::LEVEL_STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

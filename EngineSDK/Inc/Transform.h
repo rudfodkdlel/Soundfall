@@ -2,7 +2,7 @@
 
 #include "Component.h"
 
-BEGIN(Engine)
+NS_BEGIN(Engine)
 
 class ENGINE_DLL CTransform final : public CComponent
 {
@@ -30,6 +30,9 @@ public:
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[ENUM_CLASS(eState)]), vState);
 	}
 
+	_matrix Get_WorldMatrix_Inverse() {
+		return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
+	}
 
 
 public:
@@ -46,6 +49,7 @@ public:
 	void Go_Right(_float fTimeDelta);
 	void Go_Left(_float fTimeDelta);
 	void Go_Target(_fvector vTarget, _float fTimeDelta, _float fMinDistance);
+	void Turn(_fvector vAxis, _float fTimeDelta);
 
 public:
 	void LookAt(_fvector vAt);
@@ -66,4 +70,4 @@ public:
 	virtual void Free() override;
 };
 
-END
+NS_END

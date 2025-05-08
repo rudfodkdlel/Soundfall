@@ -2,6 +2,8 @@
 
 //#include "Picking.h"
 #include "Renderer.h"
+#include "PipeLine.h"
+#include "Input_Device.h"
 #include "Level_Manager.h"
 #include "Timer_Manager.h"
 #include "Graphic_Device.h"
@@ -19,6 +21,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	m_pGraphic_Device = CGraphic_Device::Create(EngineDesc.hWnd, EngineDesc.isWindowed, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY, ppDeviceOut, ppContextOut);
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
+
+	m_pInput_Device = CInput_Device::Create(EngineDesc.hInstance, EngineDesc.hWnd);
+	if (nullptr == m_pInput_Device)
+		return E_FAIL;
+
 
 	m_pTimer_Manager = CTimer_Manager::Create();
 	if (nullptr == m_pTimer_Manager)
@@ -40,6 +47,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pRenderer)
 		return E_FAIL;
 
+	m_pPipeLine = CPipeLine::Create();
+	if (nullptr == m_pPipeLine)
+		return E_FAIL;
+
 	//m_pPicking = CPicking::Create(*ppOut, EngineDesc.hWnd, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY);
 	//if (nullptr == m_pPicking)
 	//	return E_FAIL;
@@ -52,7 +63,11 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+	m_pInput_Device->Update();
+
 	m_pObject_Manager->Priority_Update(fTimeDelta);
+
+	m_pPipeLine->Update();
 
 	//m_pPicking->Update();
 
@@ -121,6 +136,10 @@ HRESULT CGameInstance::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
 {
 	return m_pLevel_Manager->Change_Level(iLevelIndex, pNewLevel);
 }
+_uint CGameInstance::Get_Current_Level() const
+{
+	return m_pLevel_Manager->Get_Current_Level();
+}
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -176,8 +195,50 @@ void CGameInstance::Update_Timer(const _wstring& strTimerTag)
 	return m_pTimer_Manager->Update(strTimerTag);
 }
 
+
 #pragma endregion
 
+#pragma region PIPELINE
+
+void CGameInstance::Set_Transform(D3DTS eState, _fmatrix TransformMatrix)
+{
+	m_pPipeLine->Set_Transform(eState, TransformMatrix);
+}
+
+const _float4x4* CGameInstance::Get_Transform_Float4x4(D3DTS eState) const
+{
+	return m_pPipeLine->Get_Transform_Float4x4(eState);
+}
+
+_matrix CGameInstance::Get_Transform_Matrix(D3DTS eState) const
+{
+	return m_pPipeLine->Get_Transform_Matrix(eState);
+}
+
+const _float4* CGameInstance::Get_CamPosition() const
+{
+	return m_pPipeLine->Get_CamPosition();
+}
+
+#pragma endregion
+
+#pragma region INPUTDEVICE
+_byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
+{
+	return m_pInput_Device->Get_DIKeyState(byKeyID);
+}
+
+_byte CGameInstance::Get_DIMouseState(DIM eMouse)
+{
+	return m_pInput_Device->Get_DIMouseState(eMouse);
+}
+
+_long CGameInstance::Get_DIMouseMove(DIMM eMouseState)
+{
+	return m_pInput_Device->Get_DIMouseMove(eMouseState);
+}
+
+#pragma endregion
 //#pragma region PICKING
 //void CGameInstance::Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse)
 //{
@@ -198,6 +259,8 @@ void CGameInstance::Release_Engine()
 {
 	//Safe_Release(m_pPicking);
 
+	Safe_Release(m_pPipeLine);
+
 	Safe_Release(m_pTimer_Manager);
 
 	Safe_Release(m_pRenderer);
@@ -207,6 +270,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPrototype_Manager);
 
 	Safe_Release(m_pLevel_Manager);
+
+	Safe_Release(m_pInput_Device);
 
 	Safe_Release(m_pGraphic_Device);
 

@@ -43,6 +43,15 @@
     <Filter Include="03. UI\00.BackGround">
       <UniqueIdentifier>{2a95d670-b78b-4365-888f-45a6815fed54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\Edit">
+      <UniqueIdentifier>{15fbc57c-34ef-4631-a335-1cfedf7796b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Camera">
+      <UniqueIdentifier>{42f66aee-580f-4e3b-8211-dd26e4d407a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain">
+      <UniqueIdentifier>{287ab26d-b142-4ba0-853b-86f885a5eedc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -87,6 +96,12 @@
     <ClInclude Include="..\Public\Metronome_Counter.h">
       <Filter>03. UI\Metronome\Counter</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Camera_Free.h">
+      <Filter>02.GameObjects\00.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Terrain.h">
+      <Filter>02.GameObjects\01.Terrain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -129,9 +144,18 @@
     <ClCompile Include="..\private\Metronome_Counter.cpp">
       <Filter>03. UI\Metronome\Counter</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Camera_Free.cpp">
+      <Filter>02.GameObjects\00.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Terrain.cpp">
+      <Filter>02.GameObjects\01.Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

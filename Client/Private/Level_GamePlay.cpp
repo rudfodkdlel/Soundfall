@@ -10,6 +10,12 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
 	CMetronome::METRONOME_DESC				metDesc{};
 
 	metDesc.fX = g_iWinSizeX * 0.5f;
@@ -17,8 +23,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	metDesc.fSizeX = 100.f;
 	metDesc.fSizeY = 100.f;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::LEVEL_STATIC), TEXT("Prototype_GameObject_Metronome"),
-		static_cast<_uint>(LEVEL::LEVEL_GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome"),
+		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -32,6 +38,24 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 HRESULT CLevel_GamePlay::Render()
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Terrain"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Camera_Free"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

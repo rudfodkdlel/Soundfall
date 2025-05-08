@@ -102,6 +102,15 @@ void CTransform::Go_Target(_fvector vTarget, _float fTimeDelta, _float fMinDista
 		Set_State(STATE::POSITION, Get_State(STATE::POSITION) + XMVector3Normalize(vMoveDir) * m_fSpeedPerSec * fTimeDelta);
 }
 
+void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
+{
+	_matrix			RotationMatrix = XMMatrixRotationAxis(vAxis, m_fRotationPerSec * fTimeDelta);
+
+	Set_State(STATE::RIGHT, XMVector4Transform(Get_State(STATE::RIGHT), RotationMatrix));
+	Set_State(STATE::UP, XMVector4Transform(Get_State(STATE::UP), RotationMatrix));
+	Set_State(STATE::LOOK, XMVector4Transform(Get_State(STATE::LOOK), RotationMatrix));   
+}
+
 void CTransform::LookAt(_fvector vAt)
 {
 	_float3		vScaled = Get_Scaled();
@@ -114,7 +123,7 @@ void CTransform::LookAt(_fvector vAt)
 	Set_State(STATE::UP, XMVector3Normalize(vUp) * vScaled.y);
 	Set_State(STATE::LOOK, XMVector3Normalize(vLook) * vScaled.z);
 }
-
+	
 HRESULT CTransform::Bind_ShaderResource(CShader* pShader, const _char* pConstantName)
 {
 	return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);	

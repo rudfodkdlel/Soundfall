@@ -6,7 +6,7 @@
 /* 위의 작업을 수행 시, 기존 레벨용 자원을 모두 파괴한다. */
 /* 현재 할당된 레벨을 갱신하고 보여준다. */
 
-BEGIN(Engine)
+NS_BEGIN(Engine)
 
 class CLevel_Manager final : public CBase
 {
@@ -19,6 +19,8 @@ public:
 	void Update(_float fTimeDelta);
 	HRESULT Render();
 
+public:
+	_uint Get_Current_Level() const { return m_iCurrentLevelIndex; }
 
 private:
 	_uint					m_iCurrentLevelIndex = {};
@@ -30,4 +32,4 @@ public:
 	virtual void Free() override;
 };
 
-END
+NS_END

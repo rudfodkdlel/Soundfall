@@ -2,7 +2,7 @@
 
 #include "Base.h"
 
-BEGIN(Engine)
+NS_BEGIN(Engine)
 
 /* 1. ID3D11Device, ID3D11DeviceContext라는 객체를 우선 생성한다. */
 /* 2. IDXGISwapChain를 생성한다.(백버퍼(ID3D11Texture2D)도 같이 생성한거야.) */
@@ -23,7 +23,7 @@ public:
 
 	/* 백버퍼를 지운다. */
 	HRESULT Clear_BackBuffer_View(_float4 vClearColor);
-	`
+	
 	/* 깊이버퍼 + 스텐실버퍼를 지운다. */
 	HRESULT Clear_DepthStencil_View();
 	
@@ -84,4 +84,4 @@ public:
 	virtual void Free() override;
 };
 
-END
+NS_END

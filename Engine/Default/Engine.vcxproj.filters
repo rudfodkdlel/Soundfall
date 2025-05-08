@@ -34,9 +34,6 @@
     <ClInclude Include="..\Public\Level_Manager.h">
       <Filter>01.Utility\01.Levels\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Graphic_Device.h">
-      <Filter>00.System\01.Device</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Base.h">
       <Filter>01.Utility\99.SuperClass</Filter>
     </ClInclude>
@@ -76,6 +73,21 @@
     <ClInclude Include="..\public\Shader.h">
       <Filter>01.Utility\04.Components\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Terrain.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PipeLIne.h">
+      <Filter>06. PipeLIne</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera.h">
+      <Filter>01.Utility\03.GameObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Graphic_Device.h">
+      <Filter>00.System\01.Device\Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Input_Device.h">
+      <Filter>00.System\01.Device\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -92,9 +104,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Manager.cpp">
       <Filter>01.Utility\01.Levels\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Graphic_Device.cpp">
-      <Filter>00.System\01.Device</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Base.cpp">
       <Filter>01.Utility\99.SuperClass</Filter>
@@ -134,6 +143,24 @@
     </ClCompile>
     <ClCompile Include="..\private\Shader.cpp">
       <Filter>01.Utility\04.Components\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Engine_Struct.cpp">
+      <Filter>99.Defines</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Terrain.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PipeLIne.cpp">
+      <Filter>06. PipeLIne</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera.cpp">
+      <Filter>01.Utility\03.GameObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Graphic_Device.cpp">
+      <Filter>00.System\01.Device\Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Input_Device.cpp">
+      <Filter>00.System\01.Device\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +247,18 @@
     </Filter>
     <Filter Include="01.Utility\03.GameObject\UIObject">
       <UniqueIdentifier>{514e7d77-7e75-4725-9b62-8b73f0a15645}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. PipeLIne">
+      <UniqueIdentifier>{3603cbd2-9ebb-4878-ac3d-c1c00c804081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.GameObject\Camera">
+      <UniqueIdentifier>{44e0c7d6-deab-43d6-be40-5cb3e46c5945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\01.Device\Graphic">
+      <UniqueIdentifier>{a357caf2-0b20-4ba9-9f22-b064dbdfd8b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\01.Device\Input">
+      <UniqueIdentifier>{3d787adc-839c-4d8c-9712-8247c2ae92c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
