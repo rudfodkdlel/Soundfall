@@ -16,12 +16,18 @@ HRESULT CLevel_Edit::Initialize()
 {
 	m_pImgui = CMyImgui::Create(m_pDevice, m_pContext);
 
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
+		ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Camera"))))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
 void CLevel_Edit::Update(_float fTimeDelta)
 {
 	m_pImgui->Update(fTimeDelta);
+
+
 }
 
 HRESULT CLevel_Edit::Render()

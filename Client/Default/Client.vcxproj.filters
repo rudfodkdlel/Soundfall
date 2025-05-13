@@ -55,6 +55,9 @@
     <Filter Include="96. Imgui">
       <UniqueIdentifier>{2ce9f54c-531a-4b3c-bd5d-df99f45fdf0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02. Structure">
+      <UniqueIdentifier>{b8214dc0-8735-4542-a02d-8f47df1526a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,9 +138,6 @@
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\Loading</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Loader.cpp">
-      <Filter>01.Levels\Loading\Loader</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
       <Filter>01.Levels\Logo</Filter>
     </ClCompile>
@@ -164,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Edit.cpp">
       <Filter>01.Levels\Edit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>01.Levels\Loading\Loader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

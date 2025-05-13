@@ -5,6 +5,7 @@
 /* 엔진 개발자가 클라개밫자에게 보여주고싶은 함수를 ... */
 #include "Prototype_Manager.h"
 
+
 NS_BEGIN(Engine)
 
 
@@ -36,6 +37,7 @@ public:
 #pragma region PROTOTYPE_MANAGER
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
+	const map<const _wstring, class CBase*>* Get_Prototypes();
 #pragma endregion
 
 #pragma region OBJECT_MANAGER

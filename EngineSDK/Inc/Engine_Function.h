@@ -1,5 +1,9 @@
 #pragma once
 
+
+#include <locale>
+#include <codecvt>
+
 namespace Engine
 {
 	template<typename T>
@@ -46,5 +50,13 @@ namespace Engine
 		}
 		return iRefCnt;
 	}
+
+
+
+	static string WStringToString(const std::wstring& wstr) {
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+		return conv.to_bytes(wstr);
+	}
+
 
 }

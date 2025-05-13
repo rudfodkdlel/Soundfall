@@ -89,8 +89,10 @@ HRESULT CLoader::Loading_For_Logo()
 	/* For.Prototype_Component_Texture_BackGround*/
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Logo/BackGround_%d.dds"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Logo/BackGround_%d.dds"), 2))))
 		return E_FAIL;
+
+
 	
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
@@ -125,11 +127,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Anchor.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/Anchor.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Counter"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/UI/Metronome/Counter.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/Counter.dds"), 1))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Terrain */
@@ -193,10 +195,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Camera_Free */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
 
 	///* For.Prototype_GameObject_Player */
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_GameObject_Player"),

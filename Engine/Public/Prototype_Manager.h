@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "VIBuffer_Terrain.h"
+#include "VIBuffer_Terrain.h"
 //#include "VIBuffer_Cube.h"
 #include "VIBuffer_Rect.h"
 #include "Transform.h"
@@ -24,6 +24,9 @@ public:
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 	void Clear(_uint iLevelIndex);
+
+	const map<const _wstring, class CBase*>* Get_Prototypes() { return m_pPrototypes; }
+
 private:
 	_uint										m_iNumLevels = {};
 	map<const _wstring, class CBase*>*			m_pPrototypes = { nullptr };

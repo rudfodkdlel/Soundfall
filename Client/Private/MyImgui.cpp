@@ -1,6 +1,8 @@
 #include "MyImgui.h"
 #include "GameInstance.h"
+#include "GameObject.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 
 CMyImgui::CMyImgui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -49,55 +51,99 @@ HRESULT CMyImgui::Initialize( ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	style.Colors[ImGuizmo::DIRECTION_Z] = ImVec4(0.2f, 0.2f, 1.0f, 1.0f); // Z축 파란색
 	style.Colors[ImGuizmo::SELECTION] = ImVec4(1.0f, 0.8f, 0.0f, 1.0f);   //
 
+	m_pPrototypes = m_pGameInstance->Get_Prototypes();
+
 	return S_OK;
 }
 
 void CMyImgui::Update(_float fTimeDelta)
 {
+	
 }
 
 HRESULT CMyImgui::Render()
 {
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	// 여기에 UI를 그릴 수 있습니다.
-	ImGui::Begin("Hello, World!");   // 창 이름 설정
-	ImGui::Text("This is a simple ImGui window.");
-
-
-	ImGui::End();
-
-	ImGui::Begin("Editor");
-
-	// 탭 시스템 추가
-	if (ImGui::BeginTabBar("EditorTabs"))
-	{
-		// 통합된 인스펙터 탭 (오브젝트 속성 + 기즈모 컨트롤)
-		if (ImGui::BeginTabItem("Inspector"))
-		{
-			
-			ImGui::EndTabItem();
-		}
-
-		// 오브젝트 생성 탭
-		if (ImGui::BeginTabItem("Create Object"))
-		{
-			
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}
-
-	ImGui::End();
+	Render_Create_Window();
 
 	// 그린 UI를 렌더링
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	
 
 	return S_OK;
+}
+
+void CMyImgui::Render_Create_Window()
+{
+	
+
+	bool g_bBigWindow = false;
+	// 토글에 따라 창 크기 설정
+	ImVec2 windowSize = g_bBigWindow ? ImVec2(600, 400) : ImVec2(300, 200);
+	ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once); // 처음만 위치 설정
+
+	// Begin에 flags 없이 하면 기본적으로 이동, 크기 조절 다 가능
+	ImGui::Begin("Create Window");
+
+
+
+	ImGui::Text("Press the button to toggle window size.");
+	if (ImGui::Button("Toggle Size"))
+	{
+		g_bBigWindow = !g_bBigWindow;
+	}
+
+	if (m_pPrototypes) {
+		for (const auto& pair : *m_pPrototypes) {
+			std::string keyStr = WStringToString(pair.first);
+
+			if (keyStr.find("GameObject") != keyStr.npos)
+			{
+				// 현재 항목이 선택된 항목인지 확인
+				bool isSelected = (pair.first == m_strSelectKey);
+
+				if (ImGui::Selectable(keyStr.c_str(), isSelected)) {
+					m_strSelectKey = pair.first;
+				}
+			}
+
+		}
+	}
+
+	if (ImGui::Button("Create")) {
+		
+
+		CGameObject::GAMEOBJECT_DESC pDesc = {};
+
+		pDesc.fRotationPerSec = 90.f;
+		pDesc.fSpeedPerSec = 10.f;
+
+		if (!m_strSelectKey.empty())
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), m_strSelectKey,
+				ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"), &pDesc);
+
+	}
+
+	ImGui::End();
+
+
+
+	
+}
+
+void CMyImgui::Render_Gizmo()
+{
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+
+	
 }
 
 CMyImgui* CMyImgui::Create( ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
