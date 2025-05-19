@@ -29,6 +29,8 @@ HRESULT CBackGround::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_iType = pDesc->iType;
+
 	return S_OK;
 }
 
@@ -57,7 +59,7 @@ HRESULT CBackGround::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iType)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))

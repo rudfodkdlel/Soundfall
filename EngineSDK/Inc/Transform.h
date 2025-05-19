@@ -33,6 +33,7 @@ public:
 	_matrix Get_WorldMatrix_Inverse() {
 		return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix));
 	}
+	_float4x4* Get_WorldMatrix() { return &m_WorldMatrix; }
 
 
 public:

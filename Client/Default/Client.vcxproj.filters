@@ -58,6 +58,12 @@
     <Filter Include="02.GameObjects\02. Structure">
       <UniqueIdentifier>{b8214dc0-8735-4542-a02d-8f47df1526a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Projectile">
+      <UniqueIdentifier>{9b90c68d-5fdd-4bab-aff1-02650a7d183d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Monster">
+      <UniqueIdentifier>{82f71747-9fd5-4295-9ead-ebb49ab1403f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -114,6 +120,12 @@
     <ClInclude Include="..\public\Level_Edit.h">
       <Filter>01.Levels\Edit</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Projectile_Base.h">
+      <Filter>02.GameObjects\03. Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Monster.h">
+      <Filter>02.GameObjects\03. Projectile\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -167,6 +179,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>01.Levels\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Base.cpp">
+      <Filter>02.GameObjects\03. Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Monster.cpp">
+      <Filter>02.GameObjects\03. Projectile\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,26 +12,27 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& Prototype)
 {
 }
 
-HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath)
+HRESULT CVIBuffer_Terrain::Initialize_Prototype()
 {
-	HANDLE			hFile = CreateFile(pHeightMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
-		return E_FAIL;
+	// height map »ç¿ë
+	//HANDLE			hFile = CreateFile(pHeightMapFilePath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	//if (0 == hFile)
+	//	return E_FAIL;
 
-	_ulong			dwByte = {};
+	//_ulong			dwByte = {};
 
-	BITMAPFILEHEADER			fh{};
-	BITMAPINFOHEADER			ih{};
+	//BITMAPFILEHEADER			fh{};
+	//BITMAPINFOHEADER			ih{};
 
-	ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
-	ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
+	//ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
+	//ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
 
-	m_iNumVerticesX = ih.biWidth;
-	m_iNumVerticesZ = ih.biHeight;
+	m_iNumVerticesX = 129;
+	m_iNumVerticesZ = 129;
 	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
 
-	_uint* pPixels = new _uint[m_iNumVertices];
-	ReadFile(hFile, pPixels, sizeof(_uint) * m_iNumVertices, &dwByte, nullptr);
+	//_uint* pPixels = new _uint[m_iNumVertices];
+	//ReadFile(hFile, pPixels, sizeof(_uint) * m_iNumVertices, &dwByte, nullptr);
 
 
 	m_iNumVertexBuffers = 1;
@@ -40,6 +41,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	m_iIndexStride = sizeof(_uint);
 	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_iNumPritimive = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2;
 
 	D3D11_BUFFER_DESC			VBBufferDesc{};
 	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
@@ -48,6 +50,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	VBBufferDesc.CPUAccessFlags = /*D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE*/0;
 	VBBufferDesc.StructureByteStride = m_iVertexStride;
 	VBBufferDesc.MiscFlags = 0;
+
 
 	D3D11_SUBRESOURCE_DATA		VBInitialData{};
 
@@ -63,7 +66,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, (pPixels[iIndex] & 0x000000ff) / 10.0f, i);
+			pVertices[iIndex].vPosition = _float3(j, 0.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesX - 1.f));
 		}
@@ -89,6 +92,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	IBBufferDesc.MiscFlags = 0;
 
 	_uint* pIndices = new _uint[m_iNumIndices];
+	m_pIndices = new _uint[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
 
 	_uint	iNumIndices = { 0 };
@@ -122,11 +126,14 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const _tchar* pHeightMapFilePath
 	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
 		return E_FAIL;
 
+
+	memcpy(m_pIndices, pIndices, sizeof(_uint) * m_iNumIndices);
+
 	Safe_Delete_Array(pIndices);
 
 
-	CloseHandle(hFile);
-	Safe_Delete_Array(pPixels);
+	//CloseHandle(hFile);
+	//Safe_Delete_Array(pPixels);
 
 	return S_OK;
 }
@@ -136,11 +143,11 @@ HRESULT CVIBuffer_Terrain::Initialize(void* pArg)
 	return S_OK;
 }
 
-CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pHeightMapFilePath)
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pHeightMapFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed to Created : CVIBuffer_Terrain");
 		Safe_Release(pInstance);

@@ -80,6 +80,13 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+void CGameObject::Billboarding()
+{
+
+	
+
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)
 {
 	CComponent*	pComponent = static_cast<CComponent*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_COMPONENT, iPrototypeLevelIndex, strPrototypeTag, pArg));

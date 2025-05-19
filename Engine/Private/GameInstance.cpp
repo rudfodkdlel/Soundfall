@@ -1,6 +1,6 @@
 #include "GameInstance.h"
 
-//#include "Picking.h"
+#include "Picking.h"
 #include "Renderer.h"
 #include "PipeLine.h"
 #include "Input_Device.h"
@@ -51,9 +51,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pPipeLine)
 		return E_FAIL;
 
-	//m_pPicking = CPicking::Create(*ppOut, EngineDesc.hWnd, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY);
-	//if (nullptr == m_pPicking)
-	//	return E_FAIL;
+	m_pPicking = CPicking::Create(*ppDeviceOut, *ppContextOut, EngineDesc.hWnd, EngineDesc.iWinSizeX, EngineDesc.iWinSizeY);
+	if (nullptr == m_pPicking)
+		return E_FAIL;
 
 
 
@@ -69,7 +69,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pPipeLine->Update();
 
-	//m_pPicking->Update();
+	m_pPicking->Update();
 
 	m_pObject_Manager->Update(fTimeDelta);	
 
@@ -171,6 +171,11 @@ CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _wstring& strL
 	
 }
 
+CGameObject* CGameInstance::GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->GetLastObjectFromLayer(iLevelIndex, strLayerTag);
+}
+
 #pragma endregion
 
 #pragma region RENDERER
@@ -224,6 +229,11 @@ const _float4* CGameInstance::Get_CamPosition() const
 	return m_pPipeLine->Get_CamPosition();
 }
 
+_matrix CGameInstance::Get_Transform_Matrix_Inverse(D3DTS eState) const
+{
+	return m_pPipeLine->Get_Transform_Matrix_Inverse(eState);
+}
+
 #pragma endregion
 
 #pragma region INPUTDEVICE
@@ -243,25 +253,35 @@ _long CGameInstance::Get_DIMouseMove(DIMM eMouseState)
 }
 
 #pragma endregion
-//#pragma region PICKING
-//void CGameInstance::Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse)
-//{
-//	m_pPicking->Transform_ToLocalSpace(WorldMatrixInverse);
-//}
-//_bool CGameInstance::Picking_InWorld(_float3& vPickedPos, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC)
-//{
-//	return m_pPicking->Picking_InWorld(vPickedPos, vPointA, vPointB, vPointC);
-//}
-//_bool CGameInstance::Picking_InLocal(_float3& vPickedPos, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC)
-//{
-//	return m_pPicking->Picking_InLocal(vPickedPos, vPointA, vPointB, vPointC);
-//}
-//
-//#pragma endregion
+#pragma region PICKING
+void CGameInstance::Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse)
+{
+	m_pPicking->Transform_ToLocalSpace(WorldMatrixInverse);
+}
+_bool CGameInstance::Picking_InWorld(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC)
+{
+	return m_pPicking->Picking_InWorld(vPickedPos, vPointA, vPointB, vPointC);
+}
+_bool CGameInstance::Picking_InLocal(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC)
+{
+	return m_pPicking->Picking_InLocal(vPickedPos, vPointA, vPointB, vPointC);
+}
+
+_float4 CGameInstance::Get_Mouse_LocalPos()
+{
+	return m_pPicking->Get_Mouse_LocalPos();
+}
+
+_float4 CGameInstance::Get_Mouse_WorldPos()
+{
+	return m_pPicking->Get_Mouse_WorldPos();
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {
-	//Safe_Release(m_pPicking);
+	Safe_Release(m_pPicking);
 
 	Safe_Release(m_pPipeLine);
 

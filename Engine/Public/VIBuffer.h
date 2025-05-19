@@ -18,6 +18,8 @@ public:
 	virtual HRESULT Bind_Buffers();
 	virtual HRESULT Render();
 
+	_float4 Compute_PickedPosition(const _float4x4* pWorldMatrixInverse);
+
 protected:
 	ID3D11Buffer* m_pVB = { nullptr };
 	ID3D11Buffer* m_pIB = { nullptr };
@@ -30,9 +32,13 @@ protected:
 	_uint						m_iVertexStride = {};
 	_uint						m_iNumIndices = {};
 	_uint						m_iIndexStride = {};
+	_uint						m_iNumPritimive = {};
 	_uint						m_iNumVertexBuffers = {};
 	DXGI_FORMAT					m_eIndexFormat = {};
 	D3D11_PRIMITIVE_TOPOLOGY	m_ePrimitiveTopology = {};
+
+	void*						m_pIndices = {};
+
 
 public:
 	virtual CComponent* Clone(void* pArg) = 0;

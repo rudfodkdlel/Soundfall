@@ -101,5 +101,6 @@ void CTexture::Free()
 	for (auto& pSRV : m_SRVs)
 		Safe_Release(pSRV);
 
+
 	m_SRVs.clear();
 }

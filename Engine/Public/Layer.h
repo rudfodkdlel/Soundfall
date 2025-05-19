@@ -20,6 +20,10 @@ public:
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
+
+	// 콜라이더 만들고 없애기
+	list<class CGameObject*>& GetGameObjectList() { return m_GameObjects; }
+
 private:
 	list<class CGameObject*>			m_GameObjects;
 

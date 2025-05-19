@@ -112,6 +112,9 @@
     <ClInclude Include="..\..\External Libraries\Imgui\backends\imgui_impl_win32.h">
       <Filter>Exteral Libraries\backends</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Picking.h">
+      <Filter>07. Picking</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -209,6 +212,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\JusinSRTeamJW\External Libraries\ImGuizmo-master\ImGuizmo.cpp">
       <Filter>Exteral Libraries</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Picking.cpp">
+      <Filter>07. Picking</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,7 +320,7 @@
     <Filter Include="Exteral Libraries\backends">
       <UniqueIdentifier>{54bafefd-1c52-4968-be86-d74af45d07a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\06. Picking">
+    <Filter Include="07. Picking">
       <UniqueIdentifier>{44594459-98bd-4268-92e6-67952e4d418b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

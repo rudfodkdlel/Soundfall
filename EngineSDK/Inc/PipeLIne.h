@@ -25,6 +25,8 @@ public:
 	_matrix Get_Transform_Matrix(D3DTS eState) const;
 	const _float4* Get_CamPosition() const;
 
+	_matrix Get_Transform_Matrix_Inverse(D3DTS eState) const;
+
 
 public:
 	void Update();

@@ -28,6 +28,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	VBBufferDesc.CPUAccessFlags = /*D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE*/0;
 	VBBufferDesc.StructureByteStride = m_iVertexStride;
 	VBBufferDesc.MiscFlags = 0;
+	m_iNumPritimive = 2;
 
 	D3D11_SUBRESOURCE_DATA		VBInitialData{};
 
@@ -70,6 +71,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	_ushort* pIndices = new _ushort[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
 
+	m_pIndices = new _ushort[m_iNumIndices];
+
 	pIndices[0] = 0;
 	pIndices[1] = 1;
 	pIndices[2] = 2;
@@ -83,6 +86,8 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 	if (FAILED(m_pDevice->CreateBuffer(&IBBufferDesc, &IBInitialData, &m_pIB)))
 		return E_FAIL;
+
+	memcpy(m_pIndices, pIndices, sizeof(_ushort) * m_iNumIndices);
 
 	Safe_Delete_Array(pIndices);
 

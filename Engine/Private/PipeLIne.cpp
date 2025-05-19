@@ -24,6 +24,11 @@ const _float4* CPipeLine::Get_CamPosition() const
 	return &m_vCamPosition;
 }
 
+_matrix CPipeLine::Get_Transform_Matrix_Inverse(D3DTS eState) const
+{
+	return XMLoadFloat4x4(&m_TransformationMatrixInverse[ENUM_CLASS(eState)]);
+}
+
 void CPipeLine::Update()
 {
 	for (size_t i = 0; i < ENUM_CLASS(D3DTS::END); i++)
@@ -32,7 +37,7 @@ void CPipeLine::Update()
 			XMMatrixInverse(nullptr, Get_Transform_Matrix(static_cast<D3DTS>(i))));
 	}
 
-	memcpy(&m_vCamPosition, &m_TransformationMatrixInverse[ENUM_CLASS(D3DTS::VIEW)].m[3], sizeof(_float4));
+ 	memcpy(&m_vCamPosition, &m_TransformationMatrixInverse[ENUM_CLASS(D3DTS::VIEW)].m[3], sizeof(_float4));
 }
 
 CPipeLine* CPipeLine::Create()

@@ -30,7 +30,9 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Terrain* m_pVIBufferCom = { nullptr };
+	CTexture* m_pTextureNormalCom = { nullptr };
 
+	_uint	  m_iType = { 0 };
 private:
 	HRESULT Ready_Components();
 

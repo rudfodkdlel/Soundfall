@@ -9,6 +9,7 @@ class ENGINE_DLL CGameObject abstract : public CBase
 public:
 	typedef struct tagGameObjectDesc : public CTransform::TRANSFORM_DESC
 	{
+		_float3		vPos;
 		_tchar		szName[MAX_PATH];
 	}GAMEOBJECT_DESC;
 
@@ -19,6 +20,7 @@ protected:
 
 public:
 	CComponent* Get_Component(const _wstring& strComponentTag);
+	CTransform* Get_Transform() { return m_pTransformCom; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -28,6 +30,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	void Billboarding();
 	
 
 protected:

@@ -91,6 +91,17 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 	m_pLayers[iLevelIndex].clear();
 }
 
+CGameObject* CObject_Manager::GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+		return nullptr;
+
+	return pLayer->GetGameObjectList().back();
+
+}
+
 CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag)
 {
 	auto	iter = m_pLayers[iLevelIndex].find(strLayerTag);

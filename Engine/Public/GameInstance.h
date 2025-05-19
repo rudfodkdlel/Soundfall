@@ -37,12 +37,14 @@ public:
 #pragma region PROTOTYPE_MANAGER
 	HRESULT Add_Prototype(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, class CBase* pPrototype);
 	CBase* Clone_Prototype(PROTOTYPE ePrototypeType, _uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
+	// 에디터용으로만 사용하기
 	const map<const _wstring, class CBase*>* Get_Prototypes();
 #pragma endregion
 
 #pragma region OBJECT_MANAGER
 	HRESULT Add_GameObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex = 0);
+	class CGameObject* GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -60,6 +62,7 @@ public:
 	const _float4x4* Get_Transform_Float4x4(D3DTS eState) const;
 	_matrix Get_Transform_Matrix(D3DTS eState) const;
 	const _float4* Get_CamPosition() const;
+	_matrix Get_Transform_Matrix_Inverse(D3DTS eState) const;
 #pragma endregion
 
 #pragma region INPUT_DEVICE
@@ -68,11 +71,14 @@ public:
 	_long	Get_DIMouseMove(DIMM eMouseState);
 #pragma endregion
 //
-//#pragma region PICKING
-//	void Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse);
-//	_bool Picking_InWorld(_float3& vPickedPos, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC);
-//	_bool Picking_InLocal(_float3& vPickedPos, const _float3& vPointA, const _float3& vPointB, const _float3& vPointC);
-//#pragma endregion
+#pragma region PICKING
+	void Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse);
+	_bool Picking_InWorld(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC);
+	_bool Picking_InLocal(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC);
+
+	_float4		Get_Mouse_LocalPos();
+	_float4		Get_Mouse_WorldPos();
+#pragma endregion
 
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
@@ -83,7 +89,7 @@ private:
 	class CRenderer*			m_pRenderer = { nullptr };
 	class CTimer_Manager*		m_pTimer_Manager = { nullptr };
 	class CPipeLine*			m_pPipeLine = { nullptr };
-	// class CPicking*				m_pPicking = { nullptr };
+	class CPicking*				m_pPicking = { nullptr };
 
 public:
 	void Release_Engine();

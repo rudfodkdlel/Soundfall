@@ -16,7 +16,7 @@ class CBackGround final : public CUIObject
 public:
 	typedef struct tagBackGroundDesc : public CUIObject::UIOBJECT_DESC
 	{
-
+		_uint iType;
 	}BACKGROUND_DESC;
 
 private:
@@ -37,6 +37,7 @@ private:
 	CTexture*			m_pTextureCom = { nullptr };
 	CVIBuffer_Rect*		m_pVIBufferCom = { nullptr };
 
+	_uint				m_iType = { 0 };
 private:
 	HRESULT Ready_Components();
 

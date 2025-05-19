@@ -44,4 +44,11 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXMESH;
 
+	struct MyFloat4 : public DirectX::XMFLOAT4
+	{
+		MyFloat4(const DirectX::XMFLOAT3& v, float w)
+			: DirectX::XMFLOAT4(v.x, v.y, v.z, w)
+		{
+		}
+	};
 }

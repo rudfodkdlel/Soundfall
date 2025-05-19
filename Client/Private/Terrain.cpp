@@ -26,7 +26,6 @@ HRESULT CTerrain::Initialize(void* pArg)
 
 	Desc.fRotationPerSec = 0.f;
 	Desc.fSpeedPerSec = 0.f;
-	lstrcpy(Desc.szName, TEXT("Terrain"));
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
@@ -44,7 +43,21 @@ void CTerrain::Priority_Update(_float fTimeDelta)
 
 void CTerrain::Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80)
+	{
+		_float4 vPos = {};
 
+		
+		_float4x4 worldInverse;
+		XMStoreFloat4x4(&worldInverse, m_pTransformCom->Get_WorldMatrix_Inverse());
+		vPos = m_pVIBufferCom->Compute_PickedPosition(&worldInverse);
+		if (vPos.w != 0)
+		{
+			m_iType = 2;
+		}
+	}
+	
+	
 }
 
 void CTerrain::Late_Update(_float fTimeDelta)
@@ -65,7 +78,10 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iType)))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture_Normal", m_iType)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
@@ -73,7 +89,7 @@ HRESULT CTerrain::Render()
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
 		return E_FAIL;
-
+	
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
@@ -88,13 +104,18 @@ HRESULT CTerrain::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Terrain"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Terrain"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Diffuse"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Normal"),
+		TEXT("Com_Texture_Normal"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -133,4 +154,5 @@ void CTerrain::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pTextureNormalCom);
 }

@@ -23,10 +23,17 @@ public:
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
 	void Clear(_uint iLevelIndex);
+
+	// 콜라이더 만들고 없애기
+	class CGameObject* GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag);
+
+
 private:	
 	_uint								m_iNumLevels = {};
 	map<const _wstring, class CLayer*>* m_pLayers = { nullptr };
 	class CGameInstance*				m_pGameInstance = { nullptr };
+
+	
 
 private:
 	class CLayer* Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag);
