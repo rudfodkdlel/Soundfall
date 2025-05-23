@@ -5,6 +5,7 @@
 #include "ImGuizmo.h"
 #include "Transform.h"
 #include "VIBuffer.h"
+#include "Model.h"
 
 
 CMyImgui::CMyImgui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -55,6 +56,10 @@ HRESULT CMyImgui::Initialize( ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 
 	m_pPrototypes = m_pGameInstance->Get_Prototypes();
 
+	m_pGrid = m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Grid"));
+
+	Safe_AddRef(m_pGrid);
+
 	return S_OK;
 }
 
@@ -66,23 +71,54 @@ void CMyImgui::Update(_float fTimeDelta)
 	{
 		// 마우스랑 가장 가까운
 		_float		vMinDist = FLT_MAX;
-		for (auto& object : m_pObjects)
+		if (!m_bCheckGrid)
+		{
+			
+			for (auto& object : m_pObjects)
+			{
+				_float4 vTemp;
+				_float4x4 worldInverse;
+				XMStoreFloat4x4(&worldInverse, object->Get_Transform()->Get_WorldMatrix_Inverse());
+				if (nullptr != object->Get_Component(TEXT("Com_VIBuffer")))
+					vTemp = static_cast<CVIBuffer*>(object->Get_Component(TEXT("Com_VIBuffer")))->Compute_PickedPosition(&worldInverse);
+				else if (nullptr != object->Get_Component(TEXT("Com_Model")))
+				{
+					vTemp = static_cast<CModel*>(object->Get_Component(TEXT("Com_Model")))->Compute_PickedPosition(&worldInverse);
+				}
+				else
+					return;
+				if (vTemp.w != 0)
+				{
+					if (XMVectorGetX(XMVector4Length(XMLoadFloat4(&vTemp))) < vMinDist)
+					{
+						vMinDist = XMVectorGetX(XMVector4Length(XMLoadFloat4(&vTemp)));
+						m_pPickingObject = object;
+						m_vPickingPos = vTemp;
+					}
+				}
+			}
+
+		}
+		else
 		{
 			_float4 vTemp;
 			_float4x4 worldInverse;
-			XMStoreFloat4x4(&worldInverse, object->Get_Transform()->Get_WorldMatrix_Inverse());
-			vTemp = static_cast<CVIBuffer*>(object->Get_Component(TEXT("Com_VIBuffer")))->Compute_PickedPosition(&worldInverse);
+			XMStoreFloat4x4(&worldInverse, m_pGrid->Get_Transform()->Get_WorldMatrix_Inverse());
+			if (nullptr != m_pGrid->Get_Component(TEXT("Com_VIBuffer")))
+				vTemp = static_cast<CVIBuffer*>(m_pGrid->Get_Component(TEXT("Com_VIBuffer")))->Compute_PickedPosition(&worldInverse);
+			else
+				return;
 			if (vTemp.w != 0)
 			{
 				if (XMVectorGetX(XMVector4Length(XMLoadFloat4(&vTemp))) < vMinDist)
 				{
 					vMinDist = XMVectorGetX(XMVector4Length(XMLoadFloat4(&vTemp)));
-					m_pPickingObject = object;
+					m_pPickingObject = m_pGrid;
 					m_vPickingPos = vTemp;
 				}
 			}
 		}
-
+	
 	}
 	bPrevLeftDown = bCurrentLeftDown;
 }
@@ -109,40 +145,46 @@ HRESULT CMyImgui::Render()
 void CMyImgui::Render_Create_Window()
 {
 	
-
 	bool g_bBigWindow = false;
-	// 토글에 따라 창 크기 설정
-	ImVec2 windowSize = g_bBigWindow ? ImVec2(600, 400) : ImVec2(300, 200);
-	ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2(100, 100), ImGuiCond_Once); // 처음만 위치 설정
 
-	// Begin에 flags 없이 하면 기본적으로 이동, 크기 조절 다 가능
+	// Grid Check 창 크기 줄임
+	ImVec2 windowSize1 = ImVec2(200, 100);
+	ImVec2 windowSize2 = ImVec2(300, 400); // Create Window 크기 유지
+
+	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Once);
+
+	if (ImGui::Begin("Util")) {
+		ImGui::Checkbox("Grid", &m_bCheckGrid);
+
+		if (ImGui::Button("Delete Object"))
+		{
+			// 지우는 로직 추가
+		}
+	}
+	ImGui::End();
+
+	ImGui::SetNextWindowSize(windowSize2, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(50 , windowSize1.y + 100), ImGuiCond_Once);
+
 	ImGui::Begin("Create Window");
-
 
 	if (m_pPrototypes) {
 		for (const auto& pair : *m_pPrototypes) {
 			std::string keyStr = WStringToString(pair.first);
 
-			if (keyStr.find("GameObject") != keyStr.npos)
-			{
-				// 현재 항목이 선택된 항목인지 확인
+			if (keyStr.find("GameObject") != keyStr.npos) {
 				bool isSelected = (pair.first == m_strSelectKey);
-
 				if (ImGui::Selectable(keyStr.c_str(), isSelected)) {
 					m_strSelectKey = pair.first;
 				}
 			}
-
 		}
 	}
 
 	if (ImGui::Button("Create")) {
-		
-
 		CGameObject::GAMEOBJECT_DESC pDesc = {};
-
-		pDesc.vPos = { 0.f, 0.f,0.f };
+		pDesc.vPos = { 0.f, 0.f, 0.f };
 
 		if (!m_strSelectKey.empty())
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), m_strSelectKey,
@@ -150,15 +192,34 @@ void CMyImgui::Render_Create_Window()
 
 		m_pObjects.push_back(m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit")));
 
-		if(m_vPickingPos.w == 1.f)
-			m_pObjects.back()->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
+
+
+		OBJECT_SAVE_DESC objDesc = {};
+		objDesc.szPrototypetag = m_strSelectKey;
+		objDesc.PrototypeLevelIndex = ENUM_CLASS(LEVEL::STATIC);
+		m_ObjectDescs.push_back(objDesc);
+
+		if (m_vPickingPos.w == 1.f)
+			m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"))
+			->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
 	}
 
 	ImGui::End();
 
+	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
+	ImGui::SetNextWindowPos(ImVec2(100 + windowSize2.x + 600,  100), ImGuiCond_Once);
 
+	ImGui::Begin("Save Load");
+	if (ImGui::Button("Save"))
+	{
+		Save_Data("../Bin/Data/test.bin");
+	}
 
-	
+	if (ImGui::Button("Load"))
+	{
+		Load_Data("../Bin/Data/test.bin");
+	}
+	ImGui::End();
 }
 
 void CMyImgui::Render_Gizmo()
@@ -203,13 +264,93 @@ void CMyImgui::Render_Gizmo()
 	
 }
 
-void CMyImgui::Save_Data()
+void CMyImgui::Save_Data(const char* pFliePath)
 {
+	auto iter = m_pObjects.begin();
+	auto DescIter = m_ObjectDescs.begin();
 
+	for (int i = 0; i < m_pObjects.size(); ++i)
+	{
+		XMStoreFloat4x4(&(*DescIter).matWorld, XMLoadFloat4x4((*iter)->Get_Transform()->Get_WorldMatrix()));
+		
+		++iter;
+		++DescIter;
+	}
+
+	// 파일 만들기 
+	ofstream fout(pFliePath, std::ios::binary);
+	if (!fout)
+	{
+		return;
+	}
+
+	size_t count = m_ObjectDescs.size();
+	fout.write(reinterpret_cast<const char*>(&count), sizeof(size_t));
+
+	for (const auto& desc : m_ObjectDescs)
+	{
+		fout.write(reinterpret_cast<const char*>(&desc.matWorld), sizeof(_float4x4));
+
+		// 문자열 저장 (길이 먼저, 그 다음 데이터)
+		size_t len = desc.szPrototypetag.length();
+		fout.write(reinterpret_cast<const char*>(&len), sizeof(size_t));
+		fout.write(reinterpret_cast<const char*>(desc.szPrototypetag.c_str()), sizeof(wchar_t) * len);
+
+		fout.write(reinterpret_cast<const char*>(&desc.PrototypeLevelIndex), sizeof(int));
+	}
+
+	fout.close();
+
+
+
+	
 }
 
-void CMyImgui::Load_Data()
+void CMyImgui::Load_Data(const char* pFliePath)
 {
+	std::ifstream fin(pFliePath, std::ios::binary);
+	if (!fin)
+		return;
+
+	size_t count = 0;
+	fin.read(reinterpret_cast<char*>(&count), sizeof(size_t));
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		OBJECT_SAVE_DESC desc = {};
+
+		fin.read(reinterpret_cast<char*>(&desc.matWorld), sizeof(_float4x4));
+
+		size_t len = 0;
+		fin.read(reinterpret_cast<char*>(&len), sizeof(size_t));
+
+		std::wstring temp(len, L'\0');
+		fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * len);
+		desc.szPrototypetag = temp;
+
+		fin.read(reinterpret_cast<char*>(&desc.PrototypeLevelIndex), sizeof(int));
+
+		m_ObjectDescs.push_back(desc);
+	}
+
+	fin.close();
+
+	for (auto& desc : m_ObjectDescs)
+	{
+		CGameObject::GAMEOBJECT_DESC pDesc = {};
+		pDesc.vPos = { 0.f, 0.f, 0.f };
+		HRESULT hr = m_pGameInstance->Add_GameObject(desc.PrototypeLevelIndex, desc.szPrototypetag, ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"),&pDesc);
+
+		if (hr < 0)
+			return;
+
+		m_pObjects.push_back(m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit")));
+	
+
+
+		memcpy(m_pObjects.back()->Get_Transform()->Get_WorldMatrix(), &desc.matWorld, sizeof(_float4x4));
+	
+	}
 }
 
 CMyImgui* CMyImgui::Create( ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -235,4 +376,6 @@ void CMyImgui::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
+
+	Safe_Release(m_pGrid);
 }

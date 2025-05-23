@@ -153,8 +153,11 @@
     <ClInclude Include="..\..\External Libraries\Imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\External Libraries\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\External Libraries\Imgui\imstb_truetype.h" />
+    <ClInclude Include="..\public\Animation.h" />
     <ClInclude Include="..\Public\Base.h" />
+    <ClInclude Include="..\public\Bone.h" />
     <ClInclude Include="..\public\Camera.h" />
+    <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\public\Component.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
@@ -169,6 +172,9 @@
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\Level_Manager.h" />
+    <ClInclude Include="..\public\Material.h" />
+    <ClInclude Include="..\public\Mesh.h" />
+    <ClInclude Include="..\public\Model.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLIne.h" />
@@ -193,8 +199,11 @@
     <ClCompile Include="..\..\External Libraries\Imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\External Libraries\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\External Libraries\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\private\Animation.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
+    <ClCompile Include="..\private\Bone.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\Private\Engine_Struct.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
@@ -204,6 +213,9 @@
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\Level_Manager.cpp" />
+    <ClCompile Include="..\private\Material.cpp" />
+    <ClCompile Include="..\private\Mesh.cpp" />
+    <ClCompile Include="..\private\Model.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
     <ClCompile Include="..\private\Picking.cpp" />
     <ClCompile Include="..\Private\PipeLIne.cpp" />

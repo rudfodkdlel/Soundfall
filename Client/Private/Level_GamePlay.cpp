@@ -1,6 +1,7 @@
 #include "Level_GamePlay.h"
 #include "GameInstance.h"
 #include "Metronome.h"
+#include "Terrain.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -27,6 +28,12 @@ HRESULT CLevel_GamePlay::Initialize()
 		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
 		return E_FAIL;
 
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -44,8 +51,11 @@ HRESULT CLevel_GamePlay::Render()
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
 {
+	CTerrain::TERRAIN_DESC pDesc = {};
+
+	pDesc.bWired = false;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &pDesc)))
 		return E_FAIL;
 
 	return S_OK;

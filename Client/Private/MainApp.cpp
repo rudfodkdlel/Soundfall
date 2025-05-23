@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Transform.h"
 #include "Camera_Free.h"
+#include "BackGround.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::Get_Instance() }
@@ -67,15 +68,37 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxPosTex */
+	/* For.Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxAnimMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_BackGround*/
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Logo/BackGround_%d.dds"), 5))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
+		CBackGround::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

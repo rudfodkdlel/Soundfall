@@ -64,6 +64,9 @@
     <Filter Include="02.GameObjects\03. Projectile\Monster">
       <UniqueIdentifier>{82f71747-9fd5-4295-9ead-ebb49ab1403f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04. Player">
+      <UniqueIdentifier>{a37bc951-4da6-4e1b-a8b1-166d8e9ba96f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -126,6 +129,12 @@
     <ClInclude Include="..\public\Projectile_Monster.h">
       <Filter>02.GameObjects\03. Projectile\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Structure.h">
+      <Filter>02.GameObjects\02. Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player.h">
+      <Filter>02.GameObjects\04. Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -186,12 +195,24 @@
     <ClCompile Include="..\private\Projectile_Monster.cpp">
       <Filter>02.GameObjects\03. Projectile\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Structure.cpp">
+      <Filter>02.GameObjects\02. Structure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player.cpp">
+      <Filter>02.GameObjects\04. Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

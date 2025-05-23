@@ -5,6 +5,7 @@
 #include "Level_Logo.h"
 #include "Level_Edit.h"
 #include "Loader.h"
+#include "BackGround.h"
 
 #include "GameInstance.h"
 
@@ -26,6 +27,32 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, m_eNextLevelID);
 	if (nullptr == m_pLoader)
 		return E_FAIL;
+
+	CBackGround::BACKGROUND_DESC				BackGroundDesc{};
+
+	BackGroundDesc.fX = g_iWinSizeX * 0.5f;
+	BackGroundDesc.fY = g_iWinSizeY * 0.5f;
+	BackGroundDesc.fSizeX = g_iWinSizeX * 0.5f;
+	BackGroundDesc.fSizeY = g_iWinSizeY * 0.5f;
+	// 노래 따라서 다르게 넣을 수 있도록 바꾸기
+	BackGroundDesc.iType = 4;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_BackGround"), &BackGroundDesc)))
+		return E_FAIL;
+
+
+	BackGroundDesc.fSizeX = g_iWinSizeX;
+	BackGroundDesc.fSizeY = g_iWinSizeY;
+	BackGroundDesc.iType = 3;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
+		static_cast<_uint>(LEVEL::LOADING), TEXT("Layer_BackGround"), &BackGroundDesc)))
+		return E_FAIL;
+
+	
+
+	
 	
 	return S_OK;
 }

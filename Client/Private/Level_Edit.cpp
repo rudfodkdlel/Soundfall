@@ -5,6 +5,7 @@
 #include "MyImgui.h"
 
 #include "BackGround.h"
+#include "Terrain.h"
 
 CLevel_Edit::CLevel_Edit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -14,11 +15,21 @@ CLevel_Edit::CLevel_Edit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Edit::Initialize()
 {
-	m_pImgui = CMyImgui::Create(m_pDevice, m_pContext);
-
+	
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	CTerrain::TERRAIN_DESC pDesc = {};
+
+	pDesc.bWired = true;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
+		ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Grid"), &pDesc)))
+		return E_FAIL;
+
+	m_pImgui = CMyImgui::Create(m_pDevice, m_pContext);
+
 	
 	return S_OK;
 }

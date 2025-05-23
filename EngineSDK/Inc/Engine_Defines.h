@@ -29,6 +29,9 @@ using namespace DirectX;
 #include <map>
 #include <list>
 #include <vector>
+#include <locale>
+#include <codecvt>
+#include <fstream>  
 using namespace std;
 
 
@@ -42,6 +45,7 @@ using namespace std;
 namespace Engine
 {
 	const _wstring	g_strTransformTag = TEXT("Com_Transform");
+	const _uint g_iMaxNumBones = 512;
 }
 
 using namespace Engine;

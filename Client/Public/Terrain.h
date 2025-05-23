@@ -13,6 +13,13 @@ NS_BEGIN(Client)
 
 class CTerrain final : public CGameObject
 {
+
+public:
+	typedef struct tagTerrainDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		_bool		bWired;
+	}TERRAIN_DESC;
+
 private:
 	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTerrain(const CTerrain& Prototype);
@@ -33,6 +40,8 @@ private:
 	CTexture* m_pTextureNormalCom = { nullptr };
 
 	_uint	  m_iType = { 0 };
+
+	_bool     m_bWired = { false };
 private:
 	HRESULT Ready_Components();
 

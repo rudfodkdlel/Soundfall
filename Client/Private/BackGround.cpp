@@ -31,6 +31,10 @@ HRESULT CBackGround::Initialize(void* pArg)
 
 	m_iType = pDesc->iType;
 
+	
+		
+
+
 	return S_OK;
 }
 

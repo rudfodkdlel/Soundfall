@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Base.h"
+#include "Level.h"
 
 /* 기존 레벨을 파괴하고 새롭게 할당된 레벨의 주소를 들고 있는다. */
 /* 위의 작업을 수행 시, 기존 레벨용 자원을 모두 파괴한다. */
@@ -24,7 +25,7 @@ public:
 
 private:
 	_uint					m_iCurrentLevelIndex = {};
-	class CLevel*			m_pCurrentLevel = { nullptr };
+	CLevel*			m_pCurrentLevel = { nullptr };
 	class CGameInstance*	m_pGameInstance = { nullptr };
 
 public:

@@ -5,7 +5,9 @@
 #include "Camera_Free.h"
 #include "BackGround.h"
 #include "Terrain.h"
-//#include "player.h"
+#include "Model.h"
+#include "Player.h"
+#include "Structure.h"
 //#include "Effect.h"
 //#include "Sky.h"
 #include "Metronome.h"
@@ -87,11 +89,6 @@ HRESULT CLoader::Loading_For_Logo()
 {
 	
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-	/* For.Prototype_Component_Texture_BackGround*/
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BackGround"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Logo/BackGround_%d.dds"), 2))))
-		return E_FAIL;
 
 
 	
@@ -107,10 +104,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
 
 	
 
@@ -172,11 +166,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
-	/* For.Prototype_Component_VIBuffer_Terrain */
-	/*if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pGraphic_Device, 256, 256))))
-		return E_FAIL;*/
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Ky"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
@@ -206,10 +201,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 
 
-	///* For.Prototype_GameObject_Player */
-	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_GameObject_Player"),
-	//	CPlayer::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	///* For.Prototype_GameObject_Sky */
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_GameObject_Sky"),
@@ -254,11 +249,30 @@ HRESULT CLoader::Loading_For_Edit()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+	// slope
+	//PreTransformMatrix = XMMatrixScaling(0.0002f, 0.0002f, 0.0002f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_0"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope0.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixScaling(0.0002f, 0.0002f, 0.0002f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_1"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope1.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Ky"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
+	/* For.Prototype_GameObject_Projecttile_Monster */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Monster"),
 		CProjecttile_Monster::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -268,6 +282,17 @@ HRESULT CLoader::Loading_For_Edit()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Structure"),
+		CStructure::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	// 추가 필요하고...
 
 	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

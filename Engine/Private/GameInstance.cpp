@@ -300,6 +300,7 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pGraphic_Device);
 
 	Destroy_Instance();
+
 }
 
 void CGameInstance::Free()

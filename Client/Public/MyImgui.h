@@ -32,8 +32,8 @@ public:
 private:
 	// 함수 추가 필요
 
-	void Save_Data();
-	void Load_Data();
+	void Save_Data(const char* pFliePath);
+	void Load_Data(const char* pFliePath);
 	
 
 
@@ -49,13 +49,26 @@ private:
 
 	_wstring	m_strSelectKey = {};
 
-	CGameObject* m_pPickingObject = { nullptr };
+	// 여기에 추가해서 오브젝트 저장 하고 불러오고 할거
 
+	// 구조 일단 이대로 하고, 삭제 기능 만들면 없애기
 	list<CGameObject*> m_pObjects = {};
+	list<OBJECT_SAVE_DESC> m_ObjectDescs = {};
+
+	// 이 구조로 나중에 바꾸기
+	map<_uint, CGameObject*> m_pObjectMap = {};
+	_uint		m_iObjectID = { 0 };
+	
 
 	ImGuizmo::OPERATION m_currentOperation = ImGuizmo::TRANSLATE;
 
-	_float4				m_vPickingPos = {0.f,0.f,0.f,1.f};
+
+	// 오브젝트 설치할 때 사용할 그리드 설정, 버튼으로 껏다 키기
+	_bool				m_bCheckGrid = { false };
+	CGameObject*		m_pGrid = { nullptr };
+
+	_float4				m_vPickingPos = { 0.f,0.f,0.f,1.f };
+	CGameObject* m_pPickingObject = { nullptr };
 
 	//나중에 지우기
 	_bool				bPrevLeftDown = { false }; 

@@ -41,11 +41,8 @@ private:
 
 
 
-
-
 private:
 	_byte					m_byKeyState[256] = {};
-
 
 	DIMOUSESTATE			m_tMouseState = {};
 

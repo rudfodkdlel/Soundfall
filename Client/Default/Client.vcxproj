@@ -166,8 +166,10 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\MyImgui.h" />
+    <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Projectile_Base.h" />
     <ClInclude Include="..\public\Projectile_Monster.h" />
+    <ClInclude Include="..\public\Structure.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -186,8 +188,10 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\MyImgui.cpp" />
+    <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Projectile_Base.cpp" />
     <ClCompile Include="..\private\Projectile_Monster.cpp" />
+    <ClCompile Include="..\private\Structure.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
@@ -199,6 +203,8 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
   </ItemGroup>

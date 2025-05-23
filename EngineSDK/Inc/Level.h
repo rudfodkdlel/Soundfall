@@ -15,7 +15,7 @@ protected:
 public:
 	virtual HRESULT Initialize();	
 	virtual void Update(_float fTimeDelta);
-	virtual HRESULT Render();
+	virtual HRESULT Render(); 
 
 protected:
 	ID3D11Device*			m_pDevice = { nullptr };

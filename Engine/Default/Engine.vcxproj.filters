@@ -115,6 +115,24 @@
     <ClInclude Include="..\public\Picking.h">
       <Filter>07. Picking</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Model.h">
+      <Filter>01.Utility\04.Components\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Material.h">
+      <Filter>01.Utility\04.Components\Model\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bone.h">
+      <Filter>01.Utility\04.Components\Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Mesh.h">
+      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Animation.h">
+      <Filter>01.Utility\04.Components\Model\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Channel.h">
+      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -215,6 +233,24 @@
     </ClCompile>
     <ClCompile Include="..\private\Picking.cpp">
       <Filter>07. Picking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Model.cpp">
+      <Filter>01.Utility\04.Components\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Material.cpp">
+      <Filter>01.Utility\04.Components\Model\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bone.cpp">
+      <Filter>01.Utility\04.Components\Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mesh.cpp">
+      <Filter>01.Utility\04.Components\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Animation.cpp">
+      <Filter>01.Utility\04.Components\Model\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Channel.cpp">
+      <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,6 +358,24 @@
     </Filter>
     <Filter Include="07. Picking">
       <UniqueIdentifier>{44594459-98bd-4268-92e6-67952e4d418b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model">
+      <UniqueIdentifier>{a940b893-7434-45ea-8b29-9a65173a3ab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Mesh">
+      <UniqueIdentifier>{f818e878-356e-4f75-8371-a23b596e5873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Bone">
+      <UniqueIdentifier>{b4df614c-27dd-4bfa-b2c4-6d2e2dd260f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Animation">
+      <UniqueIdentifier>{da568987-fea8-44fd-bea7-f7c326593484}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Material">
+      <UniqueIdentifier>{815200ee-1b87-4c17-b4cf-4d0dabb7b534}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Model\Animation\Channel">
+      <UniqueIdentifier>{b4f84a52-8dc2-4fa7-95ee-1a6c89e1846f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -33,6 +33,9 @@ HRESULT CTerrain::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	if(nullptr != pArg)
+		m_bWired = static_cast<TERRAIN_DESC*>(pArg)->bWired;
+
 	return S_OK;
 }
 
@@ -43,20 +46,6 @@ void CTerrain::Priority_Update(_float fTimeDelta)
 
 void CTerrain::Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80)
-	{
-		_float4 vPos = {};
-
-		
-		_float4x4 worldInverse;
-		XMStoreFloat4x4(&worldInverse, m_pTransformCom->Get_WorldMatrix_Inverse());
-		vPos = m_pVIBufferCom->Compute_PickedPosition(&worldInverse);
-		if (vPos.w != 0)
-		{
-			m_iType = 2;
-		}
-	}
-	
 	
 }
 
@@ -67,6 +56,22 @@ void CTerrain::Late_Update(_float fTimeDelta)
 
 HRESULT CTerrain::Render()
 {
+	D3D11_RASTERIZER_DESC wfDesc = {};
+	ID3D11RasterizerState* pWireframeState = nullptr;
+	if (m_bWired)
+	{
+		
+		wfDesc.FillMode = D3D11_FILL_WIREFRAME;
+		wfDesc.CullMode = D3D11_CULL_BACK;
+		wfDesc.FrontCounterClockwise = FALSE;
+		wfDesc.DepthClipEnable = TRUE;
+
+		
+		m_pDevice->CreateRasterizerState(&wfDesc, &pWireframeState);
+		m_pContext->RSSetState(pWireframeState);
+	}
+	
+
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 
@@ -92,6 +97,21 @@ HRESULT CTerrain::Render()
 	
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
+
+	if (m_bWired)
+	{
+		D3D11_RASTERIZER_DESC solidDesc = {};
+		solidDesc.FillMode = D3D11_FILL_SOLID;
+		solidDesc.CullMode = D3D11_CULL_BACK;
+		solidDesc.FrontCounterClockwise = FALSE;
+		solidDesc.DepthClipEnable = TRUE;
+
+		ID3D11RasterizerState* pSolidState = nullptr;
+		m_pDevice->CreateRasterizerState(&solidDesc, &pSolidState);
+		m_pContext->RSSetState(pSolidState);
+		pSolidState->Release();
+		pWireframeState->Release();
+	}
 
 	return S_OK;
 }
