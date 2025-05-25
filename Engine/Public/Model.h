@@ -16,8 +16,13 @@ public:
 		return m_iNumMeshes;
 	}
 
+	_uint Get_NumAnimations() const {
+		return m_iNumAnimations;
+	}
+
+
 	void Set_Animation(_uint iIndex, _bool isLoop = true) {
-		m_iCurrentAnimIndex = iIndex;
+		m_iNextAnimIndex = iIndex;
 		m_isLoop = isLoop;
 	}
 
@@ -34,6 +39,9 @@ public:
 
 public:
 	_bool Play_Animation(_float fTimeDelta);
+
+	// 다른 애니메이션으로 이동하면서 보간 하도록
+	void Change_Animation(_float fTimeDelta, _uint iIndex);
 
 	void Load_Binary(const _char* pModelFilePath);
 
@@ -60,9 +68,12 @@ private:
 	vector<class CBone*>		m_Bones;
 
 	_bool						m_isLoop{};
-	_uint						m_iCurrentAnimIndex = { };
+	_uint						m_iCurrentAnimIndex = { 0 };
+	_uint						m_iNextAnimIndex = { 0 };
 	_uint						m_iNumAnimations = {};
 	vector<class CAnimation*>	m_Animations;
+
+	_float						m_fChangeDuration = {};
 
 public:
 

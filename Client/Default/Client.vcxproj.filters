@@ -67,6 +67,33 @@
     <Filter Include="02.GameObjects\04. Player">
       <UniqueIdentifier>{a37bc951-4da6-4e1b-a8b1-166d8e9ba96f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\00.Camera\Cameras">
+      <UniqueIdentifier>{e367cec4-bdf5-43e7-8a1e-e483b4699c79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster">
+      <UniqueIdentifier>{3d1d1a23-00f5-49ee-b998-1ecc89d8d585}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Peon">
+      <UniqueIdentifier>{e78bffe8-3337-48e0-a7c6-451eb03f2f36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Base">
+      <UniqueIdentifier>{40e23877-9b28-4762-875c-a00fea2d50a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State">
+      <UniqueIdentifier>{375f02ed-b9b2-45a6-8044-218e56fb3bbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Monster">
+      <UniqueIdentifier>{1ac5c8d2-ff13-47ac-b923-868fa0f033de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player">
+      <UniqueIdentifier>{da7b7daa-fc0a-4907-a8df-98b3955beb9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Idle">
+      <UniqueIdentifier>{e39acbca-ced3-488f-b97b-c7cdbc1f01b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Move">
+      <UniqueIdentifier>{a5740016-7562-4498-b0fa-40aedc2bb023}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -135,6 +162,21 @@
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObjects\04. Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Camera_TopDown.h">
+      <Filter>02.GameObjects\00.Camera\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Base.h">
+      <Filter>02.GameObjects\05. Monster\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Object_State.h">
+      <Filter>02.GameObjects\06. State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Idle.h">
+      <Filter>02.GameObjects\06. State\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Move.h">
+      <Filter>02.GameObjects\06. State\Move</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -200,6 +242,21 @@
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02.GameObjects\04. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_TopDown.cpp">
+      <Filter>02.GameObjects\00.Camera\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Base.cpp">
+      <Filter>02.GameObjects\05. Monster\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Object_State.cpp">
+      <Filter>02.GameObjects\06. State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Idle.cpp">
+      <Filter>02.GameObjects\06. State\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Move.cpp">
+      <Filter>02.GameObjects\06. State\Move</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

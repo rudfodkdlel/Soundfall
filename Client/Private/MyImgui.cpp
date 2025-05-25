@@ -200,8 +200,7 @@ void CMyImgui::Render_Create_Window()
 		m_ObjectDescs.push_back(objDesc);
 
 		if (m_vPickingPos.w == 1.f)
-			m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"))
-			->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
+			m_pObjects.back()->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
 	}
 
 	ImGui::End();

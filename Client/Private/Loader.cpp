@@ -7,6 +7,7 @@
 #include "Terrain.h"
 #include "Model.h"
 #include "Player.h"
+#include "Monster_Base.h"
 #include "Structure.h"
 //#include "Effect.h"
 //#include "Sky.h"
@@ -173,6 +174,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f);// * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
 	//	return E_FAIL;
@@ -204,6 +210,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Base"),
+		CMonster_Base::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Sky */
@@ -267,7 +278,10 @@ HRESULT CLoader::Loading_For_Edit()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));

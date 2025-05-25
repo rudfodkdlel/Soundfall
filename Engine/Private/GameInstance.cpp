@@ -272,9 +272,14 @@ _float4 CGameInstance::Get_Mouse_LocalPos()
 	return m_pPicking->Get_Mouse_LocalPos();
 }
 
-_float4 CGameInstance::Get_Mouse_WorldPos()
+_float4 CGameInstance::Get_Camera_WorldPos()
 {
-	return m_pPicking->Get_Mouse_WorldPos();
+	return m_pPicking->Get_Camera_WorldPos();
+}
+
+_float4 CGameInstance::Get_Mouse_Projection(_vector vPlanePoint, _vector vPlaneNormal)
+{
+	return m_pPicking->Get_Mouse_Projection(vPlanePoint, vPlaneNormal);
 }
 
 #pragma endregion

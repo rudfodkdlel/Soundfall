@@ -77,7 +77,8 @@ public:
 	_bool Picking_InLocal(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC);
 
 	_float4		Get_Mouse_LocalPos();
-	_float4		Get_Mouse_WorldPos();
+	_float4		Get_Camera_WorldPos();
+	_float4		Get_Mouse_Projection(_vector vPlanePoint, _vector vPlaneNormal);
 #pragma endregion
 
 private:

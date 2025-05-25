@@ -43,32 +43,42 @@ HRESULT CAnimation::Initialize(const ANIM_DESC& eDesc, const vector<class CBone*
 
 _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop)
 {
-	_bool			isFinished = { false };
+	_bool isFinished = false;
 
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
 	if (m_fCurrentTrackPosition >= m_fDuration)
 	{
-		if (false == isLoop)
+		if (isLoop)
 		{
-			m_fCurrentTrackPosition = m_fDuration;
-			isFinished = true;
-			goto exit;
+			m_fCurrentTrackPosition = 0.f;
 		}
-
-		m_fCurrentTrackPosition = 0.f;
+		else
+		{
+			m_fCurrentTrackPosition = 0.f;
+			for (auto& indices : m_CurrentKeyFrameIndices)
+				indices = 0;
+		
+			isFinished = true;
+		}
 	}
 
-
-
-	/*for (auto& pChannel : m_Channels)*/
-	for (_uint i = 0; i < m_iNumChannels; ++i)
+	if (!isFinished)
 	{
-		m_Channels[i]->Update_TransformationMatrix(&m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones);
+		for (_uint i = 0; i < m_iNumChannels; ++i)
+		{
+			m_Channels[i]->Update_TransformationMatrix(&m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones);
+		}
 	}
 
-exit:
 	return isFinished;
+}
+
+void CAnimation::Reset()
+{
+	m_fCurrentTrackPosition = 0.f;
+	for (auto& indices : m_CurrentKeyFrameIndices)
+		indices = 0;
 }
 
 

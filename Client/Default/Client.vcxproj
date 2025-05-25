@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
+    <ClInclude Include="..\public\Camera_TopDown.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Level_Edit.h" />
@@ -165,8 +166,12 @@
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Monster_Base.h" />
     <ClInclude Include="..\public\MyImgui.h" />
+    <ClInclude Include="..\public\Object_State.h" />
+    <ClInclude Include="..\public\Player_State_Idle.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\Player_State_Move.h" />
     <ClInclude Include="..\public\Projectile_Base.h" />
     <ClInclude Include="..\public\Projectile_Monster.h" />
     <ClInclude Include="..\public\Structure.h" />
@@ -179,6 +184,7 @@
   <ItemGroup>
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\Camera_TopDown.cpp" />
     <ClCompile Include="..\private\Level_Edit.cpp" />
     <ClCompile Include="..\private\Metronome.cpp" />
     <ClCompile Include="..\private\Metronome_Counter.cpp" />
@@ -187,8 +193,12 @@
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Monster_Base.cpp" />
     <ClCompile Include="..\private\MyImgui.cpp" />
+    <ClCompile Include="..\private\Object_State.cpp" />
+    <ClCompile Include="..\private\Player_State_Idle.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\Player_State_Move.cpp" />
     <ClCompile Include="..\private\Projectile_Base.cpp" />
     <ClCompile Include="..\private\Projectile_Monster.cpp" />
     <ClCompile Include="..\private\Structure.cpp" />

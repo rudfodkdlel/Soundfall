@@ -144,18 +144,113 @@ HRESULT CModel::Render(_uint iMeshIndex)
 _bool CModel::Play_Animation(_float fTimeDelta)
 {
 	_bool		isFinished = { false };
-	/* 1. 현재 애니메이션에 맞는 뼈의 상태를 읽어와서 뼈의 TrnasformationMatrix를 갱신해준다. */
-	isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
-
-	/* 2. 전체 뼐르 순회하면서 뼈들의 ColmbinedTransformationMatixf를 부모에서부터 자식으로 갱신해주낟. */
-	for (auto& pBone : m_Bones)
+	
+	// 다음 애니메이션이 같으면
+	if (m_iCurrentAnimIndex == m_iNextAnimIndex)
 	{
-		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		/* 1. 현재 애니메이션에 맞는 뼈의 상태를 읽어와서 뼈의 TrnasformationMatrix를 갱신해준다. */
+		isFinished = m_Animations[m_iCurrentAnimIndex]->Update_Bones(fTimeDelta, m_Bones, m_isLoop);
+
+		/* 2. 전체 뼐르 순회하면서 뼈들의 ColmbinedTransformationMatixf를 부모에서부터 자식으로 갱신해주낟. */
+		for (auto& pBone : m_Bones)
+		{
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		}
+
 	}
+	// 바뀐 상태가 아니면 이제 다음 애니메이션으로 바꿀 준비를 한다
+	else
+	{
+		Change_Animation(fTimeDelta, m_iNextAnimIndex);
+	}
+	
 
 	/*XMMatrixDecompose()*/
 
 	return isFinished;
+}
+
+void CModel::Change_Animation(_float fTimeDelta, _uint iIndex)
+{
+	
+	// 같은 곳으로 이동하면 안바꾸기
+	if (iIndex == m_iCurrentAnimIndex)
+	{
+		return;
+	}
+
+	m_fChangeDuration += fTimeDelta;
+	_float fDuration = 0.2f;
+	_float fRatio = min(m_fChangeDuration / fDuration, 1.f);
+	
+
+	if (fRatio < 1.f)
+	{
+		vector< _vector> vCurPosvector;
+		vector< _vector> vCurScaleVector;
+		vector< _vector> vCurRotationVector;
+
+		vector< _vector> vNextPosvector;
+		vector< _vector> vNextScaleVector;
+		vector< _vector> vNextRotationVector;
+
+		_matrix			TransformationMatrix{};
+
+		// 현재 부분에 대한거를 가져옴
+		for (int i = 0; i < m_Bones.size(); ++i)
+		{
+			_vector vPos, vScale, vRotation;
+
+			XMMatrixDecompose(&vScale, &vRotation, &vPos, XMLoadFloat4x4(m_Bones[i]->Get_TransformationMatrix()));
+			vCurPosvector.push_back(vPos);
+			vCurScaleVector.push_back(vScale);
+			vCurRotationVector.push_back(vRotation);
+		}
+
+		// 다음 부분에 대한거를 가져오기
+
+		// 다음 애니메이션의 첫번째 키 프레임 정보로 뼈를 다시 세팅 하고 값 저장
+		m_Animations[iIndex]->Update_Bones(0.f, m_Bones, m_isLoop);
+
+		for (int i = 0; i < m_Bones.size(); ++i)
+		{
+			_vector vPos, vScale, vRotation;
+
+			XMMatrixDecompose(&vScale, &vRotation, &vPos, XMLoadFloat4x4(m_Bones[i]->Get_TransformationMatrix()));
+			vNextPosvector.push_back(vPos);
+			vNextScaleVector.push_back(vScale);
+			vNextRotationVector.push_back(vRotation);
+		}
+
+		for (int i = 0; i < m_Bones.size(); ++i)
+		{
+			_vector vPos, vScale, vRotation;
+
+
+			vScale = XMVectorLerp(vCurScaleVector[i], vNextScaleVector[i], fRatio);
+			vRotation = XMQuaternionSlerp(vCurRotationVector[i], vNextRotationVector[i], fRatio);
+			vPos = XMVectorLerp(vCurPosvector[i], vNextPosvector[i], fRatio);
+
+			// TransformationMatrix = XMMatrixScaling() * XMMatrixRotationQuaternion() * XMMatrixTranslation();
+			TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPos);
+			m_Bones[i]->Set_TransformationMatrix(TransformationMatrix);
+		}
+
+		// 보간 후 부모 행렬 바뀐 걸 갱신해준다
+		for (auto& pBone : m_Bones)
+		{
+			pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+		}
+
+	}
+	else 
+	{
+		// 보간이 끝나면 현재 index를 바꾸기
+		m_fChangeDuration = 0.f;
+		m_iCurrentAnimIndex = iIndex;
+	}
+
+	
 }
 
 void CModel::Load_Binary(const _char* pModelFilePath)

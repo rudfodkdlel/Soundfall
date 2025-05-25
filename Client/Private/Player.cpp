@@ -3,6 +3,8 @@
 
 #include "GameInstance.h"
 #include "Model.h"
+#include "Player_State_Idle.h"
+#include "Player_State_Move.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -37,6 +39,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
 
 	m_pModelCom->Set_Animation(m_iAnimnum, true);
+
+	return S_OK;
 }
 
 void CPlayer::Priority_Update(_float fTimeDelta)
@@ -46,12 +50,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 void CPlayer::Update(_float fTimeDelta)
 {
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_N) & 0X80)
-	{
+	Input_Key(fTimeDelta);
 
-		++m_iAnimnum;
-		m_pModelCom->Set_Animation(m_iAnimnum, true);
-	}
+
+
+	if (nullptr != m_pState)
+		m_pState->Update(this, fTimeDelta);
+
+	
+	Look_Mouse();
+
 	bool a = m_pModelCom->Play_Animation(fTimeDelta);
 }
 
@@ -92,6 +100,121 @@ HRESULT CPlayer::Render()
 
 
 	return S_OK;
+}
+
+void CPlayer::Input_Key(_float fTimeDelta)
+{
+	
+	m_vDir = { 0.f,0.f,0.f,0.f };
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	{
+		m_vDir += {-1.f, 0.f, 0.f, 0.f};
+	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+	{
+		m_vDir += {1.f, 0.f, 0.f, 0.f};
+	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	{
+		m_vDir += {0.f, 0.f, 1.f, 0.f};
+	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	{
+		m_vDir += {0.f, 0.f, -1.f, 0.f};
+	}
+	
+	XMVector3Normalize(m_vDir);
+
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	// speed로 변경 필요
+	vPos = vPos + m_vDir * 10.f * fTimeDelta;
+
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	
+	if (XMVector3Equal(m_vDir, XMVectorZero()))
+	{
+		// Idle 상태로 전환
+		if (nullptr == m_pState || dynamic_cast<Player_State_Idle*>(m_pState) == nullptr)
+		{
+			if (nullptr != m_pState)
+			{
+				m_pState->Exit(this);
+				delete m_pState;
+			}
+			m_pState = new Player_State_Idle;
+			m_pState->Enter(this);
+		}
+	}
+	else
+	{
+		if (nullptr == m_pState || dynamic_cast<Player_State_Move*>(m_pState) == nullptr)
+		{
+			if (nullptr != m_pState)
+			{
+				m_pState->Exit(this);
+				delete m_pState;
+			}
+			m_pState = new Player_State_Move;
+			m_pState->Enter(this);
+		}
+	}
+
+	//
+
+
+}
+
+void CPlayer::Look_Mouse()
+{
+	_float4 MousePos = {};
+	_vector vPlanePoint = { 0.f, 0.f, 0.f, 1.f };
+	_vector vDir = { 0.f, 1.f, 0.f, 0.f };
+	MousePos = m_pGameInstance->Get_Mouse_Projection(vPlanePoint, vDir);
+
+	if (MousePos.w != 0.f)
+		m_pTransformCom->LookAt(XMLoadFloat4(&MousePos));
+}
+
+DIR_STATE CPlayer::Calc_Dir()
+{
+	
+	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+	vLook = XMVector3Normalize(vLook);
+
+	if (XMVector3Equal(m_vDir, XMVectorZero()))
+		return NONE;
+
+	_float dot = XMVectorGetX(XMVector3Dot(m_vDir, vLook));
+	_float x = XMVectorGetX(m_vDir);
+
+	// 기준 각도 값
+	const _float COS_45 = 0.707f;
+	const _float COS_135 = -0.707f;
+
+	// 앞
+	if (dot >= COS_45)
+	{
+		if (x > 0)      return FR;
+		else if (x < 0) return FL;
+		else            return F;
+	}
+	// 좌우
+	else if (dot > COS_135)
+	{
+		if (x > 0)      return R;
+		else if (x < 0) return L;
+	}
+	// 뒤
+	else
+	{
+		if (x > 0)      return BR;
+		else if (x < 0) return BL;
+		else            return B;
+	}
+
+
 }
 
 HRESULT CPlayer::Ready_Components()
@@ -142,4 +265,7 @@ void CPlayer::Free()
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+
+	if (nullptr != m_pState)
+		delete m_pState;
 }

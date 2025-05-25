@@ -12,6 +12,7 @@ NS_BEGIN(Client)
 
 class CPlayer final : public CGameObject
 {
+
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& Prototype);
@@ -25,12 +26,26 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	void Input_Key(_float fTimeDelta);
+
+	void Look_Mouse();
+
+	DIR_STATE Calc_Dir();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 
 	CModel* m_pModelCom = { nullptr };
 
 	_uint	m_iAnimnum = { 0 };
+
+	DIR_STATE	m_eDirState = { NONE };
+	
+	class CObject_State* m_pState = {nullptr};
+
+	_vector	m_vDir = {};
+
+
 
 private:
 	HRESULT Ready_Components();

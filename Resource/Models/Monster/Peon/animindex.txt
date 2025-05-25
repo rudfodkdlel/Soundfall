@@ -1,0 +1,12 @@
+0 attack_shove
+1 attack_swipe
+2 idle
+3 hit backward
+4 hit forward
+5 hit left
+6 hit right
+7 run backward
+8 run forward
+9 run left
+10 run right
+11 spawn

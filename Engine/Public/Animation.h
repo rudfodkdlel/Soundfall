@@ -31,6 +31,7 @@ public:
 public:
 	HRESULT Initialize(const ANIM_DESC& eDesc, const vector<class CBone*>& Bones);
 	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop);
+	void  Reset();
 
 private:
 	/* 전체 재생 거리. */
@@ -41,7 +42,7 @@ private:
 
 	/* 이 애니메이션을 표현하기위해서 사용하는 뼈의 갯수 */
 	_uint					m_iNumChannels;
-	vector<CChannel*>	m_Channels;
+	vector<CChannel*>		m_Channels;
 
 public:
 	static CAnimation* Create(const ANIM_DESC& eDesc, const vector<class CBone*>& Bones);

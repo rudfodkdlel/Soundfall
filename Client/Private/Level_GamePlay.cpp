@@ -30,9 +30,16 @@ HRESULT CLevel_GamePlay::Initialize()
 
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome"), &metDesc)))
+		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Base"),
+		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Monster"))))
+		return E_FAIL;
+
+	_float3 vPos = { 5.f, 0.f, 5.f };
+	m_pGameInstance->GetLastObjectFromLayer(static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Monster"))
+		->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&vPos),1.f));
 
 	return S_OK;
 }

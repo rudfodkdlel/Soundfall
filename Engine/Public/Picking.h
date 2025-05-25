@@ -22,7 +22,12 @@ public:
 	_bool Picking_InLocal(_float4& vPickedPos, const _float4& vPointA, const _float4& vPointB, const _float4& vPointC);
 
 	_float4		Get_Mouse_LocalPos() { return m_vLocalMousePos; }
-	_float4		Get_Mouse_WorldPos() { return m_vMousePos; }
+
+	// 법선 벡터를 넣어주자
+	_float4		Get_Mouse_Projection(_vector vPlaneDir, _vector vPlanePoint);
+
+	// 이게 카메라 위치네? 
+	_float4		Get_Camera_WorldPos() { return m_vCameraPos; }
 
 	void Transform_ToLocalSpace(const _float4x4& WorldMatrixInverse);
 
@@ -35,10 +40,13 @@ private:
 	_uint			m_iWinSizeX{}, m_iWinSizeY{};
 
 	_float4			m_vMouseRay = {};
-	_float4			m_vMousePos = {};
+	_float4			m_vCameraPos = {};
 
 	_float4			m_vLocalMouseRay = {};
 	_float4			m_vLocalMousePos = {};
+
+	//
+	_float4			m_vMousePos = {};
 
 public:
 	static CPicking* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, HWND hWnd, _uint iWinSizeX, _uint iWinSizeY);

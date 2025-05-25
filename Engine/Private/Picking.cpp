@@ -1,4 +1,4 @@
-#include "Picking.h"
+Ôªø#include "Picking.h"
 #include "GameInstance.h"
 
 CPicking::CPicking(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -23,10 +23,10 @@ HRESULT CPicking::Initialize(HWND hWnd, _uint iWinSizeX, _uint iWinSizeY)
 void CPicking::Update()
 {
     POINT ptMouse = {};
-    GetCursorPos(&ptMouse);  // øÓøµ√º¡¶ ±‚¡ÿ ƒøº≠ ¿ßƒ°
-    ScreenToClient(m_hWnd, &ptMouse); // ¿©µµøÏ ±‚¡ÿ¿∏∑Œ ∫Ø»Ø (≈¨∂Û¿Ãæ∆Æ ¡¬«•∞Ë)
+    GetCursorPos(&ptMouse);  // Ïö¥ÏòÅÏ≤¥Ï†ú Í∏∞Ï§Ä Ïª§ÏÑú ÏúÑÏπò
+    ScreenToClient(m_hWnd, &ptMouse); // ÏúàÎèÑÏö∞ Í∏∞Ï§ÄÏúºÎ°ú Î≥ÄÌôò (ÌÅ¥ÎùºÏù¥Ïñ∏Ìä∏ Ï¢åÌëúÍ≥Ñ)
 
-    /*2. ≈ıøµΩ∫∆‰¿ÃΩ∫∑Œ ø≈±‚¿⁄. ∑Œƒ√¿ßƒ° * ø˘µÂ«‡∑ƒ * ∫‰«‡∑ƒ * ≈ıøµ«‡∑ƒ * 1/w */
+    /*2. Ìà¨ÏòÅÏä§ÌéòÏù¥Ïä§Î°ú ÏòÆÍ∏∞Ïûê. Î°úÏª¨ÏúÑÏπò * ÏõîÎìúÌñâÎ†¨ * Î∑∞ÌñâÎ†¨ * Ìà¨ÏòÅÌñâÎ†¨ * 1/w */
     _float4			vPosition = { };
 
     vPosition.x = ptMouse.x / (m_iWinSizeX * 0.5f) - 1.f;
@@ -34,14 +34,14 @@ void CPicking::Update()
     vPosition.z = 0.0f;
     vPosition.w = 1.f;
 
-    // ≈ıøµ ø™∫Ø»Ø
+    // Ìà¨ÏòÅ Ïó≠Î≥ÄÌôò
     XMStoreFloat4(&m_vMouseRay, XMVector4Transform(XMLoadFloat4(&vPosition), m_pGameInstance->Get_Transform_Matrix_Inverse(D3DTS::PROJ)));
-    m_vMousePos = _float4(0.f, 0.f, 0.f, 1.f);
+    m_vCameraPos = _float4(0.f, 0.f, 0.f, 1.f);
 
-    // ƒ´∏ﬁ∂Û ¿ßƒ°
-    XMStoreFloat4(&m_vMousePos, (XMVector3TransformCoord(XMLoadFloat4(&m_vMousePos), m_pGameInstance->Get_Transform_Matrix_Inverse(D3DTS::VIEW))));
+    // Ïπ¥Î©îÎùº ÏúÑÏπò
+    XMStoreFloat4(&m_vCameraPos, (XMVector3TransformCoord(XMLoadFloat4(&m_vCameraPos), m_pGameInstance->Get_Transform_Matrix_Inverse(D3DTS::VIEW))));
 
-    // πÊ«‚ ±∏«œ∞Ì ¡§±‘»≠
+    // Î∞©Ìñ• Íµ¨ÌïòÍ≥† Ï†ïÍ∑úÌôî
     XMStoreFloat4(&m_vMouseRay, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat4(&m_vMouseRay), m_pGameInstance->Get_Transform_Matrix_Inverse(D3DTS::VIEW))));
 }
 
@@ -52,7 +52,7 @@ _bool CPicking::Picking_InWorld(_float4& vPickedPos, const _float4& vPointA, con
     XMVECTOR vB = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&vPointB));
     XMVECTOR vC = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&vPointC));
 
-    XMVECTOR rayStartPos = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_vMousePos));
+    XMVECTOR rayStartPos = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_vCameraPos));
     XMVECTOR rayDir = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_vMouseRay));
 
     float fDist = 0.f;
@@ -90,10 +90,37 @@ _bool CPicking::Picking_InLocal(_float4& vPickedPos, const _float4& vPointA, con
     return hit ? true : false;
 }
 
+_float4 CPicking::Get_Mouse_Projection(_vector vPlanePoint, _vector vPlaneNormal)
+{
+    _vector vRayOrigin = XMLoadFloat4(&m_vCameraPos);     // Í¥ëÏÑ† ÏãúÏûëÏ†ê (Ïπ¥Î©îÎùº)
+    _vector vRayDir = XMVector3Normalize(XMLoadFloat4(&m_vMouseRay));    // Í¥ëÏÑ† Î∞©Ìñ•
+
+    // Î≤ïÏÑ† ‚Ä¢ Î∞©Ìñ•Î≤°ÌÑ∞Í∞Ä 0Ïù¥Î©¥ ÌèâÌñâ
+    float denom = XMVectorGetX(XMVector3Dot(vRayDir, vPlaneNormal));
+    if (fabsf(denom) < 1e-6f)
+        return _float4(0.f, 0.f, 0.f, 0.f); // ÍµêÏ∞® ÏóÜÏùå
+
+    // t = ((ÌèâÎ©¥Ï†ê - Í¥ëÏÑ†ÏãúÏûëÏ†ê) ‚Ä¢ Î≤ïÏÑ†) / (Í¥ëÏÑ†Î∞©Ìñ• ‚Ä¢ Î≤ïÏÑ†)
+    float t = XMVectorGetX(
+        XMVector3Dot(vPlanePoint - vRayOrigin, vPlaneNormal)
+    ) / denom;
+
+    if (t < 0.f)
+        return _float4(0.f, 0.f, 0.f, 0.f); // ÌèâÎ©¥ Îí§Ïóê ÍµêÏ†ê
+
+    _vector vIntersection = vRayOrigin + vRayDir * t;
+
+    _float4 result;
+    XMStoreFloat4(&result, vIntersection);
+    result.w = 1.f;
+    return result;
+}
+
+
 void CPicking::Transform_ToLocalSpace(const _float4x4& WorldMatrixInverse)
 {
    
-    XMStoreFloat4(&m_vLocalMousePos, (XMVector3TransformCoord(XMLoadFloat4(&m_vMousePos), XMLoadFloat4x4(&WorldMatrixInverse))));
+    XMStoreFloat4(&m_vLocalMousePos, (XMVector3TransformCoord(XMLoadFloat4(&m_vCameraPos), XMLoadFloat4x4(&WorldMatrixInverse))));
     XMStoreFloat4(&m_vLocalMouseRay, (XMVector3TransformNormal(XMLoadFloat4(&m_vMouseRay), XMLoadFloat4x4(&WorldMatrixInverse))));
 }
 
