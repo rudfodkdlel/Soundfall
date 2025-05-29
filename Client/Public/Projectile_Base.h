@@ -15,10 +15,10 @@ class CProjectile_Base abstract : public CGameObject
 public:
 	typedef struct tagProjectileDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		
-		_float3 vDir;
+
+		_float4 vDir;
 		// 만드는 객체마다 색이 다름
-		_float3 m_vColor;
+		_float4 m_vColor;
 	}PROJECTILE_DESC;
 
 protected:

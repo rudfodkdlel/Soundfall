@@ -30,8 +30,11 @@ void CLayer::Priority_Update(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
 	{
-		if (nullptr != pGameObject)
+		if (nullptr != pGameObject && false == pGameObject->Get_Dead())
 			pGameObject->Priority_Update(fTimeDelta);
+
+		if (nullptr != pGameObject && pGameObject->Get_Dead())
+			Safe_Release(pGameObject);
 
 	}
 		
@@ -41,9 +44,11 @@ void CLayer::Update(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
 	{
-		if (nullptr != pGameObject)
+		if (nullptr != pGameObject && false == pGameObject->Get_Dead())
 			pGameObject->Update(fTimeDelta);
 
+		if (nullptr != pGameObject && pGameObject->Get_Dead())
+			Safe_Release(pGameObject);
 	}
 }
 
@@ -51,9 +56,11 @@ void CLayer::Late_Update(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
 	{
-		if (nullptr != pGameObject)
+		if (nullptr != pGameObject && false == pGameObject->Get_Dead())
 			pGameObject->Late_Update(fTimeDelta);
 
+		if (nullptr != pGameObject && pGameObject->Get_Dead())
+			Safe_Release(pGameObject);
 	}
 }
 

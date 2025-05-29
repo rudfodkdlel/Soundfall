@@ -17,6 +17,8 @@ public:
 	HRESULT Add_Timer(const _wstring& strTimerTag);
 	void Update(const _wstring& strTimerTag);
 
+	void Delete_Timer(const _wstring& strTimerTag) { m_Timers.erase(strTimerTag); }
+
 
 private:
 	map<const _wstring, class CTimer*>			m_Timers;

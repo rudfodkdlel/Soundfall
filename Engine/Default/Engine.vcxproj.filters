@@ -133,6 +133,18 @@
     <ClInclude Include="..\public\Channel.h">
       <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PartObject.h">
+      <Filter>01.Utility\03.GameObject\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ContainerObject.h">
+      <Filter>01.Utility\03.GameObject\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer.h">
+      <Filter>01.Utility\06. Observer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Manager.h">
+      <Filter>01.Utility\06. Observer\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -251,6 +263,18 @@
     </ClCompile>
     <ClCompile Include="..\private\Channel.cpp">
       <Filter>01.Utility\04.Components\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PartObject.cpp">
+      <Filter>01.Utility\03.GameObject\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ContainerObject.cpp">
+      <Filter>01.Utility\03.GameObject\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer.cpp">
+      <Filter>01.Utility\06. Observer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Manager.cpp">
+      <Filter>01.Utility\06. Observer\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -376,6 +400,12 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\Model\Animation\Channel">
       <UniqueIdentifier>{b4f84a52-8dc2-4fa7-95ee-1a6c89e1846f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\06. Observer">
+      <UniqueIdentifier>{f104e21c-34e8-48ad-9210-a8de6f7b5bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\06. Observer\Manager">
+      <UniqueIdentifier>{72a62cf3-1bda-49e4-adcc-bc4459979482}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

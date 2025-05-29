@@ -69,6 +69,14 @@ public:
 	_byte	Get_DIKeyState(_ubyte byKeyID);
 	_byte	Get_DIMouseState(DIM eMouse);
 	_long	Get_DIMouseMove(DIMM eMouseState);
+	_bool Is_NoKeyPressed();
+	_bool Key_Pressing(_ubyte byKeyID);
+	_bool Key_Pressing(DIM eMouse);
+	_bool Key_Down(_ubyte byKeyID);
+	_bool Key_Down(DIM eMouse);
+	_bool Key_Up(_ubyte byKeyID);
+	_bool Key_Up(DIM eMouse);
+	
 #pragma endregion
 //
 #pragma region PICKING
@@ -81,6 +89,13 @@ public:
 	_float4		Get_Mouse_Projection(_vector vPlanePoint, _vector vPlaneNormal);
 #pragma endregion
 
+#pragma region OBSERVER_MANAGER
+	HRESULT Add_Observer(const _wstring strTag, class CObserver* pObserver);
+	HRESULT Remove_Observer(const _wstring strTag);
+	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData = nullptr);
+	CObserver* Find_Observer(const _wstring& strTag);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -91,6 +106,7 @@ private:
 	class CTimer_Manager*		m_pTimer_Manager = { nullptr };
 	class CPipeLine*			m_pPipeLine = { nullptr };
 	class CPicking*				m_pPicking = { nullptr };
+	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 
 public:
 	void Release_Engine();

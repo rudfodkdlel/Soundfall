@@ -11,13 +11,13 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CProjecttile_Monster final : public CProjectile_Base
+class CProjectile_Monster final : public CProjectile_Base
 {
 
 private:
-	CProjecttile_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CProjecttile_Monster(const CProjecttile_Monster& Prototype);
-	virtual ~CProjecttile_Monster() = default;
+	CProjectile_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CProjectile_Monster(const CProjectile_Monster& Prototype);
+	virtual ~CProjectile_Monster() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -33,7 +33,7 @@ private:
 	HRESULT Ready_Components();
 
 public:
-	static CProjecttile_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CProjectile_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 

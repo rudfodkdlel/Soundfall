@@ -1,22 +1,22 @@
 #include "Projectile_Monster.h"
 #include "GameInstance.h"
 
-CProjecttile_Monster::CProjecttile_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CProjectile_Monster::CProjectile_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CProjectile_Base(pDevice, pContext)
 {
 }
 
-CProjecttile_Monster::CProjecttile_Monster(const CProjecttile_Monster& Prototype)
+CProjectile_Monster::CProjectile_Monster(const CProjectile_Monster& Prototype)
     :CProjectile_Base(Prototype)
 {
 }
 
-HRESULT CProjecttile_Monster::Initialize_Prototype()
+HRESULT CProjectile_Monster::Initialize_Prototype()
 {
     return S_OK;
 }
 
-HRESULT CProjecttile_Monster::Initialize(void* pArg)
+HRESULT CProjectile_Monster::Initialize(void* pArg)
 {
     if (pArg == nullptr)
         return S_OK;
@@ -30,12 +30,12 @@ HRESULT CProjecttile_Monster::Initialize(void* pArg)
     return S_OK;
 }
 
-void CProjecttile_Monster::Priority_Update(_float fTimeDelta)
+void CProjectile_Monster::Priority_Update(_float fTimeDelta)
 {
 	// 삭제할 기준 만들어야됨?
 }
 
-void CProjecttile_Monster::Update(_float fTimeDelta)
+void CProjectile_Monster::Update(_float fTimeDelta)
 {
     // 이동하는 기능 추가
 
@@ -44,12 +44,12 @@ void CProjecttile_Monster::Update(_float fTimeDelta)
 	__super::Billboarding();
 }
 
-void CProjecttile_Monster::Late_Update(_float fTimeDelta)
+void CProjectile_Monster::Late_Update(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
-HRESULT CProjecttile_Monster::Render()
+HRESULT CProjectile_Monster::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -76,14 +76,14 @@ HRESULT CProjecttile_Monster::Render()
 }
 
 
-HRESULT CProjecttile_Monster::Ready_Components()
+HRESULT CProjectile_Monster::Ready_Components()
 {
     return S_OK;
 }
 
-CProjecttile_Monster* CProjecttile_Monster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CProjectile_Monster* CProjectile_Monster::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CProjecttile_Monster* pInstance = new CProjecttile_Monster(pDevice, pContext);
+	CProjectile_Monster* pInstance = new CProjectile_Monster(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -94,9 +94,9 @@ CProjecttile_Monster* CProjecttile_Monster::Create(ID3D11Device* pDevice, ID3D11
 	return pInstance;
 }
 
-CGameObject* CProjecttile_Monster::Clone(void* pArg)
+CGameObject* CProjectile_Monster::Clone(void* pArg)
 {
-	CProjecttile_Monster* pInstance = new CProjecttile_Monster(*this);
+	CProjectile_Monster* pInstance = new CProjectile_Monster(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -107,7 +107,7 @@ CGameObject* CProjecttile_Monster::Clone(void* pArg)
 	return pInstance;
 }
 
-void CProjecttile_Monster::Free()
+void CProjectile_Monster::Free()
 {
 	__super::Free();
 }

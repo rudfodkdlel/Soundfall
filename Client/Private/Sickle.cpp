@@ -1,0 +1,113 @@
+#include "Sickle.h"
+#include "GameInstance.h"
+
+CSickle::CSickle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    :CWeapon_Base{ pDevice, pContext }
+{
+}
+
+CSickle::CSickle(const CSickle& Prototype)
+    :CWeapon_Base{ Prototype }
+{
+}
+
+HRESULT CSickle::Initialize_Prototype()
+{
+    return S_OK;
+}
+
+HRESULT CSickle::Initialize(void* pArg)
+{
+    if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
+
+    if (FAILED(Ready_Components()))
+        return E_FAIL;
+
+    //m_pTransformCom->Scaling(1.25f, 1.25f, 1.25f);
+    _fvector vDir = { 1.f,0.f,0.f,0.f };
+    m_pTransformCom->Rotation(vDir, XMConvertToRadians(-90.f));
+
+    m_eWeaponType = WEAPON::SICKLE;
+
+ 
+
+    return S_OK;
+}
+
+void CSickle::Priority_Update(_float fTimeDelta)
+{
+}
+
+void CSickle::Update(_float fTimeDelta)
+{
+}
+
+void CSickle::Late_Update(_float fTimeDelta)
+{
+    __super::Late_Update(fTimeDelta);
+}
+
+HRESULT CSickle::Render()
+{
+    __super::Render();
+
+    return S_OK;
+}
+
+void CSickle::Attack()
+{
+    // 키로 나눠서 좀 생성하도록?
+}
+
+HRESULT CSickle::Ready_Components()
+{
+    /* For.Com_Shader */
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
+        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+        return E_FAIL;
+
+    /* For.Com_Model */
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Sickle"),
+        TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CSickle::Bind_ShaderResources()
+{
+    return S_OK;
+}
+
+CSickle* CSickle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+    CSickle* pInstance = new CSickle(pDevice, pContext);
+
+    if (FAILED(pInstance->Initialize_Prototype()))
+    {
+        MSG_BOX("Failed to Created : CSickle");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+CGameObject* CSickle::Clone(void* pArg)
+{
+    CSickle* pInstance = new CSickle(*this);
+
+    if (FAILED(pInstance->Initialize(pArg)))
+    {
+        MSG_BOX("Failed to Cloned : CSickle");
+        Safe_Release(pInstance);
+    }
+
+    return pInstance;
+}
+
+void CSickle::Free()
+{
+    __super::Free();
+
+}

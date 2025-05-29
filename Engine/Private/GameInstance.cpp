@@ -9,6 +9,8 @@
 #include "Graphic_Device.h"
 #include "Object_Manager.h"
 #include "Prototype_Manager.h"
+#include "Observer_Manager.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -55,7 +57,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pPicking)
 		return E_FAIL;
 
-
+	m_pObserver_Manager = CObserver_Manager::Create();
+	if (nullptr == m_pObserver_Manager)
+		return E_FAIL;
 
 
 	return S_OK;
@@ -252,6 +256,41 @@ _long CGameInstance::Get_DIMouseMove(DIMM eMouseState)
 	return m_pInput_Device->Get_DIMouseMove(eMouseState);
 }
 
+_bool CGameInstance::Is_NoKeyPressed()
+{
+	return m_pInput_Device->Is_NoKeyPressed();
+}
+
+_bool CGameInstance::Key_Pressing(_ubyte byKeyID)
+{
+	return m_pInput_Device->Key_Pressing(byKeyID);
+}
+
+_bool CGameInstance::Key_Pressing(DIM eMouse)
+{
+	return m_pInput_Device->Key_Pressing(eMouse);
+}
+
+_bool CGameInstance::Key_Down(_ubyte byKeyID)
+{
+	return m_pInput_Device->Key_Down(byKeyID);
+}
+
+_bool CGameInstance::Key_Down(DIM eMouse)
+{
+	return m_pInput_Device->Key_Down(eMouse);
+}
+
+_bool CGameInstance::Key_Up(_ubyte byKeyID)
+{
+	return m_pInput_Device->Key_Up(byKeyID);
+}
+
+_bool CGameInstance::Key_Up(DIM eMouse)
+{
+	return m_pInput_Device->Key_Up(eMouse);
+}
+
 #pragma endregion
 #pragma region PICKING
 void CGameInstance::Transform_Picking_ToLocalSpace(const _float4x4& WorldMatrixInverse)
@@ -282,6 +321,26 @@ _float4 CGameInstance::Get_Mouse_Projection(_vector vPlanePoint, _vector vPlaneN
 	return m_pPicking->Get_Mouse_Projection(vPlanePoint, vPlaneNormal);
 }
 
+HRESULT CGameInstance::Add_Observer(const _wstring strTag, CObserver* pObserver)
+{
+	return m_pObserver_Manager->Add_Observer(strTag, pObserver);
+}
+
+HRESULT CGameInstance::Remove_Observer(const _wstring strTag)
+{
+	return m_pObserver_Manager->Remove_Observer(strTag);
+}
+
+void CGameInstance::Notify(const _wstring& strTag, const _wstring& eventType, void* pData)
+{
+	m_pObserver_Manager->Notify(strTag, eventType, pData);
+}
+
+CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
+{
+	return m_pObserver_Manager->Find_Observer(strTag);
+}
+
 #pragma endregion
 
 void CGameInstance::Release_Engine()
@@ -299,6 +358,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pPrototype_Manager);
 
 	Safe_Release(m_pLevel_Manager);
+
+	Safe_Release(m_pObserver_Manager);
 
 	Safe_Release(m_pInput_Device);
 

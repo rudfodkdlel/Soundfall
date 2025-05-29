@@ -31,6 +31,8 @@ HRESULT CProjectile_Base::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&pDesc->vPos));
+
 	return S_OK;
 }
 
@@ -40,6 +42,7 @@ void CProjectile_Base::Priority_Update(_float fTimeDelta)
 
 void CProjectile_Base::Update(_float fTimeDelta)
 {
+	Billboarding();
 }
 
 void CProjectile_Base::Late_Update(_float fTimeDelta)

@@ -26,6 +26,8 @@ public:
 		m_isLoop = isLoop;
 	}
 
+	const _float4x4* Get_BoneMatrix(const _char* pBoneName) const;
+
 public:
 
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iMeshIndex, _int eType, _uint iTextureIndex = 0);

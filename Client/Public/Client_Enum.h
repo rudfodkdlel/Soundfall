@@ -3,11 +3,14 @@
 
 namespace Client
 {
-	enum class LEVEL { STATIC, LOADING, LOGO, GAMEPLAY, EDIT, END };
+	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, BOSS, EDIT, END };
 
-	// 공통
-	// 플레이어는 마우스 terrain에 투영시킨 위치 바라보게
-	// 몬스터는 플레이어 바라보게
+	enum class PART_DEFAULT { BODY, WEAPON, EFFECT, END };
+	
+	enum class ANIMSTATE {ANIM_IN, ANIM_LOOP, ANIM_OUT};
+
+	enum class OBJTYPE { PLAYER, MOSNTER, END };
+
 	typedef enum  eDirState {
 		NONE = 0, // idle 일때
 		F = 0b0001, B = 0b0010, L = 0b0100, R = 0b1000,
@@ -18,12 +21,13 @@ namespace Client
 	enum class ATTACK { ATTACK_IN, ATTACK_LOOP, ATTACK_OUT, END };
 
 	// 플레이어 용
-	enum class PLAYER { IDLE, RUN, DASH, ATTACK, HIT, SPWAN };
-	enum class WEAPON { ASSAULT, BAZOOKA, GUITAR, KEYBOARD };
+	enum class STATE_MAIN { IDLE, MOVE, DASH, ATTACK, HIT, STUN, CHANGE , DEAD, SPWAN };
+	enum class STATE_SUB {NONE, MOVEABLE, CHARGE, COMBO, ULT};
+	enum class WEAPON { ASSAULT, BAZOOKA, GUITAR, KEYBOARD, AXE, SICKLE, END };
 	enum class TIMING { BAD, GOOD, END };
 
 	// 몬스터
-	enum class MONSTER { IDLE, RUN, ATTACK, HIT, DEAD };
+	enum class MONSTER { IDLE, MOVE, ATTACK, HIT, DEAD };
 
 }
 

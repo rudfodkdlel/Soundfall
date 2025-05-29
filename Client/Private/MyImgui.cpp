@@ -67,8 +67,15 @@ void CMyImgui::Update(_float fTimeDelta)
 {
 	bool bCurrentLeftDown = (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80) != 0;
 	// 이제 피킹하는거? 
+	
 	if (bCurrentLeftDown && !bPrevLeftDown)
 	{
+		if (ImGui::IsAnyItemHovered())
+		{
+			bPrevLeftDown = bCurrentLeftDown;
+			return;
+		}
+			
 		// 마우스랑 가장 가까운
 		_float		vMinDist = FLT_MAX;
 		if (!m_bCheckGrid)
@@ -76,6 +83,8 @@ void CMyImgui::Update(_float fTimeDelta)
 			
 			for (auto& object : m_pObjects)
 			{
+				if (nullptr == object || object->Get_Dead())
+					continue;
 				_float4 vTemp;
 				_float4x4 worldInverse;
 				XMStoreFloat4x4(&worldInverse, object->Get_Transform()->Get_WorldMatrix_Inverse());
@@ -160,6 +169,9 @@ void CMyImgui::Render_Create_Window()
 		if (ImGui::Button("Delete Object"))
 		{
 			// 지우는 로직 추가
+			if(nullptr != m_pPickingObject)
+				m_pPickingObject->Set_Dead();
+			
 		}
 	}
 	ImGui::End();
@@ -184,7 +196,7 @@ void CMyImgui::Render_Create_Window()
 
 	if (ImGui::Button("Create")) {
 		CGameObject::GAMEOBJECT_DESC pDesc = {};
-		pDesc.vPos = { 0.f, 0.f, 0.f };
+		pDesc.vPos = { 0.f, 0.f, 0.f,1.f };
 
 		if (!m_strSelectKey.empty())
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), m_strSelectKey,
@@ -223,6 +235,9 @@ void CMyImgui::Render_Create_Window()
 
 void CMyImgui::Render_Gizmo()
 {
+	if (m_pPickingObject == nullptr || m_pPickingObject->Get_Dead())
+		return;
+
 	if (ImGui::Begin("Gizmo Control"))
 	{
 		if (ImGui::RadioButton("Translate", m_currentOperation == ImGuizmo::TRANSLATE))
@@ -236,8 +251,7 @@ void CMyImgui::Render_Gizmo()
 	}
 	ImGui::End();
 
-	if (m_pPickingObject == nullptr)
-		return;
+	
 
 	ImGuizmo::BeginFrame();
 	ImGuizmo::SetOrthographic(false);
@@ -337,7 +351,7 @@ void CMyImgui::Load_Data(const char* pFliePath)
 	for (auto& desc : m_ObjectDescs)
 	{
 		CGameObject::GAMEOBJECT_DESC pDesc = {};
-		pDesc.vPos = { 0.f, 0.f, 0.f };
+		pDesc.vPos = { 0.f, 0.f, 0.f,1.f };
 		HRESULT hr = m_pGameInstance->Add_GameObject(desc.PrototypeLevelIndex, desc.szPrototypetag, ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"),&pDesc);
 
 		if (hr < 0)

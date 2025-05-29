@@ -153,11 +153,16 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Axe.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Body_Discord.h" />
+    <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\public\Camera_TopDown.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\public\Discord.h" />
+    <ClInclude Include="..\public\Keyboard.h" />
     <ClInclude Include="..\public\Level_Edit.h" />
     <ClInclude Include="..\public\Metronome.h" />
     <ClInclude Include="..\Public\Metronome_Counter.h" />
@@ -169,22 +174,42 @@
     <ClInclude Include="..\public\Monster_Base.h" />
     <ClInclude Include="..\public\MyImgui.h" />
     <ClInclude Include="..\public\Object_State.h" />
+    <ClInclude Include="..\public\Object_State_Spawn.h" />
+    <ClInclude Include="..\public\Observer_Animation.h" />
+    <ClInclude Include="..\public\Observer_Phase.h" />
+    <ClInclude Include="..\public\Observer_State.h" />
+    <ClInclude Include="..\public\Player_State_Attack.h" />
+    <ClInclude Include="..\public\Player_State_Change.h" />
+    <ClInclude Include="..\public\Player_State_Charge.h" />
+    <ClInclude Include="..\public\Player_State_Combo.h" />
+    <ClInclude Include="..\public\Player_State_Dash.h" />
+    <ClInclude Include="..\Public\Player_State_Define.h" />
     <ClInclude Include="..\public\Player_State_Idle.h" />
     <ClInclude Include="..\public\Player.h" />
+    <ClInclude Include="..\public\Player_State_ULT.h" />
     <ClInclude Include="..\public\Player_State_Move.h" />
     <ClInclude Include="..\public\Projectile_Base.h" />
     <ClInclude Include="..\public\Projectile_Monster.h" />
+    <ClInclude Include="..\public\Projectile_Player.h" />
+    <ClInclude Include="..\public\Rifle.h" />
+    <ClInclude Include="..\public\Sickle.h" />
     <ClInclude Include="..\public\Structure.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\Weapon_Base.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Axe.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\private\Body_Discord.cpp" />
+    <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Camera_TopDown.cpp" />
+    <ClCompile Include="..\private\Discord.cpp" />
+    <ClCompile Include="..\private\Keyboard.cpp" />
     <ClCompile Include="..\private\Level_Edit.cpp" />
     <ClCompile Include="..\private\Metronome.cpp" />
     <ClCompile Include="..\private\Metronome_Counter.cpp" />
@@ -196,13 +221,27 @@
     <ClCompile Include="..\private\Monster_Base.cpp" />
     <ClCompile Include="..\private\MyImgui.cpp" />
     <ClCompile Include="..\private\Object_State.cpp" />
+    <ClCompile Include="..\private\Object_State_Spawn.cpp" />
+    <ClCompile Include="..\private\Observer_Animation.cpp" />
+    <ClCompile Include="..\private\Observer_Phase.cpp" />
+    <ClCompile Include="..\private\Observer_State.cpp" />
+    <ClCompile Include="..\Private\Player_State_Attack.cpp" />
+    <ClCompile Include="..\private\Player_State_Change.cpp" />
+    <ClCompile Include="..\private\Player_State_Charge.cpp" />
+    <ClCompile Include="..\private\Player_State_Combo.cpp" />
+    <ClCompile Include="..\private\Player_State_Dash.cpp" />
     <ClCompile Include="..\private\Player_State_Idle.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
+    <ClCompile Include="..\private\Player_State_ULT.cpp" />
     <ClCompile Include="..\private\Player_State_Move.cpp" />
     <ClCompile Include="..\private\Projectile_Base.cpp" />
     <ClCompile Include="..\private\Projectile_Monster.cpp" />
+    <ClCompile Include="..\private\Projectile_Player.cpp" />
+    <ClCompile Include="..\private\Rifle.cpp" />
+    <ClCompile Include="..\private\Sickle.cpp" />
     <ClCompile Include="..\private\Structure.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\Weapon_Base.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -3,15 +3,16 @@
 
 NS_BEGIN(Client)
 
-class Player_State_Idle : public CObject_State
+class CPlayer_State_Idle : public CObject_State
 {
 public:
-	virtual ~Player_State_Idle() = default;
+	virtual ~CPlayer_State_Idle() = default;
 public:
 	// CObject_State을(를) 통해 상속됨
-	void Enter(CGameObject* pObj) override;
+	void Enter(CGameObject* pObj, OBJTYPE eType) override;
 	void Update(CGameObject* pObj, float fTimeDelta) override;
 	void Exit(CGameObject* pObj) override;
+	CObject_State* Check_Transition(CGameObject* pObj) override;
 };
 
 NS_END

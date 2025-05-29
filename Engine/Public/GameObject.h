@@ -9,9 +9,21 @@ class ENGINE_DLL CGameObject abstract : public CBase
 public:
 	typedef struct tagGameObjectDesc : public CTransform::TRANSFORM_DESC
 	{
-		_float3		vPos;
+		_float4		vPos;
+		_int		iProtoIndex;
+		_wstring    strPrototag;
 		_tchar		szName[MAX_PATH];
 	}GAMEOBJECT_DESC;
+
+	OBJECT_SAVE_DESC Get_Save_Desc()
+	{
+		OBJECT_SAVE_DESC eDesc = {};
+		eDesc.szPrototypetag = m_strProtoTag;
+		eDesc.PrototypeLevelIndex = m_iProtoIndex;
+		memcpy(&eDesc.matWorld,m_pTransformCom->Get_WorldMatrix(), sizeof(_float4x4));
+		
+		return eDesc;
+	}
 
 protected:
 	CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -22,6 +34,8 @@ public:
 	CComponent* Get_Component(const _wstring& strComponentTag);
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+	void        Set_Dead() { m_bDead = true; }
+	_bool		Get_Dead() { return m_bDead; }
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -43,6 +57,10 @@ protected:
 	_tchar										m_szName[MAX_PATH] = {};
 	map<const _wstring, class CComponent*>		m_Components;
 	class CTransform*							m_pTransformCom = { nullptr };
+	_bool										m_bDead = { false };
+
+	_wstring									m_strProtoTag = {};
+	_int										m_iProtoIndex = {};
 
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

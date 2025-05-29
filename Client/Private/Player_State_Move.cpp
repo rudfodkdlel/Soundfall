@@ -1,47 +1,57 @@
 #include "Player_State_Move.h"
 #include "Player.h"
 #include "Model.h"
+#include "Player_State_Idle.h"
+#include "Player_State_Dash.h"
+#include "Player_State_Attack.h"
 
-void Player_State_Move::Enter(CGameObject* pObj)
+
+void CPlayer_State_Move::Enter(CGameObject* pObj, OBJTYPE eType)
 {
+	__super::Enter(pObj, eType);
+	m_pModel = static_cast<CPlayer*>(pObj)->Get_BodyModel();
+	Safe_AddRef(m_pModel);
+
 }
 
-void Player_State_Move::Update(CGameObject* pObj, float fTimeDelta)
+void CPlayer_State_Move::Update(CGameObject* pObj, float fTimeDelta)
 {
-	CModel* pModel = static_cast<CModel*>(pObj->Get_Component(TEXT("Com_Model")));
+	static_cast<CPlayer*>(pObj)->Move_Pos(m_vDir, fTimeDelta);
 
-	switch (static_cast<CPlayer*>(pObj)->Calc_Dir())
+	DIR_STATE eDirState = static_cast<CPlayer*>(pObj)->Calc_Dir(m_vDir);
+	CWeapon_Base* pWeapon = static_cast<CPlayer*>(pObj)->Get_Range_Weapon();
+
+	m_pModel->Set_Animation(pWeapon->Get_DirMap()[eDirState], true);
+
+	m_vDir = { 0.f,0.f,0.f,0.f };
+
+}
+	
+
+void CPlayer_State_Move::Exit(CGameObject* pObj)
+{
+	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pModel);
+}
+
+CObject_State* CPlayer_State_Move::Check_Transition(CGameObject* pObj)
+{
+	
+	if (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80)
 	{
-	case F:
-		pModel->Set_Animation(10, true);
-		break;
-	case B:
-		pModel->Set_Animation(9, true);
-		break;
-	case L:
-		pModel->Set_Animation(54, true);
-		break;
-	case R:
-		pModel->Set_Animation(55, true);
-		break;
-	case FL:
-		pModel->Set_Animation(52, true);
-		break;
-	case FR:
-		pModel->Set_Animation(53, true);
-		break;
-	case BL:
-		pModel->Set_Animation(50, true);
-		break;
-	case BR:
-		pModel->Set_Animation(51, true);
-		break;
-
-	default:
-		break;
+		
+		return new CPlayer_State_Attack;
 	}
-}
+	else if (m_pGameInstance->Is_NoKeyPressed())
+	{
+		return new CPlayer_State_Idle;
+	}
+	else if (m_pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
+	{
+		
+		return new CPlayer_State_Dash;
+	}
 
-void Player_State_Move::Exit(CGameObject* pObj)
-{
+	
+	return nullptr;
 }

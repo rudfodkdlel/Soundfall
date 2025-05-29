@@ -38,11 +38,14 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void* pArg)
 {
-	if (nullptr == pArg)
+  	if (nullptr == pArg)
 		return S_OK;
 
 	GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);	
 	lstrcpy(m_szName, pDesc->szName);
+
+	m_iProtoIndex = pDesc->iProtoIndex;
+	m_strProtoTag = pDesc->strPrototag;
 
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTransformCom)
@@ -82,8 +85,12 @@ HRESULT CGameObject::Render()
 
 void CGameObject::Billboarding()
 {
+	_float4 vPos = *m_pGameInstance->Get_CamPosition();
+	_vector vPos1 = XMLoadFloat4(&vPos);
 
+	vPos1 *= {-1.f, -1.f, -1.f, 1.f};
 	
+	m_pTransformCom->LookAt(vPos1);
 
 }
 

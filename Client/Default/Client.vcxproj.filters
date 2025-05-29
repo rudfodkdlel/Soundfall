@@ -88,11 +88,89 @@
     <Filter Include="02.GameObjects\06. State\Player">
       <UniqueIdentifier>{da7b7daa-fc0a-4907-a8df-98b3955beb9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06. State\Idle">
+    <Filter Include="02.GameObjects\06. State\Base">
+      <UniqueIdentifier>{012ed0e9-d5db-4dd3-bffb-c28e41c13ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Discord">
+      <UniqueIdentifier>{90ee3e00-f712-42d6-998f-005530c7413b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Attack">
+      <UniqueIdentifier>{db167966-b964-4d20-9196-e87974d44a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Attack\Combo">
+      <UniqueIdentifier>{1a55f90b-47d1-4b46-901c-3dc32ada5d03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Attack\Charge">
+      <UniqueIdentifier>{d1589118-2964-48e8-8f73-1b90f75ba1d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Attack\ULT">
+      <UniqueIdentifier>{635508cc-26ce-46ff-9435-7118062b6074}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Move">
+      <UniqueIdentifier>{a5740016-7562-4498-b0fa-40aedc2bb023}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Idle">
       <UniqueIdentifier>{e39acbca-ced3-488f-b97b-c7cdbc1f01b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06. State\Move">
-      <UniqueIdentifier>{a5740016-7562-4498-b0fa-40aedc2bb023}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\06. State\Player\Dash">
+      <UniqueIdentifier>{c4a1f392-8fe8-4c88-ab95-b92eebdf403a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Global">
+      <UniqueIdentifier>{088179b1-a7ed-4bf0-aa37-aa5f86bf2565}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Global\Spawn">
+      <UniqueIdentifier>{a1bfac3e-6064-48d4-b55d-8a0e037c0d69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Hit">
+      <UniqueIdentifier>{6347be5a-639e-4010-8c23-44cfa00401db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Discord\Body">
+      <UniqueIdentifier>{66aaa0e4-0487-4a67-b2c6-7e625c77f3ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers">
+      <UniqueIdentifier>{b0a4664f-a326-45ef-877c-e8d39a422aa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\Hp">
+      <UniqueIdentifier>{159b0d8b-5a65-4055-b9be-9123d1f537de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\State">
+      <UniqueIdentifier>{ace82525-280f-4865-b432-dc4538d24932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\Phase">
+      <UniqueIdentifier>{ef3f7012-b96a-48a5-848a-14da8e7c4c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\Animation">
+      <UniqueIdentifier>{774f506d-86b0-4ed8-b71a-2a5d9a6af16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon">
+      <UniqueIdentifier>{69c23f0e-f154-413e-8ff8-bcd2c4dbd2e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon\Base">
+      <UniqueIdentifier>{c304dafd-33e1-4bd9-8e6b-6909f5df8e7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Inventory">
+      <UniqueIdentifier>{01a6aa21-4b98-4f58-a8a3-05bf06b5fdb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04. Player\Body">
+      <UniqueIdentifier>{5609681f-2332-48f8-a2c9-7319d426f6c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon\Keyboard">
+      <UniqueIdentifier>{57c225fd-d7bb-4038-bd95-081cc219701c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon\Rifle">
+      <UniqueIdentifier>{5c5f4e20-17ea-4b19-abfc-bd47cee810c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Player\Change">
+      <UniqueIdentifier>{cea3ad4b-8f3e-4dea-a762-2ba5d43d166a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon\Sickle">
+      <UniqueIdentifier>{69bed7b7-6504-41cb-be24-055feb1ff3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. Weapon\Axe">
+      <UniqueIdentifier>{70253357-09e8-454b-905c-531383498d77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player">
+      <UniqueIdentifier>{db55858d-38fd-4b3e-bf0e-49e6ff68d10c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -168,14 +246,74 @@
     <ClInclude Include="..\public\Monster_Base.h">
       <Filter>02.GameObjects\05. Monster\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Object_State.h">
-      <Filter>02.GameObjects\06. State</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Player_State_Idle.h">
-      <Filter>02.GameObjects\06. State\Idle</Filter>
+      <Filter>02.GameObjects\06. State\Player\Idle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player_State_Move.h">
-      <Filter>02.GameObjects\06. State\Move</Filter>
+      <Filter>02.GameObjects\06. State\Player\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Object_State_Spawn.h">
+      <Filter>02.GameObjects\06. State\Global\Spawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Object_State.h">
+      <Filter>02.GameObjects\06. State\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_State_Define.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Dash.h">
+      <Filter>02.GameObjects\06. State\Player\Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_ULT.h">
+      <Filter>02.GameObjects\06. State\Player\Attack\ULT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Combo.h">
+      <Filter>02.GameObjects\06. State\Player\Attack\Combo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Charge.h">
+      <Filter>02.GameObjects\06. State\Player\Attack\Charge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Attack.h">
+      <Filter>02.GameObjects\06. State\Player\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Discord.h">
+      <Filter>02.GameObjects\05. Monster\Discord</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Discord.h">
+      <Filter>02.GameObjects\05. Monster\Discord\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Animation.h">
+      <Filter>04. Observers\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_State.h">
+      <Filter>04. Observers\State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Phase.h">
+      <Filter>04. Observers\Phase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon_Base.h">
+      <Filter>02.GameObjects\07. Weapon\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Rifle.h">
+      <Filter>02.GameObjects\07. Weapon\Rifle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Player.h">
+      <Filter>02.GameObjects\04. Player\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Keyboard.h">
+      <Filter>02.GameObjects\07. Weapon\Keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_State_Change.h">
+      <Filter>02.GameObjects\06. State\Player\Change</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sickle.h">
+      <Filter>02.GameObjects\07. Weapon\Sickle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Axe.h">
+      <Filter>02.GameObjects\07. Weapon\Axe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Player.h">
+      <Filter>02.GameObjects\03. Projectile\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -249,14 +387,71 @@
     <ClCompile Include="..\private\Monster_Base.cpp">
       <Filter>02.GameObjects\05. Monster\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Object_State.cpp">
-      <Filter>02.GameObjects\06. State</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Player_State_Idle.cpp">
-      <Filter>02.GameObjects\06. State\Idle</Filter>
+      <Filter>02.GameObjects\06. State\Player\Idle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_State_Move.cpp">
-      <Filter>02.GameObjects\06. State\Move</Filter>
+      <Filter>02.GameObjects\06. State\Player\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_State_Attack.cpp">
+      <Filter>02.GameObjects\06. State\Player\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Object_State_Spawn.cpp">
+      <Filter>02.GameObjects\06. State\Global\Spawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Object_State.cpp">
+      <Filter>02.GameObjects\06. State\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Dash.cpp">
+      <Filter>02.GameObjects\06. State\Player\Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_ULT.cpp">
+      <Filter>02.GameObjects\06. State\Player\Attack\ULT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Combo.cpp">
+      <Filter>02.GameObjects\06. State\Player\Attack\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Charge.cpp">
+      <Filter>02.GameObjects\06. State\Player\Attack\Charge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Discord.cpp">
+      <Filter>02.GameObjects\05. Monster\Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Discord.cpp">
+      <Filter>02.GameObjects\05. Monster\Discord\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Animation.cpp">
+      <Filter>04. Observers\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_State.cpp">
+      <Filter>04. Observers\State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Phase.cpp">
+      <Filter>04. Observers\Phase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_Base.cpp">
+      <Filter>02.GameObjects\07. Weapon\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Rifle.cpp">
+      <Filter>02.GameObjects\07. Weapon\Rifle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Player.cpp">
+      <Filter>02.GameObjects\04. Player\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Keyboard.cpp">
+      <Filter>02.GameObjects\07. Weapon\Keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_State_Change.cpp">
+      <Filter>02.GameObjects\06. State\Player\Change</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sickle.cpp">
+      <Filter>02.GameObjects\07. Weapon\Sickle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Axe.cpp">
+      <Filter>02.GameObjects\07. Weapon\Axe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Player.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
