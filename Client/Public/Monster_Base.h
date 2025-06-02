@@ -2,6 +2,8 @@
 
 #include "Client_Defines.h"
 #include "ContainerObject.h"
+#include "PartObject.h"
+#include "Model.h"
 
 NS_BEGIN(Engine)
 NS_END
@@ -23,6 +25,8 @@ public:
 	}
 	pair<STATE_MAIN, STATE_SUB> Get_State() { return { m_eMainState, m_eSubState }; }
 	map<STATE_MAIN, _int>& Get_AnimIndexMap() { return m_AnimIndexMap; }
+
+	CModel* Get_BodyModel() { return static_cast<CModel*>(m_PartObjects[0]->Get_Component(TEXT("Com_Model"))); }
 
 public:
 	virtual HRESULT Initialize_Prototype();

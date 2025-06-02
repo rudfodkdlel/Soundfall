@@ -5,11 +5,11 @@ namespace Client
 {
 	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, BOSS, EDIT, END };
 
-	enum class PART_DEFAULT { BODY, WEAPON, EFFECT, END };
+	enum class PART_DEFAULT { BODY, WEAPON, UI, EFFECT, END };
 	
 	enum class ANIMSTATE {ANIM_IN, ANIM_LOOP, ANIM_OUT};
 
-	enum class OBJTYPE { PLAYER, MOSNTER, END };
+	enum class OBJTYPE { PLAYER, MOSNTER, BOSS, END };
 
 	typedef enum  eDirState {
 		NONE = 0, // idle 일때
@@ -28,6 +28,8 @@ namespace Client
 
 	// 몬스터
 	enum class MONSTER { IDLE, MOVE, ATTACK, HIT, DEAD };
+
+	enum BOSS_PATTERN { BP_MELEE, BP_ECHOSLAM, BP_SPAWN, BP_WALL, BP_MISSILE, BP_END};
 
 }
 

@@ -10,6 +10,8 @@
 #include "Object_Manager.h"
 #include "Prototype_Manager.h"
 #include "Observer_Manager.h"
+#include "Font_Manager.h"
+#include "Light_Manager.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance);
@@ -61,12 +63,20 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pObserver_Manager)
 		return E_FAIL;
 
+	m_pLight_Manager = CLight_Manager::Create();
+	if (nullptr == m_pLight_Manager)
+		return E_FAIL;
+
+	m_pFont_Manager = CFont_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pFont_Manager)
+		return E_FAIL;
 
 	return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+	
 	m_pInput_Device->Update();
 
 	m_pObject_Manager->Priority_Update(fTimeDelta);
@@ -75,7 +85,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pPicking->Update();
 
-	m_pObject_Manager->Update(fTimeDelta);	
+	m_pObject_Manager->Update(fTimeDelta);
 
 	m_pObject_Manager->Late_Update(fTimeDelta);
 
@@ -343,8 +353,36 @@ CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 
 #pragma endregion
 
+#pragma region LIGHT_MANAGER
+
+const LIGHT_DESC* CGameInstance::Get_Light(_uint iIndex)
+{
+	return m_pLight_Manager->Get_Light(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
+{
+	return m_pLight_Manager->Add_Light(LightDesc);
+}
+
+HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
+{
+	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
+}
+
+void CGameInstance::Draw_Font(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
+{
+	m_pFont_Manager->Draw(strFontTag, pText, vPosition, vColor, fRotation, vOrigin, fScale);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
+	Safe_Release(m_pFont_Manager);
+
+	Safe_Release(m_pLight_Manager);
+
 	Safe_Release(m_pPicking);
 
 	Safe_Release(m_pPipeLine);
@@ -372,8 +410,5 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	__super::Free();
-
-
-
 	
 }

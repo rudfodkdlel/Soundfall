@@ -56,38 +56,10 @@ void CTerrain::Late_Update(_float fTimeDelta)
 
 HRESULT CTerrain::Render()
 {
-	D3D11_RASTERIZER_DESC wfDesc = {};
-	ID3D11RasterizerState* pWireframeState = nullptr;
-	if (m_bWired)
-	{
-		
-		wfDesc.FillMode = D3D11_FILL_WIREFRAME;
-		wfDesc.CullMode = D3D11_CULL_BACK;
-		wfDesc.FrontCounterClockwise = FALSE;
-		wfDesc.DepthClipEnable = TRUE;
 
-		
-		m_pDevice->CreateRasterizerState(&wfDesc, &pWireframeState);
-		m_pContext->RSSetState(pWireframeState);
-	}
-	
-
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
-	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iType)))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture_Normal", m_iType)))
-		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
@@ -98,20 +70,7 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
-	if (m_bWired)
-	{
-		D3D11_RASTERIZER_DESC solidDesc = {};
-		solidDesc.FillMode = D3D11_FILL_SOLID;
-		solidDesc.CullMode = D3D11_CULL_BACK;
-		solidDesc.FrontCounterClockwise = FALSE;
-		solidDesc.DepthClipEnable = TRUE;
-
-		ID3D11RasterizerState* pSolidState = nullptr;
-		m_pDevice->CreateRasterizerState(&solidDesc, &pSolidState);
-		m_pContext->RSSetState(pSolidState);
-		pSolidState->Release();
-		pWireframeState->Release();
-	}
+	
 
 	return S_OK;
 }
@@ -137,6 +96,41 @@ HRESULT CTerrain::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Normal"),
 		TEXT("Com_Texture_Normal"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTerrain::Bind_ShaderResources()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	/* dx9 : 장치에 뷰, 투영행렬을 저장해두면 렌더링시 알아서 정점에 Transform해주었다. */
+	/* dx11 : 셰이더에 뷰, 투영행렬을 저장해두고 우리가 직접 변환해주어야한다. */
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
+	const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_Light(0);
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+		return E_FAIL;
+
+
 
 	return S_OK;
 }

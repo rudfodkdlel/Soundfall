@@ -28,50 +28,99 @@ HRESULT CMetronome::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_IsWorldUI = pDesc->IsWorldUI;
+
+	if (m_IsWorldUI)
+	{
+		m_pTransformCom->Scaling(m_fScale, m_fScale, m_fScale);
+
+		_vector vDir = { 1.f, 0.f,0.f,0.f };
+		m_pTransformCom->Rotation(vDir, XMConvertToRadians(90.f));
+	}
+
 	return S_OK;
 }
 
 void CMetronome::Priority_Update(_float fTimeDelta)
 {
+	// target 설정
+	if (!m_IsTargeted && m_IsWorldUI)
+	{
+		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
+
+		if (nullptr != m_pTarget)
+			m_IsTargeted = true;
+		// 못찾으면 return
+	}
 }
 
 void CMetronome::Update(_float fTimeDelta)
 {
-
-	if (m_iNumCount == 6)
-		return;
-	m_fSpawnTime += fTimeDelta;
-
-	
-	while (m_iNumCount < 6 && m_fSpawnTime >= m_fSpawnInterval * m_iNumCount / 2.f -  m_fSpawnInterval * 0.5f)
-	
+	if (!m_IsWorldUI)
 	{
-		CMetronome_Counter::METRONOME_COUNTER_DESC			countDesc{};
+		m_fSpawnTime += fTimeDelta;
 
-		countDesc.fX = g_iWinSizeX * 0.5f - 200.f;
-		countDesc.fY = g_iWinSizeY * 0.5f + 200.f;
-		countDesc.fSizeX = 1.f;
-		countDesc.fSizeY = 50.f;
-		countDesc.fSpeedPerSec = 200.f / m_fSpawnInterval;
-		countDesc.vDir = _float3(1.f, 0.f, 0.f);
-		countDesc.fStartPoint = countDesc.fX;
+		_float scaleX = 0.5f * fabs(sin(XMConvertToRadians(m_fSpawnTime * 180.f))) + 0.5f; // 0.5 ~ 1.0 사이
+		_float scaleY = 0.5f * fabs(sin(XMConvertToRadians(m_fSpawnTime * 180.f))) + 0.5f;
 
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+		m_pTransformCom->Scaling(scaleX * m_fSizeX, scaleY * m_fSizeY, 1.f);
+
+		if (m_iNumCount == 6)
 			return;
 
 
-		countDesc.fX = g_iWinSizeX * 0.5f + 200.f;
-		countDesc.vDir = _float3(-1.f, 0.f, 0.f);
-		countDesc.fStartPoint = countDesc.fX;
+		while (m_iNumCount < 6 && m_fSpawnTime >= m_fSpawnInterval * m_iNumCount / 2.f - m_fSpawnInterval * 0.5f)
 
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
-			return;
+		{
+			CMetronome_Counter::METRONOME_COUNTER_DESC			countDesc{};
 
-		m_iNumCount += 2;
+			countDesc.fX = g_iWinSizeX * 0.5f - 200.f;
+			countDesc.fY = g_iWinSizeY * 0.5f + 200.f;
+			countDesc.fSizeX = 1.f;
+			countDesc.fSizeY = 50.f;
+			countDesc.fSpeedPerSec = 200.f / m_fSpawnInterval;
+			countDesc.vDir = _float3(1.f, 0.f, 0.f);
+			countDesc.fStartPoint = countDesc.fX;
 
+			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
+				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+				return;
+
+
+			countDesc.fX = g_iWinSizeX * 0.5f + 200.f;
+			countDesc.vDir = _float3(-1.f, 0.f, 0.f);
+			countDesc.fStartPoint = countDesc.fX;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
+				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+				return;
+
+			m_iNumCount += 2;
+
+		}
 	}
+	else
+	{
+		if (m_IsTargeted)
+		{
+
+			_vector vPos = m_pTarget->Get_Transform()->Get_State(STATE::POSITION);
+
+			_vector vDir = XMVector3Normalize( m_pTarget->Get_Transform()->Get_State(STATE::LOOK));
+			vDir = vDir * 4.f;
+
+			vPos += {0.f, 0.31f, 0.f, 0.f} ;
+
+			vPos += vDir;
+
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+			
+		}
+
+		
+	}
+	
 }
 
 void CMetronome::Late_Update(_float fTimeDelta)
@@ -83,11 +132,20 @@ HRESULT CMetronome::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return E_FAIL;
+	if (!m_IsWorldUI)
+	{
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;

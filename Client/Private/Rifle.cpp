@@ -34,6 +34,8 @@ HRESULT CRifle::Initialize(void* pArg)
 
     m_DirMap = { {F,10}, {B,9}, {BL,50}, {BR,51}, {FL, 52}, {FR, 53}, {L, 54}, {R,55} };
 
+    
+
     return S_OK;
 }
 
@@ -43,6 +45,7 @@ void CRifle::Priority_Update(_float fTimeDelta)
 
 void CRifle::Update(_float fTimeDelta)
 {
+    m_fDelay -= fTimeDelta;
 }
 
 void CRifle::Late_Update(_float fTimeDelta)
@@ -57,20 +60,23 @@ HRESULT CRifle::Render()
     return S_OK;
 }
 
-void CRifle::Attack()
+void CRifle::Attack(_vector vDir)
 {
+    if (m_fDelay >= 0.f)
+        return;
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
-    const float* pRow3 = reinterpret_cast<const float*>(&m_CombinedWorldMatrix);
-    XMVECTOR vPos = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&pRow3[12]));
   
-    _vector vDir = { m_CombinedWorldMatrix._31, m_CombinedWorldMatrix._32 , m_CombinedWorldMatrix._33 , 0.f };
+    _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 , m_CombinedWorldMatrix._43 , 1.f };
+
     
     XMStoreFloat4(&eDesc.vPos, vPos);
     XMStoreFloat4(&eDesc.vDir, vDir);
     // 투사체 생성해서 날아가게 해보자
     m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(), 
         TEXT("Layer_Projectile_Player"), &eDesc);
+
+    m_fDelay = 0.2f;
 }
 
 HRESULT CRifle::Ready_Components()

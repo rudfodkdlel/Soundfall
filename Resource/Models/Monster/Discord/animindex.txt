@@ -26,6 +26,7 @@
 24 loop
 25 out
 26 nextphase
+// 이건 그로기때만
 27 hit forward
 28 hit left
 29 hit right

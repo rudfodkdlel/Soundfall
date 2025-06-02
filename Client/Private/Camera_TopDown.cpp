@@ -20,7 +20,7 @@ HRESULT CCamera_TopDown::Initialize(void* pArg)
 {
 	CCamera::CAMERA_DESC			Desc{};
 
-	Desc.vEye = _float3(0.f, 20.f, -15.f);
+	Desc.vEye = _float3(0.f, 40.f, -30.f);
 	Desc.vAt = _float3(0.f, 0.f, 0.f);
 	Desc.fFov = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;
@@ -42,40 +42,14 @@ void CCamera_TopDown::Priority_Update(_float fTimeDelta)
 	// target 설정
 	if (!m_IsTargeted)
 	{
+		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
 
+		if(nullptr != m_pTarget)
+			m_IsTargeted = true;
 		// 못찾으면 return
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-	}
-
-	if (m_pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (m_pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-	_long			MouseMove = {};
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::X))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), MouseMove * fTimeDelta * m_fSensor);
-	}
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMM::Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), MouseMove * fTimeDelta * m_fSensor);
-	}
-
+	
 
 
 	__super::Bind_Matrices();
@@ -86,6 +60,33 @@ void CCamera_TopDown::Priority_Update(_float fTimeDelta)
 
 void CCamera_TopDown::Update(_float fTimeDelta)
 {
+	if (nullptr == m_pTarget)
+		return;
+
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	_vector vTargetPos = m_pTarget->Get_Transform()->Get_State(STATE::POSITION);
+
+	_vector vDir = vTargetPos - vPos;
+
+	if (XMVectorGetZ(vDir) > 35.f)
+	{
+		vPos += {0.f, 0.f, fTimeDelta * 10.f, 0.f};
+	}
+	else if (XMVectorGetZ(vDir) < 25.f)
+	{
+		vPos -= {0.f, 0.f, fTimeDelta * 10.f, 0.f};
+	}
+
+	if (XMVectorGetX(vDir) > 5.f)
+	{
+		vPos += {fTimeDelta * 10.f, 0.f, 0.f, 0.f};
+	}
+	else if (XMVectorGetX(vDir) < -5.f)
+	{
+		vPos -= {fTimeDelta * 10.f, 0.f, 0.f, 0.f};
+	}
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 }
 
 void CCamera_TopDown::Late_Update(_float fTimeDelta)

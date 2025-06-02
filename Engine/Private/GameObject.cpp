@@ -88,9 +88,16 @@ void CGameObject::Billboarding()
 	_float4 vPos = *m_pGameInstance->Get_CamPosition();
 	_vector vPos1 = XMLoadFloat4(&vPos);
 
-	vPos1 *= {-1.f, -1.f, -1.f, 1.f};
-	
-	m_pTransformCom->LookAt(vPos1);
+	_float3		vScaled = m_pTransformCom-> Get_Scaled();
+
+	_vector		vLook =  m_pTransformCom->Get_State(STATE::POSITION) - vPos1;
+	vLook = XMVector3Normalize(vLook);
+	_vector		vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+
+	m_pTransformCom->Set_State(STATE::RIGHT, XMVector3Normalize(vRight) * vScaled.x);
+	m_pTransformCom->Set_State(STATE::UP, XMVector3Normalize(vUp) * vScaled.y);
+	m_pTransformCom->Set_State(STATE::LOOK, XMVector3Normalize(vLook) * vScaled.z);
 
 }
 

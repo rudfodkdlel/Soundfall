@@ -4,6 +4,7 @@
 #include "Monster_Base.h"
 #include "PartObject.h"
 #include "Observer_Animation.h"
+#include "Object_State.h"
 #include "Observer_State.h"
 #include "Observer_Phase.h"
 #include "Model.h"
@@ -41,19 +42,32 @@ HRESULT CDiscord::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
-	//m_pState = new CObject_State_Spawn;
-	//m_pState->Enter(this, OBJTYPE::MOSNTER);
+	
 
 	m_pGameInstance->Add_Observer(TEXT("Observer_Animation_Discord"), new CObserver_Animation);
 	m_pGameInstance->Add_Observer(TEXT("Observer_Phase_Discord"), new CObserver_Phase);
-	m_pGameInstance->Add_Observer(TEXT("Observer_State_Discord"), new CObserver_State);
+	//m_pGameInstance->Add_Observer(TEXT("Observer_State_Discord"), new CObserver_State);
+	m_pState = new CObject_State_Spawn;
+	m_pState->Enter(this, OBJTYPE::BOSS);
+
+	m_fSkillCoolTimes = {3.f, 3.f, 3.f, 3.f, 3.f};
+	_vector vPos = { 0.f, 0.f, 30.f, 1.f };
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	_vector vAxis = { 0.f, 1.f, 0.f, 0.f };
+	m_pTransformCom->Rotation(vAxis, XMConvertToRadians(180.f));
+
 
 	return S_OK;
 }
 
 void CDiscord::Priority_Update(_float fTimeDelta)
 {
-	
+	if (nullptr == m_pTarget)
+	{
+		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
+	}
+		
 		
 
 	__super::Priority_Update(fTimeDelta);
@@ -62,23 +76,17 @@ void CDiscord::Priority_Update(_float fTimeDelta)
 
 void CDiscord::Update(_float fTimeDelta)
 {
-	// 일단 임시로 key 받아서 페이즈 바뀌게 하기
-
-	if (m_pGameInstance->Get_DIKeyState(DIK_1) & 0x80)
-		m_iPhase = 1;
-	if (m_pGameInstance->Get_DIKeyState(DIK_2) & 0x80)
-		m_iPhase = 2;
-	if (m_pGameInstance->Get_DIKeyState(DIK_3) & 0x80)
-		m_iPhase = 3;
-
-
-	Select_State();
-
 	__super::Update(fTimeDelta);
+
+	if (nullptr != m_pState)
+		m_pState->Update(this, fTimeDelta);
+	
 }
 
 void CDiscord::Late_Update(_float fTimeDelta)
 {
+	Select_State();
+
 	__super::Late_Update(fTimeDelta);
 }
 
@@ -89,110 +97,69 @@ HRESULT CDiscord::Render()
 
 void CDiscord::Select_State()
 {
-	CModel* pModel = static_cast<CModel*>(m_PartObjects[ENUM_CLASS(PART_DEFAULT::BODY)]->Get_Component(TEXT("Com_Model")));
-	if (nullptr == pModel)
+	if (nullptr == m_pState)
 		return;
 
-	switch (m_eMainState)
+	CObject_State* pState = m_pState->Check_Transition(this);
+
+	if (nullptr != pState)
 	{
-	case Client::STATE_MAIN::IDLE:
-		m_iAttackPattern = int(m_pGameInstance->Compute_Random(0.f, 4.9f));
-
-		switch (m_iAttackPattern)
-		{
-		case 0:
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(3, true);
-				m_eMainState = STATE_MAIN::ATTACK;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-			break;
-		case 1:
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(5, true);
-				m_eMainState = STATE_MAIN::ATTACK;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-			break;
-		case 2:
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(8, true);
-				m_eMainState = STATE_MAIN::ATTACK;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-			break;
-		case 3:
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(19, true);
-				m_eMainState = STATE_MAIN::ATTACK;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-			break;
-		case 4:
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(2, true);
-				m_eMainState = STATE_MAIN::ATTACK;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-			break;
-
-		default:
-			break;
-		}
-
-		break;
-	case Client::STATE_MAIN::ATTACK:
-		if (m_iPhase == 1)
-		{
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(30, false);
-				m_eMainState = STATE_MAIN::IDLE;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-		}
-		else if (m_iPhase == 2)
-		{
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(31, false);
-				m_eMainState = STATE_MAIN::IDLE;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-		}
-		else if (m_iPhase == 3)
-		{
-			if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-			{
-				pModel->Set_Animation(32, false);
-				m_eMainState = STATE_MAIN::IDLE;
-				static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-			}
-		}
-		break;
-	case Client::STATE_MAIN::HIT:
-		break;
-	case Client::STATE_MAIN::STUN:
-		break;
-	case Client::STATE_MAIN::SPWAN:
-		if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
-		{
-			pModel->Set_Animation(30, false);
-			m_eMainState = STATE_MAIN::IDLE;
-			static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->Reset();
-		}
-		break;
-	case Client::STATE_MAIN::DEAD:
-		break;
-	default:
-		break;
+		m_pState->Exit(this);
+		Safe_Delete(m_pState);
+		m_pState = pState;
+		m_pState->Enter(this, OBJTYPE::BOSS);
 	}
 
+}
+
+BOSS_PATTERN CDiscord::Get_Next_Skill()
+{
+	for (int i = 0; i < m_fSkillCoolTimes.size(); ++i)
+	{
+		if (m_fSkillCoolTimes[i] <= 0.f)
+			return BOSS_PATTERN(i);
+	}
+
+	return BP_END;
+}
+
+DIR_STATE CDiscord::Get_Dir_Melee()
+{
+	_vector vTargetPos = m_pTarget->Get_Transform()->Get_State(STATE::POSITION);
+	_vector vDir = m_pTransformCom->Get_State(STATE::LOOK);
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	_vector vToTarget = XMVector3Normalize(vTargetPos - vPos);
+	vDir = XMVector3Normalize(vDir);
+
+	_float fDot = XMVectorGetX(XMVector3Dot(vDir, vToTarget));
+
+	_float fTargetX = XMVectorGetX(vTargetPos);
+	_float fMyX = XMVectorGetX(vPos);
+
+	if (fTargetX > fMyX)
+	{
+		if (fDot >= 0.7f)
+		{
+			return DIR_STATE::FL;
+		}
+		else
+			return DIR_STATE::L;
+	}
+	else
+	{
+		if (fDot >= 0.7f)
+		{
+			return DIR_STATE::FR;
+		}
+		else
+			return DIR_STATE::R;
+	}
+		
+
+
+
+	return DIR_STATE::NONE;
 }
 
 HRESULT CDiscord::Ready_PartObjects()
@@ -203,6 +170,7 @@ HRESULT CDiscord::Ready_PartObjects()
 
 	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::BODY), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Discord"), &BodyDesc)))
 		return E_FAIL;
+
 
 	return S_OK;
 }

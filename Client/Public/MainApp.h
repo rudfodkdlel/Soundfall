@@ -27,6 +27,7 @@ private:
 
 public:
 	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Font();
 
 
 	HRESULT Start_Level(LEVEL eStartLevel);

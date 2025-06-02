@@ -1,0 +1,8 @@
+0 attack
+1 hit backward
+2 hit forward 
+3 hit left
+4 hit right
+5 idle
+6 death
+7 spawn

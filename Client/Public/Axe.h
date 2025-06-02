@@ -17,7 +17,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	virtual void Attack() override;
+	virtual void Attack(_vector vDir) override;
 
 public:
 	HRESULT Ready_Components();

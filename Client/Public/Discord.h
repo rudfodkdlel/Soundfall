@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Monster_Base.h"
 
+
 NS_BEGIN(Engine)
 class CModel;
 NS_END
@@ -27,19 +28,23 @@ public:
 
 	virtual void Select_State();
 
+	BOSS_PATTERN	Get_Next_Skill();
+
+	DIR_STATE Get_Dir_Melee();
+
 private:
 	HRESULT Ready_PartObjects();
 	HRESULT Ready_Components();
 
 
 private:
-	STATE_MAIN		m_eMainState = { STATE_MAIN::SPWAN };
-	STATE_SUB		m_eSubState = { STATE_SUB::NONE };
+	CObject_State*	m_pState = { nullptr };
 	_int		    m_iPhase = { 1 };// 1, 2, 3, death
 
 	// 임시로 일단
 	_int			m_iLoopCount = { 3 };
-	_int			m_iAttackPattern = { 0 };
+
+	vector<_float>	m_fSkillCoolTimes = {};
 
 public:
 	static CDiscord* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -118,6 +118,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackReserveSize>
+      </StackReserveSize>
     </Link>
     <FxCompile>
       <ShaderType>Effect</ShaderType>
@@ -155,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\Axe.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Body_Defender.h" />
     <ClInclude Include="..\public\Body_Discord.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
@@ -162,9 +165,12 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
     <ClInclude Include="..\public\Discord.h" />
+    <ClInclude Include="..\public\Discord_Wall.h" />
     <ClInclude Include="..\public\Keyboard.h" />
+    <ClInclude Include="..\public\Defender.h" />
     <ClInclude Include="..\public\Level_Edit.h" />
     <ClInclude Include="..\public\Metronome.h" />
+    <ClInclude Include="..\public\Metronome_Center_RIng.h" />
     <ClInclude Include="..\Public\Metronome_Counter.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -172,12 +178,20 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Monster_Base.h" />
+    <ClInclude Include="..\public\Monster_HP.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Melee.h" />
+    <ClInclude Include="..\Public\Monster_Pattern_Missile.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Spawn.h" />
+    <ClInclude Include="..\Public\Monster_Pattern_EchoSlam.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Wall.h" />
+    <ClInclude Include="..\public\Monster_State_Idle.h" />
     <ClInclude Include="..\public\MyImgui.h" />
     <ClInclude Include="..\public\Object_State.h" />
     <ClInclude Include="..\public\Object_State_Spawn.h" />
     <ClInclude Include="..\public\Observer_Animation.h" />
     <ClInclude Include="..\public\Observer_Phase.h" />
     <ClInclude Include="..\public\Observer_State.h" />
+    <ClInclude Include="..\public\PlayerRing.h" />
     <ClInclude Include="..\public\Player_State_Attack.h" />
     <ClInclude Include="..\public\Player_State_Change.h" />
     <ClInclude Include="..\public\Player_State_Charge.h" />
@@ -188,20 +202,32 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\Player_State_ULT.h" />
     <ClInclude Include="..\public\Player_State_Move.h" />
+    <ClInclude Include="..\public\Projectile_Artillery.h" />
     <ClInclude Include="..\public\Projectile_Base.h" />
     <ClInclude Include="..\public\Projectile_Monster.h" />
     <ClInclude Include="..\public\Projectile_Player.h" />
+    <ClInclude Include="..\public\Projectile_Shockwave.h" />
     <ClInclude Include="..\public\Rifle.h" />
     <ClInclude Include="..\public\Sickle.h" />
+    <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\public\Structure.h" />
+    <ClInclude Include="..\public\Tentacle_Melee.h" />
     <ClInclude Include="..\public\Terrain.h" />
     <ClInclude Include="..\public\Weapon_Base.h" />
+    <ClInclude Include="..\public\Weapon_Defender.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Body_Defender.cpp" />
+    <ClCompile Include="..\private\Defender.cpp" />
+    <ClCompile Include="..\private\Metronome_Center_RIng.cpp" />
+    <ClCompile Include="..\private\Monster_HP.cpp" />
+    <ClCompile Include="..\private\PlayerRing.cpp" />
+    <ClCompile Include="..\private\Static_UI.cpp" />
+    <ClCompile Include="..\private\Tentacle_Melee.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Discord.cpp" />
@@ -209,6 +235,7 @@
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Camera_TopDown.cpp" />
     <ClCompile Include="..\private\Discord.cpp" />
+    <ClCompile Include="..\private\Discord_Wall.cpp" />
     <ClCompile Include="..\private\Keyboard.cpp" />
     <ClCompile Include="..\private\Level_Edit.cpp" />
     <ClCompile Include="..\private\Metronome.cpp" />
@@ -219,6 +246,12 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Monster_Base.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Melee.cpp" />
+    <ClCompile Include="..\Private\Monster_Pattern_Missile.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Spawn.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_EchoSlam.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Wall.cpp" />
+    <ClCompile Include="..\private\Monster_State_Idle.cpp" />
     <ClCompile Include="..\private\MyImgui.cpp" />
     <ClCompile Include="..\private\Object_State.cpp" />
     <ClCompile Include="..\private\Object_State_Spawn.cpp" />
@@ -234,14 +267,17 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\Player_State_ULT.cpp" />
     <ClCompile Include="..\private\Player_State_Move.cpp" />
+    <ClCompile Include="..\private\Projectile_Artillery.cpp" />
     <ClCompile Include="..\private\Projectile_Base.cpp" />
     <ClCompile Include="..\private\Projectile_Monster.cpp" />
     <ClCompile Include="..\private\Projectile_Player.cpp" />
+    <ClCompile Include="..\private\Projectile_Shockwave.cpp" />
     <ClCompile Include="..\private\Rifle.cpp" />
     <ClCompile Include="..\private\Sickle.cpp" />
     <ClCompile Include="..\private\Structure.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
     <ClCompile Include="..\private\Weapon_Base.cpp" />
+    <ClCompile Include="..\private\Weapon_Defender.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -253,9 +289,13 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

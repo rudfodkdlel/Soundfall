@@ -1,0 +1,12 @@
+0 attack lower
+1 attack slam
+2 hit backward
+3 hit forward
+4 hit left
+5 hit right
+6 idle
+7 run backward
+8 run forward
+9 run left
+10 run right
+11 spawn 

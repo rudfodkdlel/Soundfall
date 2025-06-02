@@ -69,7 +69,7 @@ void CPlayer_State_ULT::Update(CGameObject* pObj, float fTimeDelta)
 void CPlayer_State_ULT::Exit(CGameObject* pObj)
 {
 	Safe_Release(m_pGameInstance);
-	
+	Safe_Release(m_pModel);
 	static_cast<CPlayer*>(pObj)->Get_Range_Weapon()->Set_Active(true);
 	static_cast<CPlayer*>(pObj)->Get_Melee_Weapon()->Set_Active(false);
 }

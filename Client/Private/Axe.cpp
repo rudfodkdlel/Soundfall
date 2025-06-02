@@ -55,7 +55,7 @@ HRESULT CAxe::Render()
     return S_OK;
 }
 
-void CAxe::Attack()
+void CAxe::Attack(_vector vDir)
 {
 }
 

@@ -57,7 +57,7 @@ private:
 	CWeapon_Base*	m_pMeleeWeapon = { nullptr };
 
 	// inventory 만들어서 담아두자
-	class CInventory* m_pInventory = { nullptr };
+	//class CInventory* m_pInventory = { nullptr };
 
 	_vector	m_vDir = {};
 	_float  m_fSpeed = {};

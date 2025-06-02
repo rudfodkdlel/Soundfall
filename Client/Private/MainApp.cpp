@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Transform.h"
 #include "Camera_Free.h"
+#include "Camera_TopDown.h"
 #include "BackGround.h"
 
 CMainApp::CMainApp()
@@ -27,6 +28,9 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iNumLevels = static_cast<_uint>(LEVEL::END);
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(EngineDesc, &m_pDevice, &m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component()))
@@ -83,9 +87,15 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 
+
+
 	/* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_TopDown"),
+		CCamera_TopDown::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_BackGround*/
@@ -100,6 +110,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
 
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Font()
+{
 	return S_OK;
 }
 

@@ -16,7 +16,7 @@ class CMetronome final : public CUIObject
 public:
 	typedef struct tagMetronomeDesc : public CUIObject::UIOBJECT_DESC
 	{
-
+	
 	}METRONOME_DESC;
 
 private:
@@ -37,17 +37,18 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 
 	// 좀 나중에 고치기 일단 기본 형태만 잡고
-	CTexture* m_pMoving_TextureCom = { nullptr };
-	CTexture* m_pMainBar_TextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:
 
-
+	CGameObject* m_pTarget = { nullptr };
+	_bool		 m_IsTargeted = { false };
 	_uint m_iNumCount = { 0 };
 	// 나중에 이제 값 얻어와서 고치기
 	_float m_fSpawnInterval = {60.f / 120.f};
 	_float m_fSpawnTime = { 0.f };
+	_float m_fScale = { 3.f };
+	_float m_fAccumTime = { 0.f };
 
 private:
 	HRESULT Ready_Components();

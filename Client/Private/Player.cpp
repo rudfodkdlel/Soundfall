@@ -51,6 +51,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pState = new CObject_State_Spawn;
 	m_pState->Enter(this, OBJTYPE::PLAYER);
 
+	_vector vPos = { 0.f,0.f,0.f,1.f };
+
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
 	return S_OK;
 }
 
@@ -113,7 +117,7 @@ void CPlayer::Input_Key(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80)
 	{
-		m_pRangedWeapon->Attack();
+		m_pRangedWeapon->Attack(XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK)));
 	}
 
 }

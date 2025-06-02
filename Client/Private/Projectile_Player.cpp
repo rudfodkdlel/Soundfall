@@ -38,7 +38,11 @@ void CProjectile_Player::Priority_Update(_float fTimeDelta)
 void CProjectile_Player::Update(_float fTimeDelta)
 {
 	// 이동하는 기능 추가
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDir = XMLoadFloat4(&m_vDir);
+	vPos += vDir * 10 * fTimeDelta;
 
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	// 카메라 쳐다보도록
 	__super::Billboarding();
@@ -78,6 +82,11 @@ HRESULT CProjectile_Player::Render()
 
 HRESULT CProjectile_Player::Ready_Components()
 {
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

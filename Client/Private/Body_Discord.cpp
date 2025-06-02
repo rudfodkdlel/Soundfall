@@ -34,13 +34,14 @@ HRESULT CBody_Discord::Initialize(void* pArg)
 
     /* 1. 서로 다른 애니메이션을 셋팅했음에도 같은 동작이 재생된다. : 뼈가 공유되기때문에. */
     /* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
-    m_pModelCom->Set_Animation(33, false);
+ 
 
     return S_OK;
 }
 
 void CBody_Discord::Priority_Update(_float fTimeDelta)
 {
+    
 }
 
 void CBody_Discord::Update(_float fTimeDelta)
@@ -105,14 +106,25 @@ HRESULT CBody_Discord::Ready_Components()
 
 HRESULT CBody_Discord::Bind_ShaderResources()
 {
-    //
-    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
         return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+        return E_FAIL;
 
+    const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_Light(0);
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+        return E_FAIL;
 
     return S_OK;
 }

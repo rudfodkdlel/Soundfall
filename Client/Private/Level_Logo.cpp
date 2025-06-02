@@ -2,7 +2,6 @@
 
 #include "GameInstance.h"
 #include "Level_Loading.h"
-
 #include "BackGround.h"
 
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -53,14 +52,15 @@ HRESULT CLevel_Logo::Ready_Layer_BackGround(const _wstring strLayerTag)
 	BackGroundDesc.fY = g_iWinSizeY * 0.5f;
 	BackGroundDesc.fSizeX = g_iWinSizeX;
 	BackGroundDesc.fSizeY = g_iWinSizeY;
-	BackGroundDesc.iType = 0;
+
+
+	BackGroundDesc.iType = 1;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
 		static_cast<_uint>(LEVEL::LOGO), strLayerTag, &BackGroundDesc)))
 		return E_FAIL;
 
-
-	BackGroundDesc.iType = 1;
+	BackGroundDesc.iType = 0;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_BackGround"),
 		static_cast<_uint>(LEVEL::LOGO), strLayerTag, &BackGroundDesc)))

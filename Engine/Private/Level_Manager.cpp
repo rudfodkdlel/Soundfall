@@ -20,9 +20,10 @@ HRESULT CLevel_Manager::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
 
     m_pCurrentLevel = pNewLevel;
 
-    m_iCurrentLevelIndex = iLevelIndex;
+ 
+   m_iCurrentLevelIndex = iLevelIndex;
 
-    return S_OK;
+     return S_OK;
 }
 
 void CLevel_Manager::Update(_float fTimeDelta)

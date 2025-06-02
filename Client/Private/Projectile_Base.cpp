@@ -33,6 +33,8 @@ HRESULT CProjectile_Base::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&pDesc->vPos));
 
+	m_vDir = pDesc->vDir;
+
 	return S_OK;
 }
 
@@ -68,10 +70,6 @@ HRESULT CProjectile_Base::Ready_Components()
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
-		return E_FAIL;
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
     return S_OK;

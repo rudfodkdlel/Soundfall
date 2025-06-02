@@ -38,7 +38,7 @@ public:
 
 	// 근접은 콜라이더 껏다 키기, 원거리는 투사체 생성 이런 느낌으로?
 	// 궁극기는 안에서 입력을 뭘로 받았는지 판단해서 ...? 여기서 부르는 느낌으로
-	virtual void Attack() = 0;
+	virtual void Attack(_vector vDir) = 0;
 
 protected:
 	CShader* m_pShaderCom = { nullptr };
@@ -52,6 +52,8 @@ protected:
 	// 일단 어떻게 사용할지 좀 더 생각해보기
 	_bool			 m_IsActive = { true };
 	_bool			 m_IsMelee = { false };
+
+	_float			m_fDelay = { 0.f };
 
 private:
 	HRESULT Ready_Components();

@@ -42,6 +42,8 @@ protected:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
+	_float4	m_vDir = {};
+
 private:
 	HRESULT Ready_Components();
 

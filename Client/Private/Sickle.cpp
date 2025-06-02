@@ -55,7 +55,7 @@ HRESULT CSickle::Render()
     return S_OK;
 }
 
-void CSickle::Attack()
+void CSickle::Attack(_vector vDir)
 {
     // 키로 나눠서 좀 생성하도록?
 }

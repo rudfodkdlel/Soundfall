@@ -96,6 +96,16 @@ public:
 	CObserver* Find_Observer(const _wstring& strTag);
 #pragma endregion
 
+#pragma region LIGHT_MANAGER
+	const LIGHT_DESC* Get_Light(_uint iIndex);
+	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
+#pragma endregion
+
+#pragma region FONT_MANAGER
+	HRESULT Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath);
+	void Draw_Font(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), _float fRotation = 0.f, const _float2& vOrigin = _float2(0.f, 0.f), _float fScale = 1.f);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -107,6 +117,9 @@ private:
 	class CPipeLine*			m_pPipeLine = { nullptr };
 	class CPicking*				m_pPicking = { nullptr };
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
+	class CLight_Manager*		m_pLight_Manager = { nullptr };
+	class CFont_Manager*		m_pFont_Manager = { nullptr };
+
 
 public:
 	void Release_Engine();

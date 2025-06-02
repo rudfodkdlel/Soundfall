@@ -56,7 +56,7 @@ HRESULT CKeyboard::Render()
     return S_OK;
 }
 
-void CKeyboard::Attack()
+void CKeyboard::Attack(_vector vDir)
 {
     // 투사체 생성해서 날아가게 해보자
 }
