@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Body_Defender.h"
 #include "Weapon_Defender.h"
+#include "Monster_HP.h"
 
 CDefender::CDefender(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -22,6 +23,8 @@ HRESULT CDefender::Initialize(void* pArg)
 {
 	CONTAINEROBJECT_DESC	Desc{};
 
+
+
 	Desc.fRotationPerSec = 90.f;
 	Desc.fSpeedPerSec = 5.0f;
 	Desc.iNumPartObjects = ENUM_CLASS(PART_DEFAULT::END);
@@ -39,6 +42,10 @@ HRESULT CDefender::Initialize(void* pArg)
 	_vector vPos = { 10.f,0.f,0.f,1.f };
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	
+
+	return S_OK;
 }
 
 void CDefender::Priority_Update(_float fTimeDelta)
@@ -48,6 +55,8 @@ void CDefender::Priority_Update(_float fTimeDelta)
 		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
 	}
 
+	if(m_bDead)
+		Set_Dead();
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -55,6 +64,9 @@ void CDefender::Priority_Update(_float fTimeDelta)
 
 void CDefender::Update(_float fTimeDelta)
 {
+
+	m_bDead =m_pCombatCom->Update(fTimeDelta);
+
 
 	if (nullptr != m_pTarget)
 	{
@@ -83,14 +95,14 @@ void CDefender::Update(_float fTimeDelta)
 			if (fY > 0)
 			{
 				vDir = { 0.f,1.f,0.f,0.f };
-				m_pTransformCom->Turn(vDir, fTimeDelta * 0.1f);
+
 				
 			}
 			else if (fY < 0)
 			{
 				vDir = { 0.f,-1.f,0.f,0.f };
 			}
-			m_pTransformCom->Turn(vDir, fTimeDelta * 0.1f);
+			m_pTransformCom->Turn(vDir, fTimeDelta * 0.05f);
 		}
 	}
 
@@ -136,7 +148,7 @@ void CDefender::Select_State()
 	// 일정 각도 이상 차이 나면 TURN 상태 (예: 5도 이상)
 	if (fAngle > XMConvertToRadians(10.0f))
 	{
-		Get_BodyModel()->Set_Animation(2, false); // 2번이 TURN 애니메이션이라고 가정
+		Get_BodyModel()->Set_Animation(2, false); 
 
 		m_eMainState = STATE_MAIN::IDLE;
 		return;
@@ -145,7 +157,7 @@ void CDefender::Select_State()
 	// 거리 제곱 계산
 	_vector vLengthSq = XMVector3LengthSq(vTargetPos - vMyPos);
 
-	if (XMVectorGetX(vLengthSq) > 25.0f)
+	if (XMVectorGetX(vLengthSq) > 64.0f)
 	{
 		Get_BodyModel()->Set_Animation(7, false); // MOVE
 		m_eMainState = STATE_MAIN::MOVE;
@@ -160,15 +172,16 @@ void CDefender::Select_State()
 
 HRESULT CDefender::Ready_PartObjects()
 {
-	CPartObject::PARTOBJECT_DESC	BodyDesc{};
+
+	NORMAL_BODY_DESC BodyDesc{};
 
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	BodyDesc.pCombatCom = m_pCombatCom;
 
 	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::BODY), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Defender"), &BodyDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::UI), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HP"), &BodyDesc)))
-		return E_FAIL;
+	
 
 	/* For.Weapon */
 	CWeapon_Defender::WEAPON_DESC	WeaponDesc{};
@@ -176,21 +189,33 @@ HRESULT CDefender::Ready_PartObjects()
 	WeaponDesc.pSocketMatrix = dynamic_cast<CBody_Defender*>(m_PartObjects[0])->Get_SocketMatrix("rt_weapon_SOCKET_jnt");
 
 	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	WeaponDesc.eMainState = &m_eMainState;
 
 	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::WEAPON), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Defender_Weapon"), &WeaponDesc)))
 		return E_FAIL;
 
+	CMonster_HP::HPBAR_DESC hpDesc{};
+
+	hpDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	hpDesc.pCombatCom = m_pCombatCom;
+	/* For.UI */
+	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::UI), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HP"), &hpDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
-
-	/* For.UI */
-	//
-
-	
 }
 
 HRESULT CDefender::Ready_Components()
 {
+	CCombatStat::COMBAT_DESC eDesc = {};
+	eDesc.iCurrentHp = 100;
+	eDesc.iMaxHp = 100;
+	eDesc.iDamage = 10;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom),&eDesc)))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -224,5 +249,6 @@ void CDefender::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pCombatCom);
 }
 

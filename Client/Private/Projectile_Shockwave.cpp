@@ -1,5 +1,6 @@
 #include "Projectile_Shockwave.h"
 #include "GameInstance.h"
+#include "CombatStat.h"
 
 CProjectile_Shockwave::CProjectile_Shockwave(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CProjectile_Base(pDevice, pContext)
@@ -36,6 +37,10 @@ HRESULT CProjectile_Shockwave::Initialize(void* pArg)
 	vPos += m_pTransformCom->Get_State(STATE::POSITION);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
+	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pOuterCollider, this);
+	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pInnerCollider, this);
+	
+
 	return S_OK;
 }
 
@@ -55,6 +60,8 @@ void CProjectile_Shockwave::Update(_float fTimeDelta)
 
 	m_fDuration -= fTimeDelta;
 	
+	m_pOuterCollider->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
+	m_pInnerCollider->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CProjectile_Shockwave::Late_Update(_float fTimeDelta)
@@ -85,6 +92,31 @@ HRESULT CProjectile_Shockwave::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+#ifdef _DEBUG
+
+	m_pOuterCollider->Render();
+	m_pInnerCollider->Render();
+
+#endif
+
+	return S_OK;
+}
+
+HRESULT CProjectile_Shockwave::On_Collision(CGameObject* Other, class CCollider* pCollider)
+{
+	if (m_IsColl)
+		return S_OK;
+
+	if (static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat")))->Get_bInvinsible())
+		return S_OK;
+
+	if (m_pOuterCollider->Get_IsColl() && !m_pInnerCollider->Get_IsColl())
+	{
+		m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+		m_IsColl = true;
+	}
+	
+	
 	return S_OK;
 }
 
@@ -97,6 +129,28 @@ HRESULT CProjectile_Shockwave::Ready_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* For.Com_Collider */
+	CBounding_Sphere::SPHERE_DESC eDesc{};
+	eDesc.fRadius = 0.5f;
+	eDesc.vCenter = { 0.f,0.f,0.f };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
+		TEXT("Com_Collider_Outer"), reinterpret_cast<CComponent**>(&m_pOuterCollider), &eDesc)))
+		return E_FAIL;
+
+	eDesc.fRadius = 0.4f;
+	eDesc.vCenter = { 0.f,0.f,0.f };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
+		TEXT("Com_Collider_Inner"), reinterpret_cast<CComponent**>(&m_pInnerCollider), &eDesc)))
+		return E_FAIL;
+
+	CCombatStat::COMBAT_DESC eCombatDesc = {};
+	eCombatDesc.iCurrentHp = 1;
+	eCombatDesc.iMaxHp = 1;
+	eCombatDesc.iDamage = 10;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eCombatDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -130,4 +184,8 @@ CGameObject* CProjectile_Shockwave::Clone(void* pArg)
 void CProjectile_Shockwave::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pOuterCollider);
+	Safe_Release(m_pInnerCollider);
+	
 }

@@ -19,35 +19,45 @@ void CPlayer_State_Combo::Enter(CGameObject* pObj, OBJTYPE eType)
 
 void CPlayer_State_Combo::Update(CGameObject* pObj, float fTimeDelta)
 {
-	if (static_cast<CObserver_Animation*>(m_pGameInstance->
-		Find_Observer(TEXT("Observer_Animation_Player")))
-		->IsAnimationFinished())
+	// 콤보 타이밍만 판단
+	if (m_pModel->Get_Current_Anim_Ratio() > 0.4f)
 	{
-		if (m_IsNextCombo)
-		{
-			if (m_iComboCount == 0)
-			{
-				m_iComboCount = 1;
-				m_pModel->Set_Animation(6, false);
-				m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
-				m_IsNextCombo = false;
-			}
-			else if (m_iComboCount == 1)
-			{
-				m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
-				m_eAttackState = ATTACK::ATTACK_OUT;
-				m_pModel->Set_Animation(8, false);
-				m_IsNextCombo = false;
-			}
-		}
-	}
-	else
-	{
-		if (m_pGameInstance->Key_Down(DIK_SPACE))
-		{
+		if (m_pGameInstance->Key_Up(DIK_SPACE))
 			m_IsNextCombo = true;
-		}
 	}
+
+	
+	if (m_IsNextCombo)
+	{
+		if (m_iComboCount == 0)
+		{
+			m_iComboCount = 1;
+			m_pModel->Set_Animation(6, false);
+			m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
+			m_IsNextCombo = false;
+				
+		}
+		else if (m_iComboCount == 1)
+		{
+			m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
+			m_eAttackState = ATTACK::ATTACK_OUT;
+
+			if (fabs(m_pGameInstance->Get_Timing() < 0.15f))
+			{
+				m_pModel->Set_Animation(8, false);
+			}
+			else
+			{
+				m_pModel->Set_Animation(7, false);
+			}
+			
+			m_IsNextCombo = false;
+				
+		}
+		
+	}
+	
+	
 	
 }
 
@@ -64,12 +74,11 @@ CObject_State* CPlayer_State_Combo::Check_Transition(CGameObject* pObj)
 	
 	if (static_cast<CObserver_Animation*>(m_pGameInstance->
 		Find_Observer(TEXT("Observer_Animation_Player")))
-		->IsAnimationFinished() )
+		->IsAnimationFinished())
 	{
 		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
 		return new CPlayer_State_Idle;
 	}
-
-
+	
     return nullptr;
 }

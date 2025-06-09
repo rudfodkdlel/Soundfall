@@ -2,6 +2,7 @@
 #include "Monster_Base.h"
 #include "Monster_State_Idle.h"
 #include "Discord.h"
+#include "Body_Discord.h"
 
 void CMonster_Pattern_Melee::Enter(CGameObject* pObj, OBJTYPE eType)
 {
@@ -15,27 +16,37 @@ void CMonster_Pattern_Melee::Enter(CGameObject* pObj, OBJTYPE eType)
 
 	m_eDir = static_cast<CDiscord*>(pObj)->Get_Dir_Melee();
 
+
+	auto colliders = static_cast<CBody_Discord*>(static_cast<CDiscord*>(pObj)->Get_Body())->Get_Colliders();
+
+	static_cast<CDiscord*>(pObj)->Get_CombatCom()->Set_Damage(20);
+
+
 	if (DIR_STATE::L == m_eDir)
 	{
 		m_iAnimnum = 7;
 		m_pModel->Set_Animation(7, false);
+		colliders[1]->Set_Active(true);
 	}
 	else if (DIR_STATE::R == m_eDir)
 	{
 		m_iAnimnum = 10;
 		m_pModel->Set_Animation(10, false);
+		colliders[4]->Set_Active(true);
 	}
 
 	else if (DIR_STATE::FL == m_eDir)
 	{
 		m_iAnimnum = 13;
 		m_pModel->Set_Animation(13, false);
+		colliders[2]->Set_Active(true);
 	}
 
 	else if (DIR_STATE::FR == m_eDir)
 	{
 		m_iAnimnum = 16;
 		m_pModel->Set_Animation(16, false);
+		colliders[3]->Set_Active(true);
 	}
 
 	
@@ -80,6 +91,14 @@ CObject_State* CMonster_Pattern_Melee::Check_Transition(CGameObject* pObj)
 	{
 
 		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
+
+		auto colliders = static_cast<CBody_Discord*>(static_cast<CDiscord*>(pObj)->Get_Body())->Get_Colliders();
+
+		for(int i =0; i<5; ++i)
+			colliders[i]->Set_Active(false);
+
+		static_cast<CDiscord*>(pObj)->Get_CombatCom()->Set_Damage(0);
+
 		return new CMonster_State_Idle;
 	}
 

@@ -1,0 +1,127 @@
+기본 움직임은 6방향
+피격은 4방향
+대쉬는 4방향 
+각 무기 별 기본상태
+근접 무기는 기본상태 없고 스페이스 누르면 다른 무기 상관없이 동작
+
+0 - dash_back
+1 - dash_forward
+2 - dash_left
+3 - dash_right
+
+4 - idle_assault 돌격소총 기본 모션
+
+낫
+5 - sickle_combo_1 낫 콤보 1
+6 - sickle_combo_2 낫 콤보 2 
+7- sickle_combo_3 낫 콤보 3
+8 - sickle_uppercut 낫 콤보 3
+
+타이밍 틀리면 5 - 6 - 7
+타이밍 맞으면 5 - 6 - 8
+
+총 잡은 상태에서 걷는 상태
+9 - run_assault_back 
+10 - run_assault_forward
+
+맨 처음에만 쓰기
+11 - spawn 01
+
+궁극기
+12 - sickle uitimate in
+13 - sickle ultimate loop
+14 - sickle ultimate out
+
+도끼
+근접 공격 누른 판정에 따라서 선택, 차징중
+15 - axe chargeuphigh
+16 - axe chargeuplow
+
+차징 끝나고 날아가고 있을때
+17 - axe dash loop
+
+근접 공격 키 누르면 들어감
+18- axe in
+
+공격 모션
+19 - axe slam
+20 - axe swing
+21 - axe uppercut
+
+궁극기 
+22 - axe ultimate aim
+23 - axe ultimate attack
+
+무기 바꾸는 모션
+24 - change weapon assault
+25 - change weapon bazooka
+26 - change weapon guitar
+
+24,25,26은 공격 모션으로 같이 쓸 예정
+공격모션이 이상하게 뽑힘
+
+27 - change weapon keyboard
+28 - attack keyboard
+29 - Idle_keyboard 키보드 기본 모션
+
+30 - attack keyboard loop - 꾹 누르면 이거. 한번만 누르면 28으로
+
+피격 모션 -
+31 - hitreact assault backward
+32 - hitreact assault forward
+
+33 -  hitreact bazooka backward
+34 - hitreact bazooka forward
+35 - hitreact bazooka left
+36 - hitreact bazooka right
+
+37 hitreact guitar backward
+38 hitreact guitar forward
+39 hitreact guitar left
+40 hitreact guitar right
+
+41 hitreact keyboard backward
+42 hitreact keyboard forward
+43 hitreact keyboard left
+44 hitreact keyboard right
+
+45 hitreact global left
+46 hitreact global right
+
+47 Idle bazooka
+
+48 idle beatrail - 이건 좀 지형 해보고 넣어야될듯?
+
+49 idle guitar
+
+50 run assault backward left
+51 run assault backward right
+52 run assault forward left
+53 run assault forward right
+
+// 이거는 안쓸듯
+54 run assault left
+55 run assault right
+
+56 run bazooka backward
+57 run bazooka backward left
+58 run bazooka backward right
+59 run bazooka forward
+60 run bazooka forward left
+61 run bazooka forward right
+
+62 run guitar backward
+63 run guitar backward left 
+64 run guitar backward right
+65 run guitar forward
+66 run guitar forward left
+67 run guitar forward right
+
+68 run keyboard backward
+69 run keyboard backward left 
+70 run keyboard backward right
+71 run keyboard forward
+72 run keyboard forward left
+73 run keyboard forward right
+
+

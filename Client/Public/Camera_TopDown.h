@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Camera.h"
+#include "Observer_Trigger.h"
 
 NS_BEGIN(Client)
 
@@ -25,11 +26,21 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	void Zoom_In(_float fTimeDelta);
+	void Zoom_Out(_float fTimeDelta);
+
 private:
 	_float				m_fSensor{};
 
+	_float				m_fOffset = { 5.f };
+
 	_bool				m_IsTargeted = { false };
 	CGameObject*		m_pTarget = { nullptr };
+
+	CObserver_Trigger*	m_pObserver = { nullptr };
+
+	_bool				m_bMoveRequested = { false };
+	_float				m_fMoveTime = { 1.5f };
 
 public:
 	static CCamera_TopDown* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

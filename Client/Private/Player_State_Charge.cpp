@@ -14,6 +14,7 @@ void CPlayer_State_Charge::Enter(CGameObject* pObj, OBJTYPE eType)
 	static_cast<CPlayer*>(pObj)->Get_Melee_Weapon()->Set_Active(true);
 
 	m_pModel->Set_Animation(15, true);
+
 	m_eAttackState = ATTACK::ATTACK_IN;
 }
 
@@ -40,6 +41,8 @@ void CPlayer_State_Charge::Update(CGameObject* pObj, float fTimeDelta)
 		{
 			m_eAttackState = ATTACK::ATTACK_OUT;
 			m_pModel->Set_Animation(20, false);
+
+			
 		}
 	}
 	else if(ATTACK::ATTACK_OUT == m_eAttackState)

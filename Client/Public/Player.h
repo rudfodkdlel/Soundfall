@@ -4,6 +4,7 @@
 #include "ContainerObject.h"
 #include "Weapon_Base.h"
 #include "Object_State.h"
+#include "CombatStat.h"
 
 
 NS_BEGIN(Engine)
@@ -25,6 +26,7 @@ public:
 	_vector Get_Dir() { return m_vDir; }
 	WEAPON	Get_WeaponType() { return m_pRangedWeapon->Get_WeaponType(); }
 	class CModel* Get_BodyModel() { return static_cast<class CModel*>( m_PartObjects[PART_BODY]->Get_Component(TEXT("Com_Model"))); }
+	CCombatStat* Get_CombatCom() { return m_pCombatCom; }
 	CWeapon_Base* Get_Range_Weapon() { return m_pRangedWeapon; }
 	CWeapon_Base* Get_Melee_Weapon() { return m_pMeleeWeapon; }
 	void		  Set_Weapon_Active(_bool IsActive) { m_pRangedWeapon->Set_Active(IsActive); }
@@ -56,13 +58,17 @@ private:
 	CWeapon_Base*	m_pRangedWeapon = { nullptr };
 	CWeapon_Base*	m_pMeleeWeapon = { nullptr };
 
+	CCombatStat* m_pCombatCom = { nullptr };
+
 	// inventory 만들어서 담아두자
 	//class CInventory* m_pInventory = { nullptr };
 
 	_vector	m_vDir = {};
 	_float  m_fSpeed = {};
 
-
+	// test용. 나중에 지우기
+	_bool   m_IsGoodTiming = { false };
+	_float  m_fRenderTime = { 0.f };
 
 private:
 	HRESULT Ready_PartObjects();

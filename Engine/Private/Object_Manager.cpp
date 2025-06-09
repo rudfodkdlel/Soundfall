@@ -98,8 +98,24 @@ CGameObject* CObject_Manager::GetLastObjectFromLayer(_uint iLevelIndex, const _w
 	if (nullptr == pLayer)
 		return nullptr;
 
+	if (pLayer->GetGameObjectList().empty())
+		return nullptr;
+
 	return pLayer->GetGameObjectList().back();
 
+}
+
+list<class CGameObject*>* CObject_Manager::GetLayerList(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, strLayerTag);
+
+	if (nullptr == pLayer)
+		return nullptr;
+
+	if (pLayer->GetGameObjectList().empty())
+		return nullptr;
+
+	return &pLayer->GetGameObjectList();
 }
 
 CLayer* CObject_Manager::Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag)

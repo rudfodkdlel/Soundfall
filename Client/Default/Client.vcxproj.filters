@@ -118,12 +118,6 @@
     <Filter Include="04. Observers">
       <UniqueIdentifier>{b0a4664f-a326-45ef-877c-e8d39a422aa0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="04. Observers\Hp">
-      <UniqueIdentifier>{159b0d8b-5a65-4055-b9be-9123d1f537de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04. Observers\State">
-      <UniqueIdentifier>{ace82525-280f-4865-b432-dc4538d24932}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04. Observers\Phase">
       <UniqueIdentifier>{ef3f7012-b96a-48a5-848a-14da8e7c4c6a}</UniqueIdentifier>
     </Filter>
@@ -190,9 +184,6 @@
     <Filter Include="02.GameObjects\06. State\Monster\Attack\Spawn">
       <UniqueIdentifier>{cec70bc0-c2d0-4c6b-b513-74884b065fe1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06. State\Monster\Attack\Wall">
-      <UniqueIdentifier>{98de9680-27c1-48a2-bcc8-255891c49e89}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\06. State\Monster\Attack\Missile">
       <UniqueIdentifier>{5657d648-e9aa-4693-b56e-3a16e22ea28b}</UniqueIdentifier>
     </Filter>
@@ -223,9 +214,6 @@
     <Filter Include="03. UI\Player\Metronome\Center_Ring">
       <UniqueIdentifier>{1ff70f35-2782-4832-bd8f-94962192ef48}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. UI\Player\PlayerHp">
-      <UniqueIdentifier>{fcee3f22-19d7-4fe3-ab19-eaa5823aefb1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. UI\Player\PlayerRing">
       <UniqueIdentifier>{2ba071c1-724b-4e0f-8fe1-e6c600fa334b}</UniqueIdentifier>
     </Filter>
@@ -246,6 +234,36 @@
     </Filter>
     <Filter Include="02.GameObjects\05. Monster\Defender\Weapon">
       <UniqueIdentifier>{17e55478-f461-465b-884d-5a5422f878a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. Component">
+      <UniqueIdentifier>{35f7a666-829f-46db-a0c6-e3f9dfaf5634}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. Component\CombatStat">
+      <UniqueIdentifier>{0ddca2b7-2de2-45bd-9078-47baeb80dcbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. Trigger">
+      <UniqueIdentifier>{c217d0b7-7801-4e72-a209-d7128b3a71cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\Trigger">
+      <UniqueIdentifier>{329b4a8e-1630-43de-bb8f-653828d470cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Player\Ult">
+      <UniqueIdentifier>{918d542a-8360-427c-bccf-e3b20c7ce43d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Monster\MonsterHp\Boss">
+      <UniqueIdentifier>{03460e5d-6347-4ff5-9508-2fa17bd999f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\HpBar">
+      <UniqueIdentifier>{fcee3f22-19d7-4fe3-ab19-eaa5823aefb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Monster\Attack\Wall">
+      <UniqueIdentifier>{98de9680-27c1-48a2-bcc8-255891c49e89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. Observers\State">
+      <UniqueIdentifier>{ace82525-280f-4865-b432-dc4538d24932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Artillery\Body">
+      <UniqueIdentifier>{fa5354f7-d305-490f-8050-112f0f2c4b1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -441,6 +459,33 @@
     <ClInclude Include="..\public\Monster_HP.h">
       <Filter>03. UI\Monster\MonsterHp</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\HP_Bar.h">
+      <Filter>03. UI\HpBar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CombatStat.h">
+      <Filter>06. Component\CombatStat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_State_Groggy.h">
+      <Filter>02.GameObjects\06. State\Monster\Change</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_State_Death.h">
+      <Filter>02.GameObjects\06. State\Monster\Death</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Struct.h">
+      <Filter>99.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trigger.h">
+      <Filter>02.GameObjects\08. Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Observer_Trigger.h">
+      <Filter>04. Observers\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Artillery.h">
+      <Filter>02.GameObjects\05. Monster\Artillery</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Artillery.h">
+      <Filter>02.GameObjects\05. Monster\Artillery\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -629,6 +674,30 @@
     </ClCompile>
     <ClCompile Include="..\private\Monster_HP.cpp">
       <Filter>03. UI\Monster\MonsterHp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CombatStat.cpp">
+      <Filter>06. Component\CombatStat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HP_Bar.cpp">
+      <Filter>03. UI\HpBar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_State_Groggy.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Change</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_State_Death.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Death</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trigger.cpp">
+      <Filter>02.GameObjects\08. Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Observer_Trigger.cpp">
+      <Filter>04. Observers\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Artillery.cpp">
+      <Filter>02.GameObjects\05. Monster\Artillery</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Artillery.cpp">
+      <Filter>02.GameObjects\05. Monster\Artillery\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

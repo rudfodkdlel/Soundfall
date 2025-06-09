@@ -8,6 +8,8 @@
 #include "Monster_Pattern_Missile.h"
 #include "Monster_Pattern_Melee.h"
 #include "Monster_Pattern_Wall.h"
+#include "Monster_State_Groggy.h"
+#include "Body_Discord.h"
 
 void CMonster_State_Idle::Enter(CGameObject* pObj, OBJTYPE eType)
 {
@@ -20,7 +22,7 @@ void CMonster_State_Idle::Enter(CGameObject* pObj, OBJTYPE eType)
 	m_pModel = static_cast<CMonster_Base*>(pObj)->Get_BodyModel();
 	Safe_AddRef(m_pModel);
 
-	int iPhase = static_cast<CObserver_Phase*>(m_pGameInstance->Find_Observer(TEXT("Observer_Phase_Discord")))->Get_Phase();
+	int iPhase = static_cast<CDiscord*>(pObj)->Get_Phase();
 
 
 	if (1 == iPhase)
@@ -51,7 +53,19 @@ void CMonster_State_Idle::Exit(CGameObject* pObj)
 
 CObject_State* CMonster_State_Idle::Check_Transition(CGameObject* pObj)
 {
-	//
+	if (static_cast<CDiscord*>(pObj)->Get_CombatCom()->Get_Current_HP() <= 0)
+	{
+		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
+		static_cast<CDiscord*>(pObj)->Set_bUseSpawn(false);
+		return new CMonster_State_Groggy;
+	}
+
+	if (static_cast<CDiscord*>(pObj)->Check_Groggy())
+	{
+		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
+		static_cast<CDiscord*>(pObj)->Set_bUseSpawn(false);
+		return new CMonster_State_Groggy;
+	}
 
 
 	if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
@@ -59,7 +73,7 @@ CObject_State* CMonster_State_Idle::Check_Transition(CGameObject* pObj)
 		//m_eNextPattern = static_cast<CDiscord*>(pObj)->Get_Next_Skill();
 		// BOSS_PATTERN(int(m_pGameInstance->Compute_Random(0.f, 5.f)))
 		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
-		switch (BOSS_PATTERN(int(m_pGameInstance->Compute_Random(0.f, 5.f))))
+		switch (static_cast<CDiscord*>(pObj)->Get_Next_Skill())
 		{
 		case Client::BP_MELEE:
 			return new CMonster_Pattern_Melee;
@@ -68,6 +82,7 @@ CObject_State* CMonster_State_Idle::Check_Transition(CGameObject* pObj)
 			return new CMonster_Pattern_EchoSlam;
 			break;
 		case Client::BP_SPAWN:
+			static_cast<CDiscord*>(pObj)->Set_bUseSpawn(true);
 			return new CMonster_Pattern_Spawn;
 			break;
 		case Client::BP_WALL:

@@ -7,6 +7,7 @@
 #include "Camera_Free.h"
 #include "Camera_TopDown.h"
 #include "BackGround.h"
+#include "CombatStat.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance { CGameInstance::Get_Instance() }
@@ -28,6 +29,9 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iNumLevels = static_cast<_uint>(LEVEL::END);
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(EngineDesc, &m_pDevice, &m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(Ready_Collision_Setting()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Font()))
@@ -53,6 +57,10 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
+	wstring str = std::wstring(TEXT("ÇöÀç Interval :")) + std::to_wstring(m_pGameInstance->Get_BeatInterval());
+
+	m_pGameInstance->Draw_Font(TEXT("Default"), str.c_str(), _float2(10.f, 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+
 	m_pGameInstance->End_Draw();
 
 
@@ -61,6 +69,21 @@ HRESULT CMainApp::Render()
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+
+	/* For.Prototype_Component_Collider_AABB */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
+		CCollider::Create(m_pDevice, m_pContext, COLLIDER::AABB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_OBB */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pContext, COLLIDER::OBB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_Sphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
+		CCollider::Create(m_pDevice, m_pContext, COLLIDER::SPHERE))))
+		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Rect*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -109,12 +132,30 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// combat
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		CCombatStat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CMainApp::Ready_Font()
 {
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Default"), TEXT("../../Resource/font/NotoSansKR.spritefont"))))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Collision_Setting()
+{
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_MONSTER });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_MONSTER_PROJECTILE });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_STRUCTURE_WALL });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_TRIGGER });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER_PROJECTILE, CG_STRUCTURE_WALL });
+	m_pGameInstance->Add_Collider_Group({ CG_MONSTER, CG_PLAYER_PROJECTILE });
+	m_pGameInstance->Add_Collider_Group({ CG_WEAPON, CG_MONSTER });
 	return S_OK;
 }
 

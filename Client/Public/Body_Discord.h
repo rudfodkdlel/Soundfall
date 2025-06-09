@@ -2,16 +2,26 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
+#include "CombatStat.h"
 
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
 
 class CBody_Discord final : public CPartObject
 {
+public:
+	typedef struct tagBodyDesc : public CPartObject::PARTOBJECT_DESC {
+		CCombatStat* pCombatCom;
+
+	}BODY_DESC;
+
+public:
+	CCollider** Get_Colliders() { return m_pColliderCom; }
 private:
 	CBody_Discord(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBody_Discord(const CBody_Discord& Prototype);
@@ -25,14 +35,16 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-
+	virtual HRESULT On_Collision(CGameObject* Other, CCollider* pCollider);
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
+	CCollider* m_pColliderCom[5] = {nullptr};
+	CCombatStat* m_pCombatCom = { nullptr };
 	_bool	m_IsFinished = { false };
 
+	const _float4x4* m_pSocketMatrix = { nullptr };
 private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

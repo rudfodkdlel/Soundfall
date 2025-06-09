@@ -5,9 +5,7 @@
 #include "PartObject.h"
 #include "Observer_Animation.h"
 #include "Object_State.h"
-#include "Observer_State.h"
-#include "Observer_Phase.h"
-#include "Model.h"
+#include "Body_Discord.h"
 
 CDiscord::CDiscord(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster_Base{ pDevice, pContext }
@@ -17,6 +15,39 @@ CDiscord::CDiscord(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CDiscord::CDiscord(const CDiscord& Prototype)
     : CMonster_Base{ Prototype }
 {
+}
+
+_bool CDiscord::Check_Groggy()
+{
+	if (m_bUseSpawn)
+	{
+		auto& objList = *m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Boss_Spawn"));
+		objList.remove_if([](CGameObject* p)
+			{
+				return p == nullptr;
+			});
+		
+		if (objList.empty())
+			return true;
+	}
+	
+
+	return false;
+}
+
+_bool CDiscord::Check_Wall()
+{
+
+	auto& objList = *m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Boss_Wall"));
+	objList.remove_if([](CGameObject* p)
+		{
+			return p == nullptr;
+		});
+
+	if (objList.empty())
+		return true;
+
+	return false;
 }
 
 HRESULT CDiscord::Initialize_Prototype()
@@ -45,12 +76,9 @@ HRESULT CDiscord::Initialize(void* pArg)
 	
 
 	m_pGameInstance->Add_Observer(TEXT("Observer_Animation_Discord"), new CObserver_Animation);
-	m_pGameInstance->Add_Observer(TEXT("Observer_Phase_Discord"), new CObserver_Phase);
-	//m_pGameInstance->Add_Observer(TEXT("Observer_State_Discord"), new CObserver_State);
 	m_pState = new CObject_State_Spawn;
 	m_pState->Enter(this, OBJTYPE::BOSS);
 
-	m_fSkillCoolTimes = {3.f, 3.f, 3.f, 3.f, 3.f};
 	_vector vPos = { 0.f, 0.f, 30.f, 1.f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
@@ -68,7 +96,7 @@ void CDiscord::Priority_Update(_float fTimeDelta)
 		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
 	}
 		
-		
+
 
 	__super::Priority_Update(fTimeDelta);
 
@@ -80,7 +108,14 @@ void CDiscord::Update(_float fTimeDelta)
 
 	if (nullptr != m_pState)
 		m_pState->Update(this, fTimeDelta);
+
+	if (m_pGameInstance->Key_Up(DIK_H))
+	{
+		m_pCombatCom->Hit(200);
+	}
+
 	
+	m_pCombatCom->Update(fTimeDelta);
 }
 
 void CDiscord::Late_Update(_float fTimeDelta)
@@ -114,13 +149,13 @@ void CDiscord::Select_State()
 
 BOSS_PATTERN CDiscord::Get_Next_Skill()
 {
-	for (int i = 0; i < m_fSkillCoolTimes.size(); ++i)
-	{
-		if (m_fSkillCoolTimes[i] <= 0.f)
-			return BOSS_PATTERN(i);
-	}
+	if (m_iIndex >= m_normalSequence.size())
+		m_iIndex = 0;
 
-	return BP_END;
+	int iPattern = m_normalSequence[m_iIndex];
+	++m_iIndex;
+
+	return BOSS_PATTERN(iPattern);
 }
 
 DIR_STATE CDiscord::Get_Dir_Melee()
@@ -164,9 +199,12 @@ DIR_STATE CDiscord::Get_Dir_Melee()
 
 HRESULT CDiscord::Ready_PartObjects()
 {
-	CPartObject::PARTOBJECT_DESC	BodyDesc{};
+
+	CBody_Discord::BODY_DESC BodyDesc{};
+	
 
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	BodyDesc.pCombatCom = m_pCombatCom;
 
 	if (FAILED(__super::Add_PartObject(ENUM_CLASS(PART_DEFAULT::BODY), ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Discord"), &BodyDesc)))
 		return E_FAIL;
@@ -177,6 +215,16 @@ HRESULT CDiscord::Ready_PartObjects()
 
 HRESULT CDiscord::Ready_Components()
 {
+	CCombatStat::COMBAT_DESC eDesc = {};
+	eDesc.iCurrentHp = 1000;
+	eDesc.iMaxHp = 1000;
+	eDesc.iDamage = 10;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eDesc)))
+		return E_FAIL;
+
+	return S_OK;
+
     return S_OK;
 }
 
@@ -215,4 +263,6 @@ void CDiscord::Free()
 		m_pState->Exit(this);
 		Safe_Delete(m_pState);
 	}
+
+	Safe_Release(m_pCombatCom);
 }

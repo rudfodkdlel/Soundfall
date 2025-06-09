@@ -12,6 +12,8 @@
 #include "Observer_Manager.h"
 #include "Font_Manager.h"
 #include "Light_Manager.h"
+#include "Sound_Manager.h"
+#include "Collider_Manager.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance);
@@ -29,7 +31,6 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	m_pInput_Device = CInput_Device::Create(EngineDesc.hInstance, EngineDesc.hWnd);
 	if (nullptr == m_pInput_Device)
 		return E_FAIL;
-
 
 	m_pTimer_Manager = CTimer_Manager::Create();
 	if (nullptr == m_pTimer_Manager)
@@ -71,11 +72,24 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pFont_Manager)
 		return E_FAIL;
 
+	m_pSound_Manager = CSound_Manager::Create();
+	if (nullptr == m_pSound_Manager)
+		return E_FAIL;
+
+
+	m_pCollider_Manager = CCollider_Manager::Create();
+	if (nullptr == m_pCollider_Manager)
+		return E_FAIL;
+
+
+
 	return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+
+	m_pSound_Manager->Update(fTimeDelta);
 	
 	m_pInput_Device->Update();
 
@@ -87,9 +101,13 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pObject_Manager->Update(fTimeDelta);
 
+	m_pCollider_Manager->Update();
+
 	m_pObject_Manager->Late_Update(fTimeDelta);
 
 	m_pLevel_Manager->Update(fTimeDelta);
+
+	m_pCollider_Manager->Check_Nullptr();
 }
 
 HRESULT CGameInstance::Begin_Draw()
@@ -188,6 +206,11 @@ CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _wstring& strL
 CGameObject* CGameInstance::GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag)
 {
 	return m_pObject_Manager->GetLastObjectFromLayer(iLevelIndex, strLayerTag);
+}
+
+list<class CGameObject*>* CGameInstance::GetLayerList(_uint iLevelIndex, const _wstring& strLayerTag)
+{
+	return m_pObject_Manager->GetLayerList(iLevelIndex, strLayerTag);
 }
 
 #pragma endregion
@@ -364,6 +387,10 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
 }
+#pragma endregion
+
+
+#pragma region FONT_MANAGER
 
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
@@ -377,8 +404,70 @@ void CGameInstance::Draw_Font(const _wstring& strFontTag, const _tchar* pText, c
 
 #pragma endregion
 
+
+#pragma region SOUND_MANAGER
+
+void CGameInstance::PlaySound(const wstring pSoundKey, CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->PlaySound(pSoundKey, eID, fVolume);
+}
+
+void CGameInstance::PlayBGM(const wstring pSoundKey, float fVolume)
+{
+	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
+}
+
+void CGameInstance::StopSound(CHANNELID eID)
+{
+	m_pSound_Manager->StopSound(eID);
+}
+
+void CGameInstance::StopAll()
+{
+	m_pSound_Manager->StopAll();
+}
+
+void CGameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->SetChannelVolume(eID, fVolume);
+}
+
+_float CGameInstance::Get_BeatInterval()
+{
+	return m_pSound_Manager->Get_BeatInterval();
+}
+
+void CGameInstance::SetBPM(const wstring strName)
+{
+	m_pSound_Manager->SetBPM(strName);
+}
+
+_float CGameInstance::Get_Timing()
+{
+	return m_pSound_Manager->Get_Timing();
+}
+#pragma endregion
+
+#pragma region COLLIDER_MANAGER
+
+HRESULT CGameInstance::Add_Collider(_uint iIndex, CCollider* Collider, CGameObject* pOwner)
+{
+	return m_pCollider_Manager->Add_Collider(iIndex, Collider, pOwner);
+}
+
+HRESULT CGameInstance::Add_Collider_Group(pair<_uint, _uint> typePair)
+{
+	return m_pCollider_Manager->Add_Collider_Group(typePair);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
+	Safe_Release(m_pCollider_Manager);
+
+	Safe_Release(m_pSound_Manager);
+
 	Safe_Release(m_pFont_Manager);
 
 	Safe_Release(m_pLight_Manager);

@@ -41,6 +41,7 @@ void CAxe::Priority_Update(_float fTimeDelta)
 
 void CAxe::Update(_float fTimeDelta)
 {
+    __super::Update(fTimeDelta);
 }
 
 void CAxe::Late_Update(_float fTimeDelta)
@@ -69,6 +70,14 @@ HRESULT CAxe::Ready_Components()
     /* For.Com_Model */
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Axe"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    /* For.Com_Collider */
+    CBounding_Sphere::SPHERE_DESC eDesc{};
+    eDesc.fRadius = 3.f;
+    eDesc.vCenter = _float3(1.f, 1.5f, 1.f);
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
+        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
         return E_FAIL;
 
     return S_OK;

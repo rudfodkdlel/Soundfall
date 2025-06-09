@@ -26,7 +26,7 @@ public:
 
 	// 콜라이더 만들고 없애기
 	class CGameObject* GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag);
-
+	list<class CGameObject*>* GetLayerList(_uint iLevelIndex, const _wstring& strLayerTag);
 
 private:	
 	_uint								m_iNumLevels = {};

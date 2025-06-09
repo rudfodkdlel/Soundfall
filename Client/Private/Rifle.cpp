@@ -46,6 +46,8 @@ void CRifle::Priority_Update(_float fTimeDelta)
 void CRifle::Update(_float fTimeDelta)
 {
     m_fDelay -= fTimeDelta;
+
+    __super::Update(fTimeDelta);
 }
 
 void CRifle::Late_Update(_float fTimeDelta)

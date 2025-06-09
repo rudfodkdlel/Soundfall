@@ -20,6 +20,10 @@ HRESULT CMonster_HP::Initialize_Prototype()
 
 HRESULT CMonster_HP::Initialize(void* pArg)
 {
+    HPBAR_DESC* pDesc = static_cast<HPBAR_DESC*>(pArg);
+
+
+    m_pCombatCom = pDesc->pCombatCom;
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -32,6 +36,8 @@ HRESULT CMonster_HP::Initialize(void* pArg)
     m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
     m_pTransformCom->Scaling(2.f, 0.3f, 1.f);
+
+    
 
     return S_OK;
 }
@@ -69,6 +75,8 @@ void CMonster_HP::Late_Update(_float fTimeDelta)
 
 HRESULT CMonster_HP::Render()
 {
+   
+
     if(FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
@@ -83,6 +91,8 @@ HRESULT CMonster_HP::Render()
 
     if (FAILED(m_pVIBufferCom->Render()))
         return E_FAIL;
+
+   
 
     return S_OK;
 
@@ -110,6 +120,13 @@ HRESULT CMonster_HP::Ready_Components()
 
 HRESULT CMonster_HP::Bind_ShaderResources()
 {
+    CCombatStat::HPBUFFER HpBuffer = m_pCombatCom->Get_HP_BUFFER();
+
+    
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_HpBuffer", &HpBuffer, sizeof(CCombatStat::HPBUFFER))))
+        return E_FAIL;
+
+
     if(FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
         return E_FAIL;
 

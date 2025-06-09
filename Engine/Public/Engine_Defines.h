@@ -14,11 +14,28 @@
 #include "DirectXTK/VertexTypes.h"
 #include "DirectXTK/SpriteBatch.h"
 #include "DirectXTK/SpriteFont.h"
+#include "DirectXTK/PrimitiveBatch.h"
+#include "DirectXTK/Effects.h"
+
 
 #include "Fx11/d3dx11effect.h"
 #include <d3dcompiler.h>
 using namespace DirectX;
 
+#pragma region FMOD
+//sound
+#include <io.h>
+
+#include "fmod.h"
+#include "fmod.hpp"
+//#pragma comment(lib, "fmodex_vc.lib")
+// Debug 일 때
+#pragma comment(lib, "fmodL_vc.lib")
+// Release 일 때
+#pragma comment(lib, "fmod_vc.lib")
+
+using namespace FMOD;
+#pragma endregion
 #pragma region IMGUI
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -34,6 +51,7 @@ using namespace DirectX;
 #include <locale>
 #include <codecvt>
 #include <fstream>  
+#include <unordered_map>
 using namespace std;
 
 

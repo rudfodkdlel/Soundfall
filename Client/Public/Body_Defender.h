@@ -6,6 +6,7 @@
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -28,11 +29,13 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	
+	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) override;
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	CShader*		m_pShaderCom = { nullptr };
+	CModel*			m_pModelCom = { nullptr };
+	CCombatStat*	m_pCombatCom = { nullptr };
+	CCollider*		m_pColliderCom = {nullptr};
 
 	_bool	m_IsFinished = { false };
 

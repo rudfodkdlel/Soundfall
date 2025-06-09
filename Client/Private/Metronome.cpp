@@ -38,6 +38,8 @@ HRESULT CMetronome::Initialize(void* pArg)
 		m_pTransformCom->Rotation(vDir, XMConvertToRadians(90.f));
 	}
 
+	m_fSpawnInterval = m_pGameInstance->Get_BeatInterval();
+
 	return S_OK;
 }
 

@@ -2,6 +2,8 @@
 
 #include "Client_Defines.h"
 #include "Monster_Base.h"
+#include "CombatStat.h"
+#include "PartObject.h"
 
 
 NS_BEGIN(Engine)
@@ -17,6 +19,16 @@ private:
 	CDiscord(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDiscord(const CDiscord& Prototype);
 	virtual ~CDiscord() = default;
+
+public:
+	_int		 Get_CurrentHp() { return m_pCombatCom->Get_Current_HP(); }
+	_bool		 Check_Groggy();
+	_bool		 Check_Wall();
+	CCombatStat* Get_CombatCom() { return m_pCombatCom; }
+	_int		 Get_Phase() { return m_iPhase; }
+	void		 Add_Phase() { ++m_iPhase; }
+	void         Set_bUseSpawn(_bool bUse) { m_bUseSpawn = bUse; }
+	CPartObject* Get_Body() { return m_PartObjects[0]; }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -38,13 +50,21 @@ private:
 
 
 private:
+	CCombatStat* m_pCombatCom = { nullptr };
+
+private:
+
 	CObject_State*	m_pState = { nullptr };
 	_int		    m_iPhase = { 1 };// 1, 2, 3, death
+	_bool			m_bUseSpawn = { false };
 
 	// 임시로 일단
 	_int			m_iLoopCount = { 3 };
 
-	vector<_float>	m_fSkillCoolTimes = {};
+	_int		   m_iIndex = { 0 };
+	vector<_uint>  m_normalSequence = {0,1,2,4,3,0 };
+
+	
 
 public:
 	static CDiscord* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

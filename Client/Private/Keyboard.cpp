@@ -42,6 +42,7 @@ void CKeyboard::Priority_Update(_float fTimeDelta)
 
 void CKeyboard::Update(_float fTimeDelta)
 {
+    __super::Update(fTimeDelta);
 }
 
 void CKeyboard::Late_Update(_float fTimeDelta)

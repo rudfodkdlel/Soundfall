@@ -24,7 +24,8 @@ public:
 		return eDesc;
 	}
 
-	_float Get_KeyFrame_Ratio(_uint* pCurrentKeyFrameIndex) { return *pCurrentKeyFrameIndex / float(m_iNumKeyFrames); }
+	
+
 
 public:
 	HRESULT Initialize(const CHANNEL_DESC& eDesc, const vector<class CBone*>& Bones);

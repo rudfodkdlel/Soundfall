@@ -1,5 +1,6 @@
 #include "Projectile_Player.h"
 #include "GameInstance.h"
+#include "CombatStat.h"
 
 CProjectile_Player::CProjectile_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CProjectile_Base(pDevice, pContext)
@@ -27,12 +28,17 @@ HRESULT CProjectile_Player::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pGameInstance->Add_Collider(CG_PLAYER_PROJECTILE, m_pColliderCom, this);
+
 	return S_OK;
 }
 
 void CProjectile_Player::Priority_Update(_float fTimeDelta)
 {
 	// 삭제할 기준 만들어야됨?
+
+	if (m_IsColl)
+		Set_Dead();
 }
 
 void CProjectile_Player::Update(_float fTimeDelta)
@@ -46,11 +52,15 @@ void CProjectile_Player::Update(_float fTimeDelta)
 
 	// 카메라 쳐다보도록
 	__super::Billboarding();
+
+	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CProjectile_Player::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+
+	if(!m_IsColl)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CProjectile_Player::Render()
@@ -76,6 +86,21 @@ HRESULT CProjectile_Player::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+#ifdef _DEBUG
+
+	m_pColliderCom->Render();
+
+#endif
+
+	return S_OK;
+}
+
+HRESULT CProjectile_Player::On_Collision(CGameObject* Other, class CCollider* pCollider)
+{
+	m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+
+	m_IsColl = true;
+
 	return S_OK;
 }
 
@@ -86,6 +111,23 @@ HRESULT CProjectile_Player::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+	/* For.Com_Collider */
+	CBounding_Sphere::SPHERE_DESC eDesc{};
+	eDesc.fRadius = 1.f;
+	eDesc.vCenter = { 0.f,0.f,0.f };
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
+		return E_FAIL;
+
+	CCombatStat::COMBAT_DESC eCombatDesc = {};
+	eCombatDesc.iCurrentHp = 1;
+	eCombatDesc.iMaxHp = 1;
+	eCombatDesc.iDamage = 20;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eCombatDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

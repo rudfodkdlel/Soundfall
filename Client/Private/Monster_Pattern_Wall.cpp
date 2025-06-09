@@ -32,7 +32,7 @@ void CMonster_Pattern_Wall::Update(CGameObject* pObj, float fTimeDelta)
 			vPos += {0.f, 0.f, -12.f * m_iCount, 0.f};
 			XMStoreFloat4(&eDesc.vPos, vPos);
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
-				TEXT("Layer_Monster_Wall"), &eDesc);
+				TEXT("Layer_Boss_Wall"), &eDesc);
 			++m_iCount;
 		}
 	}

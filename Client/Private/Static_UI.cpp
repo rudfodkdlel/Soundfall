@@ -82,6 +82,8 @@ HRESULT CStatic_UI::Ready_Components(const wstring strTextureTag)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strTextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 CStatic_UI* CStatic_UI::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

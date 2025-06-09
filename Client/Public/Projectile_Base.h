@@ -6,6 +6,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CVIBuffer_Rect;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -41,8 +42,11 @@ protected:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
-
+	CCollider* m_pColliderCom = { nullptr };
+	class CCombatStat* m_pCombatCom = { nullptr };
 	_float4	m_vDir = {};
+
+	_bool	m_IsColl = { false };
 
 private:
 	HRESULT Ready_Components();

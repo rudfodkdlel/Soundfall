@@ -112,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>../public/;../../EngineSDK/Inc/;$(SolutionDir)External Libraries\imgui;$(SolutionDir)External Libraries\imgui\backends;$(SolutionDir)External Libraries\ImGuizmo-master\</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,8 +156,10 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\public\Artillery.h" />
     <ClInclude Include="..\public\Axe.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\public\Body_Artillery.h" />
     <ClInclude Include="..\public\Body_Defender.h" />
     <ClInclude Include="..\public\Body_Discord.h" />
     <ClInclude Include="..\public\Body_Player.h" />
@@ -164,6 +167,8 @@
     <ClInclude Include="..\public\Camera_TopDown.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Enum.h" />
+    <ClInclude Include="..\Public\Client_Struct.h" />
+    <ClInclude Include="..\public\CombatStat.h" />
     <ClInclude Include="..\public\Discord.h" />
     <ClInclude Include="..\public\Discord_Wall.h" />
     <ClInclude Include="..\public\Keyboard.h" />
@@ -184,6 +189,8 @@
     <ClInclude Include="..\public\Monster_Pattern_Spawn.h" />
     <ClInclude Include="..\Public\Monster_Pattern_EchoSlam.h" />
     <ClInclude Include="..\public\Monster_Pattern_Wall.h" />
+    <ClInclude Include="..\public\Monster_State_Death.h" />
+    <ClInclude Include="..\public\Monster_State_Groggy.h" />
     <ClInclude Include="..\public\Monster_State_Idle.h" />
     <ClInclude Include="..\public\MyImgui.h" />
     <ClInclude Include="..\public\Object_State.h" />
@@ -191,7 +198,9 @@
     <ClInclude Include="..\public\Observer_Animation.h" />
     <ClInclude Include="..\public\Observer_Phase.h" />
     <ClInclude Include="..\public\Observer_State.h" />
+    <ClInclude Include="..\public\Observer_Trigger.h" />
     <ClInclude Include="..\public\PlayerRing.h" />
+    <ClInclude Include="..\public\HP_Bar.h" />
     <ClInclude Include="..\public\Player_State_Attack.h" />
     <ClInclude Include="..\public\Player_State_Change.h" />
     <ClInclude Include="..\public\Player_State_Charge.h" />
@@ -213,6 +222,7 @@
     <ClInclude Include="..\public\Structure.h" />
     <ClInclude Include="..\public\Tentacle_Melee.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\Trigger.h" />
     <ClInclude Include="..\public\Weapon_Base.h" />
     <ClInclude Include="..\public\Weapon_Defender.h" />
     <ClInclude Include="Client.h" />
@@ -221,11 +231,18 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\private\Artillery.cpp" />
+    <ClCompile Include="..\private\Body_Artillery.cpp" />
     <ClCompile Include="..\private\Body_Defender.cpp" />
+    <ClCompile Include="..\private\CombatStat.cpp" />
     <ClCompile Include="..\private\Defender.cpp" />
     <ClCompile Include="..\private\Metronome_Center_RIng.cpp" />
     <ClCompile Include="..\private\Monster_HP.cpp" />
+    <ClCompile Include="..\private\Monster_State_Death.cpp" />
+    <ClCompile Include="..\private\Monster_State_Groggy.cpp" />
+    <ClCompile Include="..\private\Observer_Trigger.cpp" />
     <ClCompile Include="..\private\PlayerRing.cpp" />
+    <ClCompile Include="..\private\HP_Bar.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\Tentacle_Melee.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />
@@ -276,6 +293,7 @@
     <ClCompile Include="..\private\Sickle.cpp" />
     <ClCompile Include="..\private\Structure.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\Trigger.cpp" />
     <ClCompile Include="..\private\Weapon_Base.cpp" />
     <ClCompile Include="..\private\Weapon_Defender.cpp" />
     <ClCompile Include="Client.cpp" />

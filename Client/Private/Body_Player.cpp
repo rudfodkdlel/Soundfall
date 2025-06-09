@@ -37,6 +37,12 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_pCombatCom = pDesc->pCombatcom;
+	Safe_AddRef(m_pCombatCom);
+
+	m_Components.emplace(TEXT("Com_Combat"), m_pCombatCom);
+
+	m_pGameInstance->Add_Collider(CG_PLAYER, m_pColliderCom, this);
 
 	return S_OK;
 }
@@ -55,11 +61,15 @@ void CBody_Player::Update(_float fTimeDelta)
 	{
 		m_pGameInstance->Notify(TEXT("Observer_Animation_Player"), TEXT("AnimEnd"));
 	}
+
+	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
+
+	m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
 }
 
 void CBody_Player::Late_Update(_float fTimeDelta)
 {
-	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
+	
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
@@ -73,7 +83,7 @@ HRESULT CBody_Player::Render()
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
-	for (size_t i = 0; i < iNumMesh; i++)
+	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
 			return E_FAIL;
@@ -86,6 +96,13 @@ HRESULT CBody_Player::Render()
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}
+
+#ifdef _DEBUG
+
+	m_pColliderCom->Render();
+
+#endif
+
 
 	return S_OK;
 }
@@ -101,6 +118,17 @@ HRESULT CBody_Player::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Ky"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
+
+	/* For.Com_Collider */
+	CBounding_AABB::AABB_DESC	AABBDesc{};
+	AABBDesc.vExtents = _float3(2.f, 3.f, 2.f);
+	AABBDesc.vCenter = _float3(0.0f, AABBDesc.vExtents.y, 0.f);
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &AABBDesc)))
+		return E_FAIL;
+
+
 
 	return S_OK;
 }
@@ -165,4 +193,6 @@ void CBody_Player::Free()
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pCombatCom);
 }

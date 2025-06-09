@@ -160,6 +160,54 @@
     <ClInclude Include="..\Public\VIBuffer_Cube.h">
       <Filter>01.Utility\04.Components\VIBuffer\Cube</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Sound_Manager.h">
+      <Filter>01.Utility\11. Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod.hpp">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_codec.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_common.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_dsp.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_dsp_effects.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_errors.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\External Libraries\fmod\fmod_output.h">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Collider.h">
+      <Filter>01.Utility\04.Components\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_Sphere.h">
+      <Filter>01.Utility\04.Components\Collider\Bounding\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_AABB.h">
+      <Filter>01.Utility\04.Components\Collider\Bounding\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding_OBB.h">
+      <Filter>01.Utility\04.Components\Collider\Bounding\OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bounding.h">
+      <Filter>01.Utility\04.Components\Collider\Bounding</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01.Utility\04.Components\Collider\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Collider_Manager.h">
+      <Filter>01.Utility\04.Components\Collider\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -305,6 +353,30 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Cube.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sound_Manager.cpp">
+      <Filter>01.Utility\11. Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Collider.cpp">
+      <Filter>01.Utility\04.Components\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_Sphere.cpp">
+      <Filter>01.Utility\04.Components\Collider\Bounding\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_AABB.cpp">
+      <Filter>01.Utility\04.Components\Collider\Bounding\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding_OBB.cpp">
+      <Filter>01.Utility\04.Components\Collider\Bounding\OBB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bounding.cpp">
+      <Filter>01.Utility\04.Components\Collider\Bounding</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>01.Utility\04.Components\Collider\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Collider_Manager.cpp">
+      <Filter>01.Utility\04.Components\Collider\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -455,5 +527,34 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\Cube">
       <UniqueIdentifier>{6cc86b67-8efa-420c-8b54-b4a94586dc88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\11. Sound">
+      <UniqueIdentifier>{ab3a69b9-fa90-4750-b9e1-b07a6c0bc0ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exteral Libraries\fmod">
+      <UniqueIdentifier>{e795e83e-8604-4ed6-965f-8701488e2475}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\DebugDraw">
+      <UniqueIdentifier>{bafd3a82-d90f-4fb4-93e6-56ddc0be2fd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Bounding">
+      <UniqueIdentifier>{6d72a673-7887-4a57-9c65-97630b0aeac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Bounding\AABB">
+      <UniqueIdentifier>{70912fd7-5b08-4665-91a0-bfe3dd1e60b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Bounding\OBB">
+      <UniqueIdentifier>{8cb40013-50cc-4b44-9a2e-a114ee7aa0bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Bounding\Sphere">
+      <UniqueIdentifier>{95a5e225-5a8d-4bf6-a9d0-638cca15b37a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Collider\Manager">
+      <UniqueIdentifier>{04087825-b7e0-411c-990d-48fd1250e47e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\External Libraries\fmod\fmod_dsp.cs">
+      <Filter>Exteral Libraries\fmod</Filter>
+    </None>
   </ItemGroup>
 </Project>

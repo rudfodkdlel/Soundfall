@@ -14,6 +14,12 @@ class CMonster_Base abstract  : public CContainerObject
 {
 public:
 
+	typedef struct tagHpDesc {
+		_float fCurrentRatio; // 현재 체력 / 전체 체력
+		_float fTrailRatio; // 이전 체력 - 현재 체력 / 전체 체력
+
+	}HP_DESC;
+
 protected:
 	CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonster_Base(const CMonster_Base& Prototype);

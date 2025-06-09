@@ -16,6 +16,7 @@ class CStatic_UI final : public CUIObject
 public:
 	typedef struct tagStaticUIDesc : public CUIObject::UIOBJECT_DESC
 	{
+		_int iPassIndex = {0};
 		wstring strTextureTag;
 	}STATIC_UI_DESC;
 
@@ -35,8 +36,6 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-
-	// 좀 나중에 고치기 일단 기본 형태만 잡고
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
 private:

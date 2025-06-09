@@ -8,6 +8,7 @@
 #include "../Default/framework.h"
 #include <process.h>
 #include "Client_Enum.h"
+#include "Client_Struct.h"
 
 
 namespace Client
@@ -21,6 +22,12 @@ extern HINSTANCE g_hInst;
 
 
 using namespace Client;
+
+#ifdef UNICODE
+#define PlaySound PlaySoundW
+#else
+#define PlaySound PlaySoundA
+#endif
 
 
 

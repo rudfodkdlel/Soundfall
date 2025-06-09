@@ -40,20 +40,26 @@ void CWeapon_Base::Priority_Update(_float fTimeDelta)
 
 void CWeapon_Base::Update(_float fTimeDelta)
 {
-}
-
-void CWeapon_Base::Late_Update(_float fTimeDelta)
-{
-
 	_matrix		BoneMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
 	for (size_t i = 0; i < 3; i++)
 		BoneMatrix.r[i] = XMVector3Normalize(BoneMatrix.r[i]);
 
-
 	XMStoreFloat4x4(&m_CombinedWorldMatrix,
 		XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * BoneMatrix * XMLoadFloat4x4(m_pParentMatrix)
 	);
+	
+	if(nullptr != m_pColliderCom)
+		m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+}
+
+void CWeapon_Base::Late_Update(_float fTimeDelta)
+{
+
+
+
+
+	
 	if(m_IsActive)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
@@ -65,7 +71,7 @@ HRESULT CWeapon_Base::Render()
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
-	for (size_t i = 0; i < iNumMesh; i++)
+	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
 			return E_FAIL;
@@ -81,7 +87,11 @@ HRESULT CWeapon_Base::Render()
 			return E_FAIL;
 	}
 
+#ifdef _DEBUG
+	if(nullptr != m_pColliderCom)
+		m_pColliderCom->Render();
 
+#endif
 
 	return S_OK;
 
@@ -124,4 +134,5 @@ void CWeapon_Base::Free()
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pColliderCom);
 }

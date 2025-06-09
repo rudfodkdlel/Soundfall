@@ -58,6 +58,8 @@ namespace Engine
 		return conv.to_bytes(wstr);
 	}
 
+
+
 	inline XMFLOAT4 Make_Float4(const XMFLOAT3& v, float w)
 	{
 		return XMFLOAT4(v.x, v.y, v.z, w);

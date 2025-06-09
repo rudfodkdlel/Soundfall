@@ -24,7 +24,8 @@ void CMonster_Pattern_Spawn::Update(CGameObject* pObj, float fTimeDelta)
 	{
 		if (m_iSpawnCount > 0)
 		{
-			CGameObject::GAMEOBJECT_DESC eDesc = {};
+			CContainerObject::CONTAINEROBJECT_DESC eDesc = {};
+			eDesc.iNumPartObjects = ENUM_CLASS(PART_DEFAULT::END);
 
 			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
 			vPos += {m_pGameInstance->Compute_Random_Normal() * 40 - 20, 0.f, -m_pGameInstance->Compute_Random_Normal() * 30, 0.f};
@@ -32,7 +33,7 @@ void CMonster_Pattern_Spawn::Update(CGameObject* pObj, float fTimeDelta)
 			XMStoreFloat4(&eDesc.vPos, vPos);
 
 			m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Tentacle_Melee"),
-				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Monster"), &eDesc);
+				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Boss_Spawn"), &eDesc);
 
 			--m_iSpawnCount;
 		}

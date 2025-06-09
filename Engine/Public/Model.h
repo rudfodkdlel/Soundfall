@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Animation.h"
 
 NS_BEGIN(Engine)
 
@@ -27,6 +28,8 @@ public:
 	}
 
 	const _float4x4* Get_BoneMatrix(const _char* pBoneName) const;
+
+	_float Get_Current_Anim_Ratio() { return m_Animations[m_iCurrentAnimIndex]->Get_Current_Ratio(); }
 
 public:
 
@@ -73,7 +76,7 @@ private:
 	_uint						m_iCurrentAnimIndex = { 0 };
 	_uint						m_iNextAnimIndex = { 0 };
 	_uint						m_iNumAnimations = {};
-	vector<class CAnimation*>	m_Animations;
+	vector<CAnimation*>	m_Animations;
 
 	_float						m_fChangeDuration = {};
 

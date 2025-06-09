@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Model.h"
 #include "Player_State_Idle.h"
+#include "CombatStat.h"
 
 
 void CPlayer_State_Dash::Enter(CGameObject* pObj, OBJTYPE eType)
@@ -11,7 +12,7 @@ void CPlayer_State_Dash::Enter(CGameObject* pObj, OBJTYPE eType)
 	m_pModel = static_cast<CPlayer*>(pObj)->Get_BodyModel();
 	Safe_AddRef(m_pModel);
 
-	
+	static_cast<CCombatStat*>(pObj->Get_Component(TEXT("Com_Combat")))->Set_bInvinsible(true);
 
 	m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
 
@@ -91,6 +92,7 @@ void CPlayer_State_Dash::Exit(CGameObject* pObj)
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pModel);
 	
+	
 }
 
 CObject_State* CPlayer_State_Dash::Check_Transition(CGameObject* pObj)
@@ -98,6 +100,7 @@ CObject_State* CPlayer_State_Dash::Check_Transition(CGameObject* pObj)
 	if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player")))->IsAnimationFinished())
 	{
 		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Player"))->Reset();
+		static_cast<CCombatStat*>(pObj->Get_Component(TEXT("Com_Combat")))->Set_bInvinsible(false);
 		return new CPlayer_State_Idle;
 	}
 

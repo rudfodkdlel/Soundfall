@@ -262,6 +262,8 @@ void CModel::Change_Animation(_float fTimeDelta, _uint iIndex)
 	{
 		// 보간이 끝나면 현재 index를 바꾸기
 		m_fChangeDuration = 0.f;
+		// 현재 꺼 초기화 하고 다음 꺼로 넘어가기
+		m_Animations[m_iCurrentAnimIndex]->Reset();
 		m_iCurrentAnimIndex = iIndex;
 	}
 

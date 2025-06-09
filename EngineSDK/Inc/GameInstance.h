@@ -45,6 +45,7 @@ public:
 	HRESULT Add_GameObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 	CComponent* Get_Component(_uint iLevelIndex, const _wstring& strLayerTag, const _wstring& strComponentTag, _uint iIndex = 0);
 	class CGameObject* GetLastObjectFromLayer(_uint iLevelIndex, const _wstring& strLayerTag);
+	list<class CGameObject*>* GetLayerList(_uint iLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -106,6 +107,27 @@ public:
 	void Draw_Font(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), _float fRotation = 0.f, const _float2& vOrigin = _float2(0.f, 0.f), _float fScale = 1.f);
 #pragma endregion
 
+#pragma region FONT_MANAGER
+	void PlaySound(const wstring pSoundKey, CHANNELID eID, float fVolume);
+	void PlayBGM(const wstring pSoundKey, float fVolume);
+	void StopSound(CHANNELID eID);
+	void StopAll();
+	void SetChannelVolume(CHANNELID eID, float fVolume);
+
+	_float Get_BeatInterval();
+	void SetBPM(const wstring strName);
+	_float Get_Timing();
+#pragma endregion
+
+#pragma region COLLIDER_MANAGER
+	// gameinstance에 등록해서 오브젝트에서 추가. 
+	HRESULT Add_Collider(_uint iIndex, CCollider* Collider, CGameObject* pOwner);
+	// 충돌 검사를 할 타입들을 미리 넣어둔다
+	HRESULT Add_Collider_Group(pair<_uint, _uint> typePair);
+	
+#pragma endregion
+
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -119,7 +141,8 @@ private:
 	class CObserver_Manager*	m_pObserver_Manager = { nullptr };
 	class CLight_Manager*		m_pLight_Manager = { nullptr };
 	class CFont_Manager*		m_pFont_Manager = { nullptr };
-
+	class CSound_Manager*		m_pSound_Manager = { nullptr };
+	class CCollider_Manager*	m_pCollider_Manager = { nullptr };
 
 public:
 	void Release_Engine();

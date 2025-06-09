@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "Monster_Base.h"
 
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
 
-class CTentacle_Melee final : public CGameObject
+class CTentacle_Melee final : public CMonster_Base
 {
 private:
 	CTentacle_Melee(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,6 +26,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) override;
+
 	void Select_State();
 
 
@@ -36,14 +39,18 @@ private:
 
 	_int	m_iAnimNum = {0};
 
-	STATE_MAIN m_eState = { STATE_MAIN::SPWAN };
-
 	CGameObject* m_pTarget = { nullptr };
 	_bool		 m_IsTargeted = { false };
+
+	CCollider*	m_pColliderCom = { nullptr };
+	_bool		m_IsColl = { false };
+	
+	class CCombatStat* m_pCombatCom = { nullptr };
 
 private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Ready_PartObjects();
 
 public:
 	static CTentacle_Melee* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

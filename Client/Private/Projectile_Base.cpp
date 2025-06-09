@@ -1,5 +1,6 @@
 #include "Projectile_Base.h"
 #include "GameInstance.h"
+#include "CombatStat.h"
 
 CProjectile_Base::CProjectile_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject(pDevice, pContext)
@@ -82,5 +83,6 @@ void CProjectile_Base::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
-
+	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pCombatCom);
 }

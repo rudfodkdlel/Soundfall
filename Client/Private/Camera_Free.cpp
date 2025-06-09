@@ -22,7 +22,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 {
 	CCamera::CAMERA_DESC			Desc{};
 
-	Desc.vEye = _float3(0.f, 40.f, -15.f);
+	Desc.vEye = _float3(0.f, 20.f, -15.f);
 	Desc.vAt = _float3(0.f, 0.f, 0.f);
 	Desc.fFov = XMConvertToRadians(60.0f);
 	Desc.fNear = 0.1f;

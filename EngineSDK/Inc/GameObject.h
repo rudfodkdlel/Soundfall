@@ -15,6 +15,8 @@ public:
 		_tchar		szName[MAX_PATH];
 	}GAMEOBJECT_DESC;
 
+
+
 	OBJECT_SAVE_DESC Get_Save_Desc()
 	{
 		OBJECT_SAVE_DESC eDesc = {};
@@ -36,6 +38,7 @@ public:
 
 	void        Set_Dead() { m_bDead = true; }
 	_bool		Get_Dead() { return m_bDead; }
+	
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -43,6 +46,9 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+
+	// 필요하면 무조건 구현하기
+	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) { return E_FAIL; }
 
 	void Billboarding();
 	
@@ -61,6 +67,9 @@ protected:
 
 	_wstring									m_strProtoTag = {};
 	_int										m_iProtoIndex = {};
+
+
+
 
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

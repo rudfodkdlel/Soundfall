@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CTexture;
 class CVIBuffer_Rect;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -27,9 +28,15 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider);
+
 private:
 	_float   m_fScale = {8.f};
 	_float   m_fDuration = { 8.f };
+
+
+	CCollider* m_pInnerCollider = { nullptr };
+	CCollider* m_pOuterCollider = { nullptr };
 
 private:
 	HRESULT Ready_Components();

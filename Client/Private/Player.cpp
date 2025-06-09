@@ -60,6 +60,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Update(_float fTimeDelta)
 {
+	if (m_pCombatCom->Get_Current_HP() <= 0)
+		m_pCombatCom->Heal(1.f);
+
 	__super::Priority_Update(fTimeDelta);
 }
 
@@ -74,6 +77,8 @@ void CPlayer::Update(_float fTimeDelta)
 		m_pState->Update(this, fTimeDelta);
 
 	Look_Mouse();
+
+	m_pCombatCom->Update(fTimeDelta); 
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -92,15 +97,46 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (nullptr != m_pMeleeWeapon)
 		m_pMeleeWeapon->Late_Update(fTimeDelta);
 
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
 
 HRESULT CPlayer::Render()
 {
+	if (m_fRenderTime > 0.f)
+	{
+		if (m_IsGoodTiming)
+		{
+			m_pGameInstance->Draw_Font(TEXT("Default"), TEXT("GOOD Timing"), _float2(10.f, 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			m_pGameInstance->Draw_Font(TEXT("Default"), TEXT("BAD Timing"), _float2(10.f, 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+		}
+	}
+	
 	return S_OK;
 }
 
 void CPlayer::Input_Key(_float fTimeDelta)
 {
+	if (!m_pGameInstance->Is_NoKeyPressed())
+	{
+		m_fRenderTime += 0.5f;
+
+		if (fabs(m_pGameInstance->Get_Timing() < 0.15f))
+		{
+			m_IsGoodTiming = true;
+		}
+		else
+			m_IsGoodTiming = false;
+
+	}
+
+	if (m_pGameInstance->Key_Up(DIK_H))
+	{
+		m_pCombatCom->Hit(10);
+	}
+
 	if (m_pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
 	{
 		return;
@@ -108,7 +144,7 @@ void CPlayer::Input_Key(_float fTimeDelta)
 	
 	if (m_pGameInstance->Is_NoKeyPressed())
 	{
-		
+		m_fRenderTime -= fTimeDelta;
 		return;
 	}
 
@@ -119,6 +155,8 @@ void CPlayer::Input_Key(_float fTimeDelta)
 	{
 		m_pRangedWeapon->Attack(XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK)));
 	}
+
+
 
 }
 
@@ -258,6 +296,7 @@ DIR_STATE CPlayer::Calc_Dir(_vector vDir)
 	}
 
 
+	return DIR_STATE::NONE;
 }
 
 HRESULT CPlayer::Ready_PartObjects()
@@ -266,6 +305,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	CBody_Player::BODY_PLAYER_DESC BodyDesc{};
 
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	BodyDesc.pCombatcom = m_pCombatCom;
 
 	if (FAILED(__super::Add_PartObject(PART_BODY, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
 		return E_FAIL;
@@ -293,12 +333,22 @@ HRESULT CPlayer::Ready_PartObjects()
 	m_pMeleeWeapon = static_cast<CWeapon_Base*>(m_PartObjects[PART_WEAPON_MELEE_0]);
 	m_pMeleeWeapon->Set_Active(false);
 
+	return S_OK;
 }
 
 HRESULT CPlayer::Ready_Components()
 {
+	CCombatStat::COMBAT_DESC eDesc = {};
+	eDesc.iCurrentHp = 100;
+	eDesc.iMaxHp = 100;
+	eDesc.iDamage = 10;
+	eDesc.fInvincibleDuration = 1.f;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eDesc)))
+		return E_FAIL;
 
 	return S_OK;
+
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -329,11 +379,14 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
+	__super::Free();
+
 	if (nullptr != m_pState)
 	{
 		m_pState->Exit(this);
 		Safe_Delete(m_pState);
 	}
-	__super::Free();
-		
+
+	Safe_Release(m_pCombatCom);
+	
 }

@@ -2,10 +2,12 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
+#include "CombatStat.h"
 
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 NS_END
 
 NS_BEGIN(Client)
@@ -15,6 +17,7 @@ class CWeapon_Defender : public CPartObject
 public:
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJECT_DESC
 	{
+		STATE_MAIN* eMainState;
 		const _float4x4* pSocketMatrix = { nullptr };
 	}WEAPON_DESC;
 private:
@@ -30,14 +33,22 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
+	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) override;
+
 protected:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 protected:
 	const _float4x4* m_pSocketMatrix = { nullptr };
 
 
+private:
+	_bool	m_IsColl = { false };
+	CCombatStat* m_pCombatCom = { nullptr };
+	STATE_MAIN* m_eMainState;
+	_float		m_fDelay = { 0.6f };
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

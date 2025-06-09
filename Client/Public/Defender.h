@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Monster_Base.h"
+#include "CombatStat.h"
 
 
 NS_BEGIN(Engine)
@@ -13,6 +14,8 @@ NS_BEGIN(Client)
 class CDefender final : public CMonster_Base
 {
 public:
+
+	CCombatStat::HPBUFFER Get_Hp_Buffer() { return m_pCombatCom->Get_HP_BUFFER(); }
 
 private:
 	CDefender(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -36,6 +39,8 @@ private:
 
 private:
 	_float		m_fPatternTime = { 2.f };
+
+	CCombatStat* m_pCombatCom = { nullptr };
 
 public:
 	static CDefender* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

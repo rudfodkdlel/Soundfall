@@ -3,6 +3,7 @@
 #include "Model.h"
 #include "Object_State_Spawn.h"
 #include "Observer_Animation.h"
+#include "CombatStat.h"
 
 CBody_Defender::CBody_Defender(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CPartObject{ pDevice, pContext }
@@ -28,18 +29,21 @@ HRESULT CBody_Defender::Initialize_Prototype()
 
 HRESULT CBody_Defender::Initialize(void* pArg)
 {
-    
+    NORMAL_BODY_DESC* pDesc = static_cast<NORMAL_BODY_DESC*>(pArg);
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (FAILED(Ready_Components()))
         return E_FAIL;
   
+    m_pCombatCom = pDesc->pCombatCom;
+    Safe_AddRef(m_pCombatCom);
 
+    m_Components.emplace(TEXT("Com_Combat"), m_pCombatCom);
    
     m_pModelCom->Set_Animation(11, false);
 
-
+    m_pGameInstance->Add_Collider(CG_MONSTER, m_pColliderCom, this);
     return S_OK;
 }
 
@@ -53,12 +57,14 @@ void CBody_Defender::Update(_float fTimeDelta)
 
     m_IsFinished = m_pModelCom->Play_Animation(fTimeDelta);
 
+    XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
+
+    m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
+
 }
 
 void CBody_Defender::Late_Update(_float fTimeDelta)
 {
-
-    XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
 
     m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 
@@ -72,7 +78,7 @@ HRESULT CBody_Defender::Render()
 
     _uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMesh; i++)
+    for (_uint i = 0; i < iNumMesh; i++)
     {
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
             return E_FAIL;
@@ -85,6 +91,20 @@ HRESULT CBody_Defender::Render()
         if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;
     }
+
+#ifdef _DEBUG
+
+
+    m_pColliderCom->Render();
+
+#endif
+
+
+    return S_OK;
+}
+
+HRESULT CBody_Defender::On_Collision(CGameObject* Other, class CCollider* pCollider)
+{
 
     return S_OK;
 }
@@ -99,6 +119,15 @@ HRESULT CBody_Defender::Ready_Components()
     /* For.Com_Model */
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Defender"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+        return E_FAIL;
+
+    /* For.Com_Collider */
+    CBounding_OBB::OBB_DESC	OBBDesc{};
+    OBBDesc.vExtents = _float3(1.5f, 2.f, 1.f);
+    OBBDesc.vCenter = _float3(0.0f, OBBDesc.vExtents.y, 0.f);
+
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_OBB"),
+        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &OBBDesc)))
         return E_FAIL;
 
     return S_OK;
@@ -160,4 +189,6 @@ void CBody_Defender::Free()
 
     Safe_Release(m_pModelCom);
     Safe_Release(m_pShaderCom);
+    Safe_Release(m_pCombatCom);
+    Safe_Release(m_pColliderCom);
 }

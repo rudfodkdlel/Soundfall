@@ -1,6 +1,7 @@
 #include "Discord_Wall.h"
 #include "GameInstance.h"
 #include "Model.h"
+#include "CombatStat.h"
 
 CDiscord_Wall::CDiscord_Wall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -39,15 +40,20 @@ HRESULT CDiscord_Wall::Initialize(void* pArg)
 	_vector vAxis = { 0.f, 1.f, 0.f,0.f };
 	m_pTransformCom->Rotation(vAxis, XMConvertToRadians(90.f));
 
+	m_pGameInstance->Add_Collider(CG_STRUCTURE_WALL, m_pColliderCom, this);
+
     return S_OK;
 }
 
 void CDiscord_Wall::Priority_Update(_float fTimeDelta)
 {
+	if (m_pCombatCom->Get_Current_HP() <= 0)
+		Set_Dead();
 }
 
 void CDiscord_Wall::Update(_float fTimeDelta)
 {
+	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CDiscord_Wall::Late_Update(_float fTimeDelta)
@@ -67,7 +73,7 @@ HRESULT CDiscord_Wall::Render()
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
-	for (size_t i = 0; i < iNumMesh; i++)
+	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
 			return E_FAIL;
@@ -86,6 +92,11 @@ HRESULT CDiscord_Wall::Render()
 	}
 
 
+#ifdef _DEBUG
+
+	m_pColliderCom->Render();
+
+#endif
 
 	return S_OK;
 }
@@ -100,6 +111,24 @@ HRESULT CDiscord_Wall::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Discord_Wall"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
+
+	CCombatStat::COMBAT_DESC eDesc = {};
+	eDesc.iCurrentHp = 100;
+	eDesc.iMaxHp = 100;
+	eDesc.iDamage = 0;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eDesc)))
+		return E_FAIL;
+
+	/* For.Com_Collider */
+	CBounding_AABB::AABB_DESC	AABBDesc{};
+	AABBDesc.vExtents = _float3(2.f, 2.f, 6.f);
+	AABBDesc.vCenter = _float3(0.0f, AABBDesc.vExtents.y, -5.f);
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &AABBDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -137,4 +166,6 @@ void CDiscord_Wall::Free()
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pCombatCom);
 }

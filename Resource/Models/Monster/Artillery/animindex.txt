@@ -1,0 +1,13 @@
+0 attack in
+1 attack loop
+2 attack out
+3 hit back
+4 hit forward
+5 hit left
+6 hit right
+7 idle
+8 run b
+9 run f
+10 run l
+11 run r
+12 spawn

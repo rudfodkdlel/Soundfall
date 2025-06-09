@@ -1,6 +1,7 @@
 #include "Camera_TopDown.h"
 #include "GameInstance.h"
 
+
 CCamera_TopDown::CCamera_TopDown(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -34,6 +35,12 @@ HRESULT CCamera_TopDown::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
+	m_pGameInstance->Add_Observer(TEXT("Observer_Trigger"), new CObserver_Trigger);
+
+	m_pObserver = static_cast<CObserver_Trigger*>(m_pGameInstance->Find_Observer(TEXT("Observer_Trigger")));
+
+	Safe_AddRef(m_pObserver);
+
 	return S_OK;
 }
 
@@ -48,6 +55,7 @@ void CCamera_TopDown::Priority_Update(_float fTimeDelta)
 			m_IsTargeted = true;
 		// 못찾으면 return
 	}
+
 
 	
 
@@ -87,6 +95,27 @@ void CCamera_TopDown::Update(_float fTimeDelta)
 		vPos -= {fTimeDelta * 10.f, 0.f, 0.f, 0.f};
 	}
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	m_bMoveRequested = m_pObserver->Get_IsColl();
+	if (m_bMoveRequested)
+	{
+		if (TRIGGERTYPE::ZOOM_IN == m_pObserver->Get_Type())
+		{
+			Zoom_In(fTimeDelta);
+		}
+		else if (TRIGGERTYPE::ZOOM_OUT == m_pObserver->Get_Type())
+		{
+			Zoom_Out(fTimeDelta);
+		}
+
+		if (m_fMoveTime < 0.f)
+		{
+			m_pObserver->Reset();
+			m_fMoveTime = 1.5f;
+		}
+	}
+
+	
 }
 
 void CCamera_TopDown::Late_Update(_float fTimeDelta)
@@ -96,6 +125,21 @@ void CCamera_TopDown::Late_Update(_float fTimeDelta)
 HRESULT CCamera_TopDown::Render()
 {
 	return S_OK;
+}
+
+void CCamera_TopDown::Zoom_In(_float fTimeDelta)
+{
+	m_fMoveTime -= fTimeDelta;
+
+	m_pTransformCom->Go_Straight(fTimeDelta);
+
+}
+
+void CCamera_TopDown::Zoom_Out(_float fTimeDelta)
+{
+	m_fMoveTime -= fTimeDelta;
+
+	m_pTransformCom->Go_Backward(fTimeDelta);
 }
 
 CCamera_TopDown* CCamera_TopDown::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -129,4 +173,5 @@ void CCamera_TopDown::Free()
 	__super::Free();
 
 	Safe_Release(m_pTarget);
+	Safe_Release(m_pObserver);
 }

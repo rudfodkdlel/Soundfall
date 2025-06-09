@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "PartObject.h"
+#include "CombatStat.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -13,6 +14,11 @@ NS_BEGIN(Client)
 
 class CMonster_HP final : public CPartObject
 {
+public:
+	typedef struct tagHpDesc : public CPartObject::PARTOBJECT_DESC
+	{
+		 CCombatStat* pCombatCom = { nullptr };
+	}HPBAR_DESC;
 private:
 	CMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMonster_HP(const CMonster_HP& Prototype);
@@ -33,8 +39,7 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
-	
-
+	CCombatStat* m_pCombatCom = { nullptr };
 private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

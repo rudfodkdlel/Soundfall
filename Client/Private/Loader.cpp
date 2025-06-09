@@ -14,6 +14,7 @@
 #include "Metronome.h"
 #include "Metronome_Counter.h"
 #include "Metronome_Center_RIng.h"
+#include "HP_Bar.h"
 #include "PlayerRing.h"
 #include "Player.h"
 #include "Body_Player.h"
@@ -33,6 +34,9 @@
 #include "Body_Defender.h"
 #include "Weapon_Defender.h"
 #include "Monster_HP.h"
+#include "Trigger.h"
+#include "Artillery.h"
+#include "Body_Artillery.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -162,6 +166,24 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/PlayerRing.dds"), 1))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Ky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Potrait_Ky.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Ult_Bar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/UltimateBar.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Hp_Frame.dds"), 1))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Idle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/HealthBar_Idle.dds"), 1))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Damaged"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/HealthBar_Damage.dds"), 1))))
+		return E_FAIL;
+
 
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Diffuse"),
@@ -241,8 +263,8 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Axe/Axe.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Discord"),
+ 	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+ 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Discord"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Discord/Discord.bin", PreTransformMatrix))))
 		return E_FAIL;
 
@@ -264,6 +286,11 @@ HRESULT CLoader::Loading_For_GamePlay()
 	PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Shield"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Monster/Defender/Shield/Shield.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Artillery"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Artillery/Artillery.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 
@@ -303,6 +330,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player_Ring"),
 		CPlayerRing::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_HP_Bar"),
+		CHP_BAR::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -382,8 +412,21 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CWeapon_Defender::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Artillery */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Artillery"),
+		CArtillery::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Artillery"),
+		CBody_Artillery::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HP"),
 		CMonster_HP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Trigger"),
+		CTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Sky */
