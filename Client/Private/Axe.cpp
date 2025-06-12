@@ -1,5 +1,6 @@
 #include "Axe.h"
 #include "GameInstance.h"
+#include "CombatStat.h"
 
 CAxe::CAxe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CWeapon_Base{ pDevice, pContext }
@@ -32,6 +33,12 @@ HRESULT CAxe::Initialize(void* pArg)
 
     m_IsActive = false;
 
+    m_pColliderCom->Set_Active(false);
+
+    m_pGameInstance->Add_Collider(CG_WEAPON_PLAYER, m_pColliderCom, this);
+
+    m_pCombatCom->Set_bInvinsible(true);
+
     return S_OK;
 }
 
@@ -52,6 +59,19 @@ void CAxe::Late_Update(_float fTimeDelta)
 HRESULT CAxe::Render()
 {
     __super::Render();
+
+    return S_OK;
+}
+
+HRESULT CAxe::On_Collision(CGameObject* Other, CCollider* pCollider)
+{
+    if (m_HitObjectSet.find(pCollider) == m_HitObjectSet.end())
+    {
+        m_HitObjectSet.insert(pCollider);
+        // 수정 필요함
+        m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+    }
+       
 
     return S_OK;
 }
@@ -79,6 +99,16 @@ HRESULT CAxe::Ready_Components()
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
         TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
         return E_FAIL;
+
+    CCombatStat::COMBAT_DESC eCombatDesc = {};
+    eCombatDesc.iCurrentHp = 1;
+    eCombatDesc.iMaxHp = 1;
+    eCombatDesc.iDamage = 40;
+
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
+        TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eCombatDesc)))
+        return E_FAIL;
+
 
     return S_OK;
 }
@@ -117,6 +147,6 @@ CGameObject* CAxe::Clone(void* pArg)
 void CAxe::Free()
 {
     __super::Free();
-
+    Safe_Release(m_pCombatCom);
 }
 

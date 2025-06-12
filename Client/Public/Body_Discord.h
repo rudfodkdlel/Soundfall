@@ -37,6 +37,9 @@ public:
 
 	virtual HRESULT On_Collision(CGameObject* Other, CCollider* pCollider);
 
+	eDirState Get_Hit_Dir() { return m_eHitDir; }
+	eDirState Calc_Hit_Dir(_vector vDir);
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
@@ -45,6 +48,7 @@ private:
 	_bool	m_IsFinished = { false };
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
+	eDirState		 m_eHitDir = {};
 private:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();

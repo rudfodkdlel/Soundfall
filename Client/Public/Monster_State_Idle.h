@@ -1,22 +1,23 @@
 #pragma once
-#include "Object_State.h"
+
+#include "Monster_State_Base.h"
 
 NS_BEGIN(Client)
 
-class CMonster_State_Idle : public CObject_State
+class CMonster_State_Idle : public CMonster_State_Base
 {
 public:
 	virtual ~CMonster_State_Idle() = default;
+
 public:
-	// CObject_State을(를) 통해 상속됨
-	void Enter(CGameObject* pObj, OBJTYPE eType) override;
-	void Update(CGameObject* pObj, float fTimeDelta) override;
-	void Exit(CGameObject* pObj) override;
-	CObject_State* Check_Transition(CGameObject* pObj) override;
+	virtual void Enter(CGameObject* pObj) override;
+	virtual void Update(CGameObject* pObj, float fTimeDelta);
+	virtual void Exit(CGameObject* pObj);
+	virtual CObject_State* Check_Transition(CGameObject* pObj);
 
 private:
-	BOSS_PATTERN m_eNextPattern = {};
+	_int m_iPhase;
+	_float m_fSpeedRatio = {};
 };
 
 NS_END
-

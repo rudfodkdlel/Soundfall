@@ -2,6 +2,7 @@
 #include "VIBuffer_Terrain.h"
 
 #include "GameInstance.h"
+#include "Navigation.h"
 
 CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -41,12 +42,13 @@ HRESULT CTerrain::Initialize(void* pArg)
 
 void CTerrain::Priority_Update(_float fTimeDelta)
 {
-
+	
 }
 
 void CTerrain::Update(_float fTimeDelta)
 {
-	
+	if(nullptr != m_pNavigationCom)
+		m_pNavigationCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CTerrain::Late_Update(_float fTimeDelta)
@@ -69,6 +71,11 @@ HRESULT CTerrain::Render()
 	
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
+
+#ifdef _DEBUG
+	if (nullptr != m_pNavigationCom)
+		m_pNavigationCom->Render();
+#endif
 
 	
 
@@ -96,6 +103,15 @@ HRESULT CTerrain::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Normal"),
 		TEXT("Com_Texture_Normal"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
+
+	if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::GAMEPLAY))
+	{
+		/* For.Com_Navigation */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+			return E_FAIL;
+	}
+	
 
 	return S_OK;
 }
@@ -165,6 +181,7 @@ void CTerrain::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);

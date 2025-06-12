@@ -124,6 +124,39 @@ void CMyImgui::Update(_float fTimeDelta)
 					vMinDist = XMVectorGetX(XMVector4Length(XMLoadFloat4(&vTemp)));
 					m_pPickingObject = m_pGrid;
 					m_vPickingPos = vTemp;
+
+					if (m_bUseNaviPos)
+					{
+
+						// 점 찍고
+						m_eTri.points[m_iPickCount] = { roundf(m_vPickingPos.x),  roundf(m_vPickingPos.y),  roundf(m_vPickingPos.z) };
+
+						// 비슷한 점 있으면 그걸로 바꿔
+						for (auto& tri : m_NaviTriangles)
+						{
+							for (auto& point : tri.points)
+							{
+								_vector vLength = XMLoadFloat3(& m_eTri.points[m_iPickCount]) - XMLoadFloat3(&point);
+								if (XMVectorGetX(XMVector3LengthSq(vLength)) < 5)
+								{
+									m_eTri.points[m_iPickCount] = point;
+								}
+							}
+						}
+						
+						if (m_iPickCount == 3)
+						{
+							m_NaviTriangles.push_back(m_eTri);
+							for (auto& point : m_eTri.points)
+								point = {0,0,0};
+							m_iPickCount = 0;
+						}
+						else
+						{
+							++m_iPickCount;
+						}
+						
+					}
 				}
 			}
 		}
@@ -157,7 +190,7 @@ void CMyImgui::Render_Create_Window()
 	bool g_bBigWindow = false;
 
 	// Grid Check 창 크기 줄임
-	ImVec2 windowSize1 = ImVec2(200, 100);
+	ImVec2 windowSize1 = ImVec2(200, 200);
 	ImVec2 windowSize2 = ImVec2(300, 400); // Create Window 크기 유지
 
 	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
@@ -165,7 +198,7 @@ void CMyImgui::Render_Create_Window()
 
 	if (ImGui::Begin("Util")) {
 		ImGui::Checkbox("Grid", &m_bCheckGrid);
-
+		ImGui::Checkbox("Navi_Point", &m_bUseNaviPos);
 		if (ImGui::Button("Delete Object"))
 		{
 			// 지우는 로직 추가
@@ -230,6 +263,17 @@ void CMyImgui::Render_Create_Window()
 	{
 		Load_Data("../Bin/Data/test.bin");
 	}
+
+	if (ImGui::Button("Save_Navi"))
+	{
+		Save_Navi("../Bin/Data/Navi_Test.bin");
+	}
+
+	if (ImGui::Button("Load_Navi"))
+	{
+		Load_Navi("../Bin/Data/Navi_Test.bin");
+	}
+
 	ImGui::End();
 }
 
@@ -365,6 +409,47 @@ void CMyImgui::Load_Data(const char* pFliePath)
 	
 	}
 }
+
+void CMyImgui::Save_Navi(const char* pFliePath)
+{
+	ofstream fout(pFliePath, std::ios::binary);
+	if (!fout)
+	{
+		return;
+	}
+
+	size_t count = m_NaviTriangles.size();
+
+	fout.write(reinterpret_cast<const char*>(&count), sizeof(count));
+	if (count > 0)
+		fout.write(reinterpret_cast<const char*>(m_NaviTriangles.data()), sizeof(Triangle) * count);
+
+
+	fout.close();
+}
+
+void CMyImgui::Load_Navi(const char* pFliePath)
+{
+	std::ifstream fin(pFliePath, std::ios::binary);
+	if (!fin)
+		return;
+	m_NaviTriangles.clear();
+
+	size_t count = 0;
+	fin.read(reinterpret_cast<char*>(&count), sizeof(size_t));
+
+
+
+	for (size_t i = 0; i < count; ++i)
+	{
+		Triangle tri;
+		fin.read(reinterpret_cast<char*>(&tri), sizeof(Triangle));
+
+		m_NaviTriangles.push_back(tri);
+	}
+	fin.close();
+}
+	
 
 CMyImgui* CMyImgui::Create( ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

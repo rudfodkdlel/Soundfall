@@ -5,11 +5,13 @@
 #include "Weapon_Base.h"
 #include "Object_State.h"
 #include "CombatStat.h"
+#include "Collider.h"
 
 
 NS_BEGIN(Engine)
 class CShader;
 class CModel;
+class CNavigation;
 NS_END
 
 NS_BEGIN(Client)
@@ -23,12 +25,12 @@ private:
 	virtual ~CPlayer() = default;
 
 public:
-	_vector Get_Dir() { return m_vDir; }
 	WEAPON	Get_WeaponType() { return m_pRangedWeapon->Get_WeaponType(); }
 	class CModel* Get_BodyModel() { return static_cast<class CModel*>( m_PartObjects[PART_BODY]->Get_Component(TEXT("Com_Model"))); }
 	CCombatStat* Get_CombatCom() { return m_pCombatCom; }
 	CWeapon_Base* Get_Range_Weapon() { return m_pRangedWeapon; }
 	CWeapon_Base* Get_Melee_Weapon() { return m_pMeleeWeapon; }
+	DIR_STATE     Get_Hit_Dir();
 	void		  Set_Weapon_Active(_bool IsActive) { m_pRangedWeapon->Set_Active(IsActive); }
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -49,7 +51,8 @@ public:
 	DIR_STATE Calc_Dir(_vector vDir);
 	void Move_Pos(_vector& vDir, _float fTimeDelta, _float fSpeedRatio = 1.f);
 	void Select_Weapon();
-	
+	void Toggle_Collider(_bool IsActive);
+	_bool Is_Body_Collision();
 
 private:
 	CObject_State* m_pState = { nullptr };
@@ -59,11 +62,11 @@ private:
 	CWeapon_Base*	m_pMeleeWeapon = { nullptr };
 
 	CCombatStat* m_pCombatCom = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
 
 	// inventory 만들어서 담아두자
 	//class CInventory* m_pInventory = { nullptr };
 
-	_vector	m_vDir = {};
 	_float  m_fSpeed = {};
 
 	// test용. 나중에 지우기

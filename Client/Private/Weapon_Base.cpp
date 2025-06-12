@@ -57,9 +57,6 @@ void CWeapon_Base::Late_Update(_float fTimeDelta)
 {
 
 
-
-
-	
 	if(m_IsActive)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
@@ -88,13 +85,25 @@ HRESULT CWeapon_Base::Render()
 	}
 
 #ifdef _DEBUG
-	if(nullptr != m_pColliderCom)
+	if(nullptr != m_pColliderCom && m_pColliderCom->Get_Active())
 		m_pColliderCom->Render();
 
 #endif
 
 	return S_OK;
 
+}
+
+void CWeapon_Base::Check_Timing()
+{
+	if (m_pGameInstance->Get_Timing() < 0.15f)
+	{
+		m_IsPerfect = true;
+	}
+	else
+	{
+		m_IsPerfect = false;
+	}
 }
 
 HRESULT CWeapon_Base::Ready_Components()

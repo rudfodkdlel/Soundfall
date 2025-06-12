@@ -1,11 +1,10 @@
 #include "Discord.h"
 #include "GameInstance.h"
-#include "Object_State_Spawn.h"
+#include "Monster_State_Spawn.h"
 #include "Monster_Base.h"
 #include "PartObject.h"
-#include "Observer_Animation.h"
-#include "Object_State.h"
 #include "Body_Discord.h"
+
 
 CDiscord::CDiscord(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster_Base{ pDevice, pContext }
@@ -19,7 +18,7 @@ CDiscord::CDiscord(const CDiscord& Prototype)
 
 _bool CDiscord::Check_Groggy()
 {
-	if (m_bUseSpawn)
+	if (m_bUseSummon)
 	{
 		auto& objList = *m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Boss_Spawn"));
 		objList.remove_if([](CGameObject* p)
@@ -75,9 +74,9 @@ HRESULT CDiscord::Initialize(void* pArg)
 
 	
 
-	m_pGameInstance->Add_Observer(TEXT("Observer_Animation_Discord"), new CObserver_Animation);
-	m_pState = new CObject_State_Spawn;
-	m_pState->Enter(this, OBJTYPE::BOSS);
+	
+	m_pState = new CMonster_State_Spawn;
+	m_pState->Enter(this);
 
 	_vector vPos = { 0.f, 0.f, 30.f, 1.f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
@@ -142,7 +141,7 @@ void CDiscord::Select_State()
 		m_pState->Exit(this);
 		Safe_Delete(m_pState);
 		m_pState = pState;
-		m_pState->Enter(this, OBJTYPE::BOSS);
+		m_pState->Enter(this);
 	}
 
 }
@@ -156,6 +155,11 @@ BOSS_PATTERN CDiscord::Get_Next_Skill()
 	++m_iIndex;
 
 	return BOSS_PATTERN(iPattern);
+}
+
+DIR_STATE CDiscord::Get_Hit_Dir()
+{
+	return DIR_STATE();
 }
 
 DIR_STATE CDiscord::Get_Dir_Melee()
@@ -225,7 +229,6 @@ HRESULT CDiscord::Ready_Components()
 
 	return S_OK;
 
-    return S_OK;
 }
 
 CDiscord* CDiscord::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

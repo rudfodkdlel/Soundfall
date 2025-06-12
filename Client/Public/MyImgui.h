@@ -35,7 +35,8 @@ private:
 	void Save_Data(const char* pFliePath);
 	void Load_Data(const char* pFliePath);
 	
-
+	void Save_Navi(const char* pFliePath);
+	void Load_Navi(const char* pFliePath);
 
 
 private:
@@ -67,7 +68,15 @@ private:
 	_bool				m_bCheckGrid = { false };
 	CGameObject*		m_pGrid = { nullptr };
 
+	_bool				m_bUseNaviPos = { false };
+	_int				m_iPickCount = {};
+	Triangle			m_eTri = {};
+
 	_float4				m_vPickingPos = { 0.f,0.f,0.f,1.f };
+
+
+	vector<Triangle>		m_NaviTriangles = {};
+
 	CGameObject* m_pPickingObject = { nullptr };
 
 	//나중에 지우기

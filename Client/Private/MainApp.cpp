@@ -112,6 +112,8 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 
 
+	
+
 	/* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
@@ -150,12 +152,15 @@ HRESULT CMainApp::Ready_Font()
 HRESULT CMainApp::Ready_Collision_Setting()
 {
 	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_MONSTER });
-	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_MONSTER_PROJECTILE });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_WEAPON_MONSTER });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_MONSTER_PROJECTILE });//
 	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_STRUCTURE_WALL });
 	m_pGameInstance->Add_Collider_Group({ CG_PLAYER, CG_TRIGGER });
 	m_pGameInstance->Add_Collider_Group({ CG_PLAYER_PROJECTILE, CG_STRUCTURE_WALL });
+	m_pGameInstance->Add_Collider_Group({ CG_PLAYER_PROJECTILE, CG_WEAPON_MONSTER });
 	m_pGameInstance->Add_Collider_Group({ CG_MONSTER, CG_PLAYER_PROJECTILE });
-	m_pGameInstance->Add_Collider_Group({ CG_WEAPON, CG_MONSTER });
+	m_pGameInstance->Add_Collider_Group({ CG_MONSTER, CG_MONSTER });
+	m_pGameInstance->Add_Collider_Group({ CG_WEAPON_PLAYER, CG_MONSTER });
 	return S_OK;
 }
 

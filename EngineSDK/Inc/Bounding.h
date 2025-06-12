@@ -26,6 +26,8 @@ public:
 		return m_eType;
 	}
 
+	virtual _float3 Get_Center() = 0;
+	virtual _float3 Get_Extents() = 0;
 
 public:
 	HRESULT Initialize(const CBounding::BOUNDING_DESC* pDesc);

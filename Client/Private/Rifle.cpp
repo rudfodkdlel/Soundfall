@@ -32,9 +32,12 @@ HRESULT CRifle::Initialize(void* pArg)
 
     m_eWeaponType = WEAPON::ASSAULT;
 
-    m_DirMap = { {F,10}, {B,9}, {BL,50}, {BR,51}, {FL, 52}, {FR, 53}, {L, 54}, {R,55} };
+    m_DirMap = { {F,10}, {B,9}, {BL,50}, {BR,51}, {FL, 52}, {FR, 53}, {L, 52}, {R,53}, {NONE, 4} };
 
-    
+    m_HitReactMap = { {B,31}, {F,32}, {L,45}, {R,46} };
+
+    // 4 beat 간격 동안 발사 가능함
+    m_fMaxDuration = m_pGameInstance->Get_BeatInterval() * 4;
 
     return S_OK;
 }
@@ -45,13 +48,41 @@ void CRifle::Priority_Update(_float fTimeDelta)
 
 void CRifle::Update(_float fTimeDelta)
 {
+   
     m_fDelay -= fTimeDelta;
+
+    if (m_IsPerfect)
+    {
+        m_fDuration += fTimeDelta;
+    }
+
+    if (m_pGameInstance->Key_Up(DIM::LBUTTON))
+    {
+        m_IsFire = false;
+    }
+
+    if (!m_IsFire)
+    {
+        m_fOverloadTime -= fTimeDelta;
+
+        if (m_fOverloadTime <= 0.f)
+        {
+            Reset();
+            m_fOverloadTime = 0.f;
+        }
+            
+    }
+
+
 
     __super::Update(fTimeDelta);
 }
 
 void CRifle::Late_Update(_float fTimeDelta)
 {
+   
+
+
     __super::Late_Update(fTimeDelta);
 }
 
@@ -64,21 +95,51 @@ HRESULT CRifle::Render()
 
 void CRifle::Attack(_vector vDir)
 {
+    // 탄창이랑 이런거 추가해서 관리하도록 해야될듯\
+
+    m_IsFire = true;
+
     if (m_fDelay >= 0.f)
         return;
+
+    if (!m_IsPerfect)
+        --m_iCurrentAmmo;
+
+    if(m_fDuration >= m_fMaxDuration)
+        return;
+
+    if (m_iCurrentAmmo <= 0)
+    {
+        m_fOverloadTime = 0.5f;
+        return;
+    }
+  
+   
+
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
-  
+
     _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 , m_CombinedWorldMatrix._43 , 1.f };
 
-    
+
     XMStoreFloat4(&eDesc.vPos, vPos);
     XMStoreFloat4(&eDesc.vDir, vDir);
     // 투사체 생성해서 날아가게 해보자
-    m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(), 
+    m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
         TEXT("Layer_Projectile_Player"), &eDesc);
 
-    m_fDelay = 0.2f;
+    // 소리 추가
+   
+    if (!m_IsPerfect)
+        m_fDelay = 0.3f;
+    else
+        m_fDelay = 0.1f;
+}
+
+void CRifle::Reset()
+{
+    m_iCurrentAmmo = 30;
+    m_fDuration = 0.f;
 }
 
 HRESULT CRifle::Ready_Components()

@@ -21,6 +21,8 @@ private:
 public:
 	const _float4x4* Get_SocketMatrix(const _char* pBoneName);
 	_bool Get_AnimFinished() { return m_IsFinished; }
+	vector<_float4> Get_PushVectors() { return m_pushVectors; }
+	void Clear_PushVectors() { m_pushVectors.clear(); }
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);

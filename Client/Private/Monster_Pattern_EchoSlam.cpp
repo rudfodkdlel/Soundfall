@@ -1,20 +1,13 @@
 #include "Monster_Pattern_EchoSlam.h"
-#include "Monster_Base.h"
-#include "Observer_Animation.h"
 #include "Monster_State_Idle.h"
-#include "Projectile_Shockwave.h"
+#include "Projectile_Base.h"
 
-void CMonster_Pattern_EchoSlam::Enter(CGameObject* pObj, OBJTYPE eType)
+
+void CMonster_Pattern_EchoSlam::Enter(CGameObject* pObj)
 {
-	__super::Enter(pObj, eType);
+    __super::Enter(pObj);
 
-	m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
-
-
-	m_pModel = static_cast<CMonster_Base*>(pObj)->Get_BodyModel();
-	Safe_AddRef(m_pModel);
-
-	m_pModel->Set_Animation(3, false);
+    m_pModel->Set_Animation(3, false);
 }
 
 void CMonster_Pattern_EchoSlam::Update(CGameObject* pObj, float fTimeDelta)
@@ -41,22 +34,20 @@ void CMonster_Pattern_EchoSlam::Update(CGameObject* pObj, float fTimeDelta)
 			m_IsAttack = true;
 		}
 	}
-	
+
+	m_IsFinish = m_pModel->Play_Animation(fTimeDelta);
 }
 
 void CMonster_Pattern_EchoSlam::Exit(CGameObject* pObj)
 {
-	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pModel);
+    __super::Exit(pObj);
 }
 
 CObject_State* CMonster_Pattern_EchoSlam::Check_Transition(CGameObject* pObj)
 {
-	if (static_cast<CObserver_Animation*>(m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord")))->IsAnimationFinished())
+	if (m_IsFinish)
 	{
-		m_pGameInstance->Find_Observer(TEXT("Observer_Animation_Discord"))->Reset();
 		return new CMonster_State_Idle;
 	}
-
-	return nullptr;
+    return nullptr;
 }

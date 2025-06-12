@@ -36,8 +36,10 @@ HRESULT CWeapon_Defender::Initialize(void* pArg)
 	_vector vAxis = { 1.f,0.f,0.f,0.f };
 	m_pTransformCom->Rotation(vAxis, XMConvertToRadians(-90.f));
 
-	m_pGameInstance->Add_Collider(CG_MONSTER, m_pColliderCom, this);
+	m_pGameInstance->Add_Collider(CG_WEAPON_MONSTER, m_pColliderCom, this);
 
+
+	
 	return S_OK;
 }
 

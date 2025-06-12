@@ -3,10 +3,11 @@
 
 #include "GameInstance.h"
 #include "Model.h"
-#include "Player_State_Define.h"
 #include "Weapon_Base.h"
 #include "Body_Player.h"
 #include "Observer_Animation.h"
+#include "Player_State_Spawn.h"
+#include "Navigation.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CContainerObject{ pDevice, pContext }
@@ -16,6 +17,11 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CPlayer::CPlayer(const CPlayer& Prototype)
 	: CContainerObject{ Prototype }
 {
+}
+
+DIR_STATE CPlayer::Get_Hit_Dir()
+{
+	return static_cast<CBody_Player*>(m_PartObjects[0])->Get_Hit_Dir();
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -46,14 +52,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* 1. 서로 다른 애니메이션을 셋팅했음에도 같은 동작이 재생된다. : 뼈가 공유되기때문에. */
 	/* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
 
-	m_pGameInstance->Add_Observer(TEXT("Observer_Animation_Player"), new CObserver_Animation);
-	
-	m_pState = new CObject_State_Spawn;
-	m_pState->Enter(this, OBJTYPE::PLAYER);
-
-	_vector vPos = { 0.f,0.f,0.f,1.f };
+	_vector vPos = { 3.f,0.f,3.f,1.f };
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	m_pState = new CPlayer_State_Spawn;
+	m_pState->Enter(this);
 
 	return S_OK;
 }
@@ -71,11 +75,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 	Input_Key(fTimeDelta);
 
-	__super::Update(fTimeDelta);
-	
-	if(nullptr != m_pState)
+	if (nullptr != m_pState)
 		m_pState->Update(this, fTimeDelta);
 
+	__super::Update(fTimeDelta);
+	
+	
 	Look_Mouse();
 
 	m_pCombatCom->Update(fTimeDelta); 
@@ -96,6 +101,28 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		m_pRangedWeapon->Late_Update(fTimeDelta);
 	if (nullptr != m_pMeleeWeapon)
 		m_pMeleeWeapon->Late_Update(fTimeDelta);
+
+	
+	auto pushvectors = static_cast<CBody_Player*>(m_PartObjects[0])->Get_PushVectors();
+	if (!pushvectors.empty())
+	{
+		_vector vSumDir = {};
+
+		for (auto& pushvector : pushvectors)
+		{
+			vSumDir += XMLoadFloat4(&pushvector);
+		}
+
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		vPos += vSumDir;
+		if (m_pNavigationCom->isMove(vPos))
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+		static_cast<CBody_Player*>(m_PartObjects[0])->Clear_PushVectors();
+	}
+	
+
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 }
@@ -121,9 +148,9 @@ void CPlayer::Input_Key(_float fTimeDelta)
 {
 	if (!m_pGameInstance->Is_NoKeyPressed())
 	{
-		m_fRenderTime += 0.5f;
+		m_fRenderTime = 0.5f;
 
-		if (fabs(m_pGameInstance->Get_Timing() < 0.15f))
+		if ((fabs(m_pGameInstance->Get_Timing()) < 0.15f))
 		{
 			m_IsGoodTiming = true;
 		}
@@ -132,11 +159,7 @@ void CPlayer::Input_Key(_float fTimeDelta)
 
 	}
 
-	if (m_pGameInstance->Key_Up(DIK_H))
-	{
-		m_pCombatCom->Hit(10);
-	}
-
+	
 	if (m_pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
 	{
 		return;
@@ -151,10 +174,6 @@ void CPlayer::Input_Key(_float fTimeDelta)
 	Select_Weapon();
 	
 
-	if (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80)
-	{
-		m_pRangedWeapon->Attack(XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK)));
-	}
 
 
 
@@ -165,14 +184,15 @@ void CPlayer::Select_State()
 	if (nullptr == m_pState)
 		return;
 
-	CObject_State* pState = m_pState->Check_Transition(this);
+	CObject_State* pNextState = m_pState->Check_Transition(this);
 
-	if (nullptr != pState)
+	if (nullptr != pNextState)
 	{
 		m_pState->Exit(this);
 		Safe_Delete(m_pState);
-		m_pState = pState;
-		m_pState->Enter(this, OBJTYPE::PLAYER);
+
+		m_pState = pNextState;
+		m_pState->Enter(this);
 	}
 	
 
@@ -202,15 +222,14 @@ void CPlayer::Move_Pos(_vector& vDir, _float fTimeDelta, _float fSpeedRatio)
 
 	}
 
-	if (0.f < XMVectorGetX(XMVector4Length(m_vDir)))
-		vDir = XMVector3Normalize(m_vDir);
-
-
+	if (0.f < XMVectorGetX(XMVector3Length(vDir)))
+		vDir = XMVector3Normalize(vDir);
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	vPos += vDir * fTimeDelta * m_fSpeed * fSpeedRatio;
 
-	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	if(m_pNavigationCom->isMove(vPos))
+		m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 }
 
@@ -232,6 +251,16 @@ void CPlayer::Select_Weapon()
 	{
 		m_pMeleeWeapon = static_cast<CWeapon_Base*>(m_PartObjects[PART_WEAPON_MELEE_1]);
 	}
+}
+
+void CPlayer::Toggle_Collider(_bool IsActive)
+{
+	static_cast<CCollider*>(m_PartObjects[PART_BODY]->Get_Component(TEXT("Com_Collider")))->Set_Active(IsActive);
+}
+
+_bool CPlayer::Is_Body_Collision()
+{
+	return static_cast<CCollider*>(m_PartObjects[PART_BODY]->Get_Component(TEXT("Com_Collider")))->Get_IsColl();
 }
 
 void CPlayer::Look_Mouse()
@@ -347,6 +376,14 @@ HRESULT CPlayer::Ready_Components()
 		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eDesc)))
 		return E_FAIL;
 
+	/* For.Com_Navigation */
+	CNavigation::NAVIGATION_DESC		NaviDesc{};
+	NaviDesc.iIndex = 0;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
+		return E_FAIL;
+
 	return S_OK;
 
 }
@@ -379,14 +416,24 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
-	__super::Free();
-
 	if (nullptr != m_pState)
 	{
-		m_pState->Exit(this);
-		Safe_Delete(m_pState);
+		CObject_State* pOldState = m_pState;
+		m_pState = nullptr;
+
+		pOldState->Exit(this);
+		Safe_Delete(pOldState);
 	}
 
+	__super::Free();
+
+
+
 	Safe_Release(m_pCombatCom);
+	Safe_Release(m_pNavigationCom);
+
+	
+
+	
 	
 }

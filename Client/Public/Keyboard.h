@@ -21,9 +21,19 @@ public:
 
 	virtual void Attack(_vector vDir) override;
 
+	void Reset();
+
 public:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
+
+private:
+	_bool m_IsFire = { true };
+	_int m_iCurrentAmmo = { 1 };
+	_int m_iMaxAmmo = { 1 };
+	// 4번 연속 틀리면 못쏘게 바꾸기
+	_int m_iOverloadCount = { 4 };
+	_float m_fOverloadTime = { 0.f };
 
 public:
 	static CKeyboard* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

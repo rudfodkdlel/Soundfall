@@ -19,6 +19,8 @@ public:
 	const BoundingBox* Get_Desc() const {
 		return m_pDesc;
 	}
+	virtual _float3 Get_Center() { return m_pDesc->Center; }
+	virtual _float3 Get_Extents() { return m_pDesc->Extents; }
 
 public:
 	HRESULT Initialize(const CBounding::BOUNDING_DESC* pDesc);

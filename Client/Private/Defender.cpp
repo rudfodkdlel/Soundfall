@@ -116,6 +116,25 @@ void CDefender::Late_Update(_float fTimeDelta)
 {
 	Select_State();
 
+	auto pushvectors = static_cast<CBody_Defender*>(m_PartObjects[0])->Get_PushVectors();
+	if (!pushvectors.empty() && m_eMainState != STATE_MAIN::ATTACK)
+	{
+		_vector vSumDir = {};
+
+		for (auto& pushvector : pushvectors)
+		{
+			vSumDir += XMLoadFloat4(&pushvector) * 0.2f;
+		}
+
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		vPos += vSumDir;
+
+		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+		static_cast<CBody_Defender*>(m_PartObjects[0])->Clear_PushVectors();
+	}
+
 	__super::Late_Update(fTimeDelta);
 }
 

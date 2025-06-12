@@ -55,12 +55,12 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 void CBody_Player::Update(_float fTimeDelta)
 {
 
-	m_bFinished = m_pModelCom->Play_Animation(fTimeDelta);
+	/*m_bFinished = m_pModelCom->Play_Animation(fTimeDelta);
 	
 	if (m_bFinished)
 	{
 		m_pGameInstance->Notify(TEXT("Observer_Animation_Player"), TEXT("AnimEnd"));
-	}
+	}*/
 
 	XMStoreFloat4x4(&m_CombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
 
@@ -98,13 +98,70 @@ HRESULT CBody_Player::Render()
 	}
 
 #ifdef _DEBUG
-
-	m_pColliderCom->Render();
+	if(m_pColliderCom->Get_Active())
+		m_pColliderCom->Render();
 
 #endif
 
 
 	return S_OK;
+}
+
+HRESULT CBody_Player::On_Collision(CGameObject* Other, CCollider* pCollider)
+{
+	_float3 otherCenter = pCollider->Get_Center();
+	_float3 myCenter = m_pColliderCom->Get_Center();
+
+
+	_vector vDir = XMVectorSetW(XMLoadFloat3(&otherCenter) - XMLoadFloat3(&myCenter), 0.f);
+
+	m_eHitDir = Calc_Hit_Dir(vDir);
+
+
+	m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
+
+
+
+	return S_OK;
+}
+
+eDirState CBody_Player::Calc_Hit_Dir(_vector vDir)
+{
+	_vector vLook = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_CombinedWorldMatrix.m[2]));
+	vLook = XMVector3Normalize(vLook);
+
+	if (XMVector3Equal(vDir, XMVectorZero()))
+		return NONE;
+
+	vDir = XMVector3Normalize(vDir);
+
+	_float dot = XMVectorGetX(XMVector3Dot(vDir, vLook));
+
+	// 기준 각도 값
+	const _float COS_45 = 0.707f;
+	const _float COS_135 = -0.707f;
+
+	// 앞
+	if (dot >= COS_45)
+		return F;
+	// 뒤
+	else if (dot <= COS_135)
+		return B;
+	// 좌우 (dot이 중간이면)
+	else
+	{
+		_vector vRight = XMLoadFloat4(reinterpret_cast<const XMFLOAT4*>(&m_CombinedWorldMatrix.m[0]));
+		vRight = XMVector3Normalize(vRight);
+
+		_float rightDot = XMVectorGetX(XMVector3Dot(vDir, vRight));
+
+		if (rightDot >= 0)
+			return R;
+		else
+			return L;
+	}
+
+	return DIR_STATE::NONE;
 }
 
 HRESULT CBody_Player::Ready_Components()

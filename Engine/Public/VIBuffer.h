@@ -12,6 +12,10 @@ protected:
 	virtual ~CVIBuffer() = default;
 
 public:
+	_uint Get_NumIndices() { return m_iNumIndices; }
+
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 

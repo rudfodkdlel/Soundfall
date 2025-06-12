@@ -18,6 +18,8 @@ public:
 	const BoundingSphere* Get_Desc() const {
 		return m_pDesc;
 	}
+	virtual _float3 Get_Center() { return m_pDesc->Center; }
+	virtual _float3 Get_Extents() { return _float3(m_pDesc->Radius, m_pDesc->Radius, m_pDesc->Radius); }
 public:
 	HRESULT Initialize(const CBounding::BOUNDING_DESC* pDesc);
 	virtual void Update(_fmatrix WorldMatrix) override;

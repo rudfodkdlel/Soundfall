@@ -19,7 +19,7 @@ HRESULT CCollider_Manager::Add_Collider(_uint iIndex, CCollider* Collider, CGame
 	Safe_AddRef(Collider);
 	Safe_AddRef(pOwner);
 
-
+	Collider->Set_Group(iIndex);
 
 	return S_OK;
 }

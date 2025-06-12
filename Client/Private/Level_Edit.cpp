@@ -36,7 +36,7 @@ HRESULT CLevel_Edit::Initialize()
 
 void CLevel_Edit::Update(_float fTimeDelta)
 {
-	m_pImgui->Update(fTimeDelta);
+m_pImgui->Update(fTimeDelta);
 
 
 }

@@ -1,5 +1,6 @@
 #include "Keyboard.h"
 #include "GameInstance.h"
+#include "Projectile_Player.h"
 
 CKeyboard::CKeyboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CWeapon_Base{ pDevice, pContext }
@@ -31,7 +32,11 @@ HRESULT CKeyboard::Initialize(void* pArg)
 
     m_eWeaponType = WEAPON::KEYBOARD;
 
-    m_DirMap = { {F,71}, {B,68}, {BL,69}, {BR,70}, {FL, 72}, {FR, 73}, {L, 72}, {R,73} };
+    m_DirMap = { {F,71}, {B,68}, {BL,69}, {BR,70}, {FL, 72}, {FR, 73}, {L, 72}, {R,73},  {NONE, 29} };
+
+    m_HitReactMap = { {B,41}, {F,42}, {L,43}, {R,44} };
+
+    m_fDelay = 0.f;
 
     return S_OK;
 }
@@ -42,6 +47,26 @@ void CKeyboard::Priority_Update(_float fTimeDelta)
 
 void CKeyboard::Update(_float fTimeDelta)
 {
+    m_fDelay -= fTimeDelta;
+
+
+    if (m_pGameInstance->Key_Up(DIM::LBUTTON))
+    {
+        m_IsFire = false;
+    }
+
+    if (!m_IsFire)
+    {
+        m_fOverloadTime -= fTimeDelta;
+
+        if (m_fOverloadTime <= 0.f)
+        {
+            Reset();
+            m_fOverloadTime = 0.f;
+        }
+
+    }
+
     __super::Update(fTimeDelta);
 }
 
@@ -60,6 +85,56 @@ HRESULT CKeyboard::Render()
 void CKeyboard::Attack(_vector vDir)
 {
     // 투사체 생성해서 날아가게 해보자
+    m_IsFire = true;
+
+    if (m_fDelay >= 0.f)
+        return;
+
+    if (!m_IsPerfect)
+    {
+        --m_iOverloadCount;
+
+        if (m_iOverloadCount == 0)
+        {
+            m_fOverloadTime = 0.3f;
+        }
+    }
+
+    if (m_iCurrentAmmo <= 0)
+    {
+        return;
+    }
+    --m_iCurrentAmmo;
+
+    CProjectile_Player::PROJECTILE_DESC eDesc = {};
+    eDesc.fSpeedPerSec = 1.f;
+
+    _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 , m_CombinedWorldMatrix._43 , 1.f };
+    XMStoreFloat4(&eDesc.vPos, vPos);
+
+    _vector vRotateDir = {};
+
+    for (int i = 0; i < 5; ++i)
+    {
+        vRotateDir = XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(-30.f + 15 * i)));
+        XMStoreFloat4(&eDesc.vDir, vRotateDir);
+        // 투사체 생성해서 날아가게 해보자
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
+            TEXT("Layer_Projectile_Player"), &eDesc);
+    }
+
+   
+
+    // 소리 추가
+
+   
+    m_fDelay = 0.2f;
+}
+
+void CKeyboard::Reset()
+{
+    m_iCurrentAmmo = 1;
+    m_iOverloadCount = 4;
 }
 
 HRESULT CKeyboard::Ready_Components()

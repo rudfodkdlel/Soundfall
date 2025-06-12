@@ -68,7 +68,9 @@ protected:
 	_wstring									m_strProtoTag = {};
 	_int										m_iProtoIndex = {};
 
-
+	// 충돌 처리때 사용할 것들, 충돌할 물체면 mass 값을 줘야됨. 
+	_int										m_iMass = {0};
+	vector<_float4>								m_pushVectors;
 
 
 protected:

@@ -10,7 +10,7 @@ public:
 	virtual ~CObject_State_Spawn() = default;
 public:
 	// CObject_State을(를) 통해 상속됨
-	void Enter(CGameObject* pObj, OBJTYPE eType) override;
+	void Enter(CGameObject* pObj) override;
 	void Update(CGameObject* pObj, float fTimeDelta) override;
 	void Exit(CGameObject* pObj) override;
 	CObject_State* Check_Transition(CGameObject* pObj) override;

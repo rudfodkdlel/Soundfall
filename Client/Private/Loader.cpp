@@ -37,6 +37,7 @@
 #include "Trigger.h"
 #include "Artillery.h"
 #include "Body_Artillery.h"
+#include "Navigation.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -301,6 +302,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
 	//	CVIBuffer_Cube::Create(m_pGraphic_Device))))
 	//	return E_FAIL;
+
+	/* Prototype_Component_Navigation */
+  	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
+		return E_FAIL;
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));

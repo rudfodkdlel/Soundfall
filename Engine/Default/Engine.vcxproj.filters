@@ -187,9 +187,6 @@
     <ClInclude Include="..\..\External Libraries\fmod\fmod_output.h">
       <Filter>Exteral Libraries\fmod</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Collider.h">
-      <Filter>01.Utility\04.Components\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Bounding_Sphere.h">
       <Filter>01.Utility\04.Components\Collider\Bounding\Sphere</Filter>
     </ClInclude>
@@ -207,6 +204,18 @@
     </ClInclude>
     <ClInclude Include="..\public\Collider_Manager.h">
       <Filter>01.Utility\04.Components\Collider\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Collider.h">
+      <Filter>01.Utility\04.Components\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Navigation.h">
+      <Filter>01.Utility\04.Components\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cell.h">
+      <Filter>01.Utility\04.Components\Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Cell.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Cell</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +386,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Collider_Manager.cpp">
       <Filter>01.Utility\04.Components\Collider\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Navigation.cpp">
+      <Filter>01.Utility\04.Components\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cell.cpp">
+      <Filter>01.Utility\04.Components\Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Cell.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Cell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -550,6 +568,18 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\Collider\Manager">
       <UniqueIdentifier>{04087825-b7e0-411c-990d-48fd1250e47e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Navigation">
+      <UniqueIdentifier>{1ca47750-dd29-487d-b65d-1113e1b510de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\Navigation\Cell">
+      <UniqueIdentifier>{2ef4ff84-0093-4692-b6e3-04978882bc1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Cell">
+      <UniqueIdentifier>{a19d276a-499a-42e6-805b-dbb41abbb9ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. ShaderFile">
+      <UniqueIdentifier>{696ee693-17ec-495d-81cf-08fcbe9ba597}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

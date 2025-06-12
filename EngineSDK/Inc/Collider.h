@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "Bounding.h"
 
 NS_BEGIN(Engine)
 
@@ -16,13 +17,19 @@ public:
 	void  Set_IsColl(_bool isColl) { m_isColl = isColl; }
 	_bool Get_Active() const { return m_IsActive; }
 	void  Set_Active(_bool isActive) { m_IsActive = isActive; }
-	
-
+	_float3 Get_Center() { return m_pBounding->Get_Center(); }
+	_float3 Get_Extends() { return m_pBounding->Get_Extents(); }
+	COLLIDER Get_Type() { return m_pBounding->Get_Type(); }
+	CBounding* Get_Bounding() { return m_pBounding; }
+	_int	Get_Group() { return m_eGroup; }
+	void	Set_Group(_int eGroup) { m_eGroup = eGroup; }
 public:
 	virtual HRESULT Initialize_Prototype(COLLIDER eType);
 	virtual HRESULT Initialize(void* pArg) override;
 	void Update(_fmatrix WorldMatrix);
 	_bool Intersect(CCollider* pTargetCollider);
+	// 내가 밀릴 방향을 계산한다, 밀리지 않는 물체(벽 등)이면 사용 안할 예정
+	_float4 Calc_PushVector(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 	HRESULT Render();
@@ -30,8 +37,9 @@ public:
 
 private:
 	COLLIDER			m_eType = { COLLIDER::END };
-	class CBounding* m_pBounding = { nullptr };
+	CBounding* m_pBounding = { nullptr };
 
+	_int				m_eGroup = {};
 	_bool				m_isColl = { false };
 	_bool				m_IsActive = { true };
 

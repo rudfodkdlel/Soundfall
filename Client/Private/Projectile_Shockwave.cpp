@@ -37,8 +37,8 @@ HRESULT CProjectile_Shockwave::Initialize(void* pArg)
 	vPos += m_pTransformCom->Get_State(STATE::POSITION);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pOuterCollider, this);
 	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pInnerCollider, this);
+	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pOuterCollider, this);
 	
 
 	return S_OK;

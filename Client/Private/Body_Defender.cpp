@@ -106,6 +106,8 @@ HRESULT CBody_Defender::Render()
 HRESULT CBody_Defender::On_Collision(CGameObject* Other, class CCollider* pCollider)
 {
 
+
+    m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
     return S_OK;
 }
 

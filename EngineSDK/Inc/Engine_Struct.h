@@ -37,6 +37,14 @@ namespace Engine
 		XMFLOAT4			vSpecular;
 	}LIGHT_DESC;
 
+	typedef struct ENGINE_DLL tagVertexPosition
+	{
+		XMFLOAT3		vPosition;
+
+		static const unsigned int					iNumElements = { 1 };
+		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
+	}VTXPOS;
+
 
 	typedef struct ENGINE_DLL tagVertexPositionTexcoord
 	{
@@ -92,6 +100,12 @@ namespace Engine
 		static const unsigned int					iNumElements = { 6 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXANIMMESH;
+
+
+	// 네비 메쉬용
+	typedef struct ENGINE_DLL Triangle {
+		XMFLOAT3 points[3];
+	}TRI;
 
 	// 모델 저장, 불러오기 용
 	typedef struct tagModelDesc {
@@ -158,5 +172,7 @@ namespace Engine
 		int			PrototypeLevelIndex;
 
 	}OBJECT_SAVE_DESC;
+
+	
 
 }

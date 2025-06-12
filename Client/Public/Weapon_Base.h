@@ -27,6 +27,7 @@ protected:
 public:
 	WEAPON	Get_WeaponType() { return m_eWeaponType; }
 	map < DIR_STATE, _int>& Get_DirMap() { return m_DirMap; }
+	map < DIR_STATE, _int>& Get_HitReactMap() { return m_HitReactMap; }
 	void	Set_Active(_bool isActive) { m_IsActive = isActive; }
 
 public:
@@ -37,9 +38,12 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	// 근접은 콜라이더 껏다 키기, 원거리는 투사체 생성 이런 느낌으로?
-	// 궁극기는 안에서 입력을 뭘로 받았는지 판단해서 ...? 여기서 부르는 느낌으로
+	void Check_Timing();
+
 	virtual void Attack(_vector vDir) = 0;
+
+	// 근접 용
+	virtual void Melee_Attack(CGameObject* other) {};
 
 protected:
 	CShader* m_pShaderCom = { nullptr };
@@ -50,12 +54,15 @@ protected:
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	WEAPON			 m_eWeaponType = { WEAPON::END };
 	map < DIR_STATE, _int> m_DirMap = {};
+	map < DIR_STATE, _int> m_HitReactMap = {};
+	_float4			 m_vColor = {};
 
 	// 일단 어떻게 사용할지 좀 더 생각해보기
 	_bool			 m_IsActive = { true };
 	_bool			 m_IsMelee = { false };
 
 	_float			m_fDelay = { 0.f };
+	_bool			m_IsPerfect = {false};
 
 private:
 	HRESULT Ready_Components();

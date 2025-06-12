@@ -90,6 +90,143 @@ _bool CCollider::Intersect(CCollider* pTargetCollider)
 	return m_isColl;
 }
 
+_float4 CCollider::Calc_PushVector(CCollider* pTargetCollider)
+{
+	_float4 vPushVector = {};
+	_float3 vCenter = Get_Center();
+	_float3 vOtherCenter = pTargetCollider->Get_Center();
+	_float3 myExtend = Get_Extends();
+	_float3 otherExtend = pTargetCollider->Get_Extends();
+
+	// 구, aabb, obb 3가지로 나눠서 구현 or 구 인지 구가 아닌지만 나눠서 
+
+	_vector vDir = XMVectorSetW((XMLoadFloat3(&vCenter) - XMLoadFloat3(&vOtherCenter)), 0.f);
+	vDir = XMVectorSetY(vDir, 0.f);
+
+	_float fScale = XMVectorGetX(XMVector3Length(XMLoadFloat3(&myExtend)) + XMVector3Length(XMLoadFloat3(&otherExtend))) - XMVectorGetX(XMVector3Length(vDir));
+	vDir = XMVector3Normalize(vDir);
+	vDir = XMVectorScale(vDir, fabs(fScale));
+
+	XMStoreFloat4(&vPushVector, vDir);
+	return vPushVector;
+
+	//나중에
+
+	//if (COLLIDER::SPHERE == pTargetCollider->Get_Type())
+	//{
+	//	// 중점과 중점 을 이용해서 방향벡터를 만들어서 적용시킨다
+	//	
+	//	_float fScale = Get_Extends().x + pTargetCollider->Get_Extends().x - XMVectorGetX(XMVector3Length(vDir));
+	//	vDir = XMVector3Normalize(vDir);
+	//	vDir = XMVectorScale(vDir, fabs(fScale));
+	//	
+	//	XMStoreFloat4(&vPushVector, vDir);
+	//}
+	//else if(COLLIDER::AABB == pTargetCollider->Get_Type())
+	//{
+	//	// x랑 z만
+	//	_vector axes[2] = {
+	//	XMVectorSet(1.f, 0.f, 0.f, 0.f),
+	//	XMVectorSet(0.f, 0.f, 1.f, 0.f)
+	//	};
+
+	//	float maxOverlap = -FLT_MAX;
+
+	//	_float3 myExtend = Get_Extends();
+	//	_float3 otherExtend = pTargetCollider->Get_Extends();
+
+	//	_vector myExtends = XMLoadFloat3(&myExtend);
+	//	_vector otherExtends = XMLoadFloat3(&otherExtend);
+
+	//	for (int i = 0; i < 2; ++i)
+	//	{
+	//		// 축 방향 법선
+	//		_vector axis = axes[i];
+
+	//		// vDir과 축 벡터 내적 (절댓값)
+	//		float dot = fabs(XMVectorGetX(XMVector3Dot(vDir, axis)));
+
+
+	//		float radiusSum = XMVectorGetX(myExtends * axis) + XMVectorGetX(otherExtends * axis);
+	//		float myRadius = 0.f;
+	//		float otherRadius = 0.f;
+
+	//		if (i == 0) // x축
+	//		{
+	//			myRadius = Get_Extends().x;
+	//			otherRadius = pTargetCollider->Get_Extends().x;
+	//		}
+	//		else if (i == 1) // z축
+	//		{
+	//			myRadius = Get_Extends().z;
+	//			otherRadius = pTargetCollider->Get_Extends().z;
+	//		}
+
+	//		radiusSum = myRadius + otherRadius;
+
+	//		float overlap = radiusSum - dot;
+
+	//		if (overlap > maxOverlap)
+	//		{
+	//			maxOverlap = overlap;
+
+	//			// pushDir 방향은 vDir과 축 내적 부호 확인 후 축 방향 지정
+	//			float sign = XMVectorGetX(XMVector3Dot(vDir, axis)) > 0 ? 1.f : -1.f;
+	//			XMStoreFloat4(&vPushVector, axis * sign * overlap);
+	//		}
+	//	}
+	//	
+	//}
+	//else if (COLLIDER::OBB == pTargetCollider->Get_Type())
+	//{
+	//	_float4 quat = static_cast<CBounding_OBB*>(pTargetCollider->Get_Bounding())->Get_Desc()->Orientation;
+
+	//	_vector axes[2] = {
+	//		XMVectorSet(1.f, 0.f, 0.f, 0.f),
+	//		XMVectorSet(0.f, 0.f, 1.f, 0.f)
+	//	};
+
+	//	axes[0] = XMVector3Rotate(axes[0], XMLoadFloat4(&quat));
+	//	axes[1] = XMVector3Rotate(axes[1], XMLoadFloat4(&quat));
+
+	//	float maxOverlap = -FLT_MAX;
+
+	//	_float3 myExtend = Get_Extends();
+	//	_float3 otherExtend = pTargetCollider->Get_Extends();
+
+	//	for (int i = 0; i < 2; ++i)
+	//	{
+	//		_vector axis = XMVector3Normalize(axes[i]);
+
+	//		// 중심 간 방향 벡터 vDir를 이 축으로 투영 (projection length)
+	//		float distOnAxis = fabs(XMVectorGetX(XMVector3Dot(vDir, axis)));
+
+	//		// 각 콜라이더 반지름 (extend가 반지름 길이라고 가정)
+	//		float myRadius = (i == 0) ? myExtend.x : myExtend.z;
+	//		float otherRadius = (i == 0) ? otherExtend.x : otherExtend.z;
+
+	//		float radiusSum = myRadius + otherRadius;
+
+	//		float overlap = radiusSum - distOnAxis;
+
+	//		if (overlap > maxOverlap)
+	//		{
+	//			maxOverlap = overlap;
+
+	//			// push 방향은 vDir과 axis 내적 부호에 따라 결정
+	//			float sign = (XMVectorGetX(XMVector3Dot(vDir, axis)) > 0) ? 1.f : -1.f;
+
+	//			XMStoreFloat4(&vPushVector, axis * sign * overlap);
+	//		}
+	//	}
+
+
+	//}
+
+
+	return vPushVector;
+}
+
 #ifdef _DEBUG
 HRESULT CCollider::Render()
 {

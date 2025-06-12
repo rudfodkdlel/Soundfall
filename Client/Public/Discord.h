@@ -27,8 +27,9 @@ public:
 	CCombatStat* Get_CombatCom() { return m_pCombatCom; }
 	_int		 Get_Phase() { return m_iPhase; }
 	void		 Add_Phase() { ++m_iPhase; }
-	void         Set_bUseSpawn(_bool bUse) { m_bUseSpawn = bUse; }
+	void         Set_bUseSummon(_bool bUse) { m_bUseSummon = bUse; }
 	CPartObject* Get_Body() { return m_PartObjects[0]; }
+
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -41,6 +42,7 @@ public:
 	virtual void Select_State();
 
 	BOSS_PATTERN	Get_Next_Skill();
+	DIR_STATE     Get_Hit_Dir();
 
 	DIR_STATE Get_Dir_Melee();
 
@@ -55,8 +57,8 @@ private:
 private:
 
 	CObject_State*	m_pState = { nullptr };
-	_int		    m_iPhase = { 1 };// 1, 2, 3, death
-	_bool			m_bUseSpawn = { false };
+	_int		    m_iPhase = { 0 };// 1, 2, 3, death
+	_bool			m_bUseSummon = { false };
 
 	// 임시로 일단
 	_int			m_iLoopCount = { 3 };

@@ -26,6 +26,9 @@ private:
 
 public:
 	const _float4x4* Get_SocketMatrix(const _char* pBoneName);
+	eDirState Get_Hit_Dir() { return m_eHitDir; }
+	vector<_float4> Get_PushVectors() { return m_pushVectors;}
+	void Clear_PushVectors() { m_pushVectors.clear(); }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -34,6 +37,10 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+
+	virtual HRESULT On_Collision(CGameObject* Other, CCollider* pCollider);
+
+	eDirState Calc_Hit_Dir(_vector vDir);
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -44,6 +51,7 @@ private:
 
 private:
 	_bool	m_bFinished = { false };
+	eDirState m_eHitDir = {};
 
 private:
 	HRESULT Ready_Components();
