@@ -1,5 +1,6 @@
 #include "Player_State_Dash.h"
 #include "Player_State_Idle.h"
+#include "Navigation.h"
 
 void CPlayer_State_Dash::Enter(CGameObject* pObj)
 {
@@ -57,7 +58,8 @@ void CPlayer_State_Dash::Update(CGameObject* pObj, float fTimeDelta)
 	_vector vPos = m_pPlayer->Get_Transform()->Get_State(STATE::POSITION);
 	vPos += m_vDir * fTimeDelta * 20;
 
-	m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+	if (static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")))->isMove(vPos))
+		m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
 
 
 	m_IsFinish = m_pModel->Play_Animation(fTimeDelta * 2.5f);

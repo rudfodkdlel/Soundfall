@@ -238,9 +238,6 @@
     <Filter Include="02.GameObjects\06. State\Monster\Attack">
       <UniqueIdentifier>{ec971039-90e4-400b-b229-a3b0c3654481}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06. State\Monster\Attack\Summon">
-      <UniqueIdentifier>{8b050c01-dd5a-45c9-977b-bf2d703f0819}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\06. State\Monster\Attack\Melee">
       <UniqueIdentifier>{b9805d71-cf28-439e-b9c6-61c7d172cfc9}</UniqueIdentifier>
     </Filter>
@@ -270,6 +267,12 @@
     </Filter>
     <Filter Include="01.Levels\Edit">
       <UniqueIdentifier>{15fbc57c-34ef-4631-a335-1cfedf7796b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09. Skybox">
+      <UniqueIdentifier>{fd0fbf61-bb85-426f-86ac-d845f1b78773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06. State\Monster\Attack\Summon">
+      <UniqueIdentifier>{8b050c01-dd5a-45c9-977b-bf2d703f0819}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -477,6 +480,24 @@
     <ClInclude Include="..\public\Monster_State_Groggy.h">
       <Filter>02.GameObjects\06. State\Monster\Groggy</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Sky.h">
+      <Filter>02.GameObjects\09. Skybox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Pattern_Melee.h">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Melee</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Pattern_Summon.h">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Summon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Pattern_Wall.h">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Wall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_Pattern_Missile.h">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Missile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster_State_Death.h">
+      <Filter>02.GameObjects\06. State\Monster\Death</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -677,6 +698,24 @@
     </ClCompile>
     <ClCompile Include="..\private\Monster_State_Groggy.cpp">
       <Filter>02.GameObjects\06. State\Monster\Groggy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sky.cpp">
+      <Filter>02.GameObjects\09. Skybox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Pattern_Melee.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Melee</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Pattern_Summon.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Summon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Pattern_Wall.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Wall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_Pattern_Missile.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Attack\Missile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster_State_Death.cpp">
+      <Filter>02.GameObjects\06. State\Monster\Death</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

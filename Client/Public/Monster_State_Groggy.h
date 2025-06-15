@@ -16,7 +16,9 @@ public:
 	virtual CObject_State* Check_Transition(CGameObject* pObj);
 
 private:
-	_float fDuration = {};
+	_float		m_fDuration = { 5.f };
+	ANIMSTATE	m_eAnimState = { ANIMSTATE::ANIM_IN };
+	_bool		m_isPhaseEnd = { false };
 };
 
 NS_END

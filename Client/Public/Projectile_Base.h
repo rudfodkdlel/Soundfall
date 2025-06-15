@@ -18,8 +18,10 @@ public:
 	{
 
 		_float4 vDir;
+		_float	fSpeed;
+
 		// 만드는 객체마다 색이 다름
-		_float4 m_vColor;
+		_float4 vColor;
 	}PROJECTILE_DESC;
 
 protected:
@@ -45,8 +47,9 @@ protected:
 	CCollider* m_pColliderCom = { nullptr };
 	class CCombatStat* m_pCombatCom = { nullptr };
 	_float4	m_vDir = {};
-
+	_float4 m_vColor = {};
 	_bool	m_IsColl = { false };
+	_float	m_fSpeed = {};
 
 private:
 	HRESULT Ready_Components();

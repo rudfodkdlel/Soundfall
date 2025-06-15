@@ -138,14 +138,52 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 #ifdef _DEBUG
 HRESULT CNavigation::Render()
 {
+
+	_float4x4		WorldMatrix = m_WorldMatrix;
+	WorldMatrix.m[3][1] += 0.2f;
+
 	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
 	m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
 	m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
 
 	m_pShader->Begin(0);
 
+
+
 	for (auto& pCell : m_Cells)
+	{
 		pCell->Render();
+
+	}
+
+	// debug용
+	
+	for (auto& pCell : m_Cells)
+	{
+		XMMATRIX result = XMMatrixMultiply(XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW)), XMLoadFloat4x4(m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ)));
+
+		_vector vPos = pCell->Get_MiddlePoint();
+
+		vPos = XMVector3TransformCoord(vPos, result);
+
+		// NDC → 화면 좌표로 매핑 
+		_float2 screenPos;
+		screenPos.x = (vPos.m128_f32[0] + 1.0f) * 0.5f * 1280.f;
+		screenPos.y = (1.0f - vPos.m128_f32[1]) * 0.5f * 720.f;
+
+		_wstring str = to_wstring(pCell->Get_index());
+
+		m_pGameInstance->Draw_Font(TEXT("Default"), str.data(), screenPos);
+	}
+
+	// edit에서 안보여서 임시로 일단
+	
+	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW));
+	m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ));
+
+	m_pShader->Begin(0);
+
 
 	return S_OK;
 }

@@ -54,7 +54,8 @@ HRESULT CBody_Discord::Initialize(void* pArg)
 
 void CBody_Discord::Priority_Update(_float fTimeDelta)
 {
-    
+    if (m_pColliderCom[0]->Get_IsColl())
+        m_eHitDir = DIR_STATE::NONE;
 }
 
 void CBody_Discord::Update(_float fTimeDelta)
@@ -86,7 +87,7 @@ void CBody_Discord::Update(_float fTimeDelta)
 
 void CBody_Discord::Late_Update(_float fTimeDelta)
 {
-    
+
     m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 
 }
@@ -138,7 +139,14 @@ HRESULT CBody_Discord::On_Collision(CGameObject* Other, CCollider* pCollider)
 
     m_eHitDir = Calc_Hit_Dir(vDir);
 
-    m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+    if (m_pCombatCom->Get_Damage() > 0)
+    {
+        m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+        for (int i = 1; i < 5; ++i)
+            m_pColliderCom[i]->Set_Active(false);
+        m_IsAttackHit = true;
+    }
+       
 
     return S_OK;
 }

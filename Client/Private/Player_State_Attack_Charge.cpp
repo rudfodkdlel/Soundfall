@@ -1,6 +1,7 @@
 #include "Player_State_Attack_Charge.h"
 #include "Player_State_Idle.h"
 #include "Axe.h"
+#include "Navigation.h"
 
 void CPlayer_State_Attack_Charge::Enter(CGameObject* pObj)
 {
@@ -25,6 +26,7 @@ void CPlayer_State_Attack_Charge::Update(CGameObject* pObj, float fTimeDelta)
             m_eAttackState = ATTACK::ATTACK_LOOP;
             m_vDir = m_pPlayer->Get_Transform()->Get_State(STATE::LOOK);
             m_vDir = XMVector3Normalize(m_vDir);
+            static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(true);
             m_pModel->Set_Animation(17, true);
         }
     }
@@ -34,7 +36,6 @@ void CPlayer_State_Attack_Charge::Update(CGameObject* pObj, float fTimeDelta)
         {
             m_eAttackState = ATTACK::ATTACK_OUT;
             m_pModel->Set_Animation(20, false);
-            static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(true);
             return;
         }
         
@@ -45,8 +46,8 @@ void CPlayer_State_Attack_Charge::Update(CGameObject* pObj, float fTimeDelta)
             _vector vPos = m_pPlayer->Get_Transform()->Get_State(STATE::POSITION);
 
             vPos += m_vDir * fTimeDelta * 20;
-
-            m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+            if (static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")))->isMove(vPos))
+                m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
         }
         else
         {

@@ -17,6 +17,7 @@ HRESULT CCustomFont::Initialize(const _tchar* pFontFilePath)
 
 void CCustomFont::Draw(SpriteBatch* pBatch, const _tchar* pText, const _float2& vPosition, _fvector vColor, _float fRotation, const _float2& vOrigin, _float fScale)
 {
+
 	m_pFont->DrawString(pBatch, pText, vPosition, vColor, fRotation, vOrigin, fScale);
 }
 

@@ -6,7 +6,7 @@
 
 NS_BEGIN(Engine)
 
-class CCell final : public CBase
+class ENGINE_DLL CCell final : public CBase
 {
 public:
 	enum POINT { POINT_A, POINT_B, POINT_C, POINT_END };
@@ -19,6 +19,12 @@ public:
 	_vector Get_Point(POINT ePoint) {
 		return XMLoadFloat3(&m_vPoints[ePoint]);
 	}
+
+	_vector Get_MiddlePoint()
+	{
+		return XMLoadFloat3(&m_vMiddlePoint);
+	}
+	_int	Get_index() { return m_iIndex; }
 
 public:
 	void Set_Neighbor(LINE eLine, CCell* pCell) {
@@ -45,6 +51,7 @@ private:
 	_float3			m_vNormals[LINE_END] = {};
 	_int			m_iNeighborIndices[LINE_END] = { -1, -1, -1 };
 	_int			m_iIndex = {};
+	_float3			m_vMiddlePoint = {};
 
 #ifdef _DEBUG
 	class CVIBuffer_Cell* m_pVIBuffer = { nullptr };

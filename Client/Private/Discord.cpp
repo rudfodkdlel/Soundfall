@@ -78,7 +78,7 @@ HRESULT CDiscord::Initialize(void* pArg)
 	m_pState = new CMonster_State_Spawn;
 	m_pState->Enter(this);
 
-	_vector vPos = { 0.f, 0.f, 30.f, 1.f };
+	_vector vPos = { 15.f, 0.f, 30.f, 1.f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	_vector vAxis = { 0.f, 1.f, 0.f, 0.f };

@@ -65,16 +65,11 @@ HRESULT CMyImgui::Initialize( ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 
 void CMyImgui::Update(_float fTimeDelta)
 {
-	bool bCurrentLeftDown = (m_pGameInstance->Get_DIMouseState(DIM::LBUTTON) & 0x80) != 0;
-	// 이제 피킹하는거? 
 	
-	if (bCurrentLeftDown && !bPrevLeftDown)
+	
+	if (m_pGameInstance->Key_Down(DIM::LBUTTON))
 	{
-		if (ImGui::IsAnyItemHovered())
-		{
-			bPrevLeftDown = bCurrentLeftDown;
-			return;
-		}
+		
 			
 		// 마우스랑 가장 가까운
 		_float		vMinDist = FLT_MAX;
@@ -127,42 +122,105 @@ void CMyImgui::Update(_float fTimeDelta)
 
 					if (m_bUseNaviPos)
 					{
-
-						// 점 찍고
-						m_eTri.points[m_iPickCount] = { roundf(m_vPickingPos.x),  roundf(m_vPickingPos.y),  roundf(m_vPickingPos.z) };
-
-						// 비슷한 점 있으면 그걸로 바꿔
-						for (auto& tri : m_NaviTriangles)
+						if (m_NaviTriangles.empty())
 						{
-							for (auto& point : tri.points)
+							// 점 찍고
+							m_eTri.points[m_iPickCount] = { roundf(m_vPickingPos.x),  roundf(m_vPickingPos.y),  roundf(m_vPickingPos.z) };
+
+
+							if (m_iPickCount == 2)
 							{
-								_vector vLength = XMLoadFloat3(& m_eTri.points[m_iPickCount]) - XMLoadFloat3(&point);
-								if (XMVectorGetX(XMVector3LengthSq(vLength)) < 5)
-								{
-									m_eTri.points[m_iPickCount] = point;
-								}
+								m_NaviTriangles.push_back(m_eTri);
+
+								CCell* pCell = CCell::Create(m_pDevice, m_pContext, m_eTri.points, m_pCells.size());
+								if (nullptr == pCell)
+									return;
+								m_pCells.push_back(pCell);
+
+								ZeroMemory(&m_eTri, sizeof(Triangle));
+								m_iPickCount = 0;
 							}
-						}
-						
-						if (m_iPickCount == 3)
-						{
-							m_NaviTriangles.push_back(m_eTri);
-							for (auto& point : m_eTri.points)
-								point = {0,0,0};
-							m_iPickCount = 0;
+							else
+							{
+								++m_iPickCount;
+							}
 						}
 						else
 						{
-							++m_iPickCount;
+							_float3 newPoint = { roundf(m_vPickingPos.x), roundf(m_vPickingPos.y), roundf(m_vPickingPos.z) };
+
+							// 스냅 거리 임계값
+							const float snapThreshold = 5.0f;
+
+							// 가까운 점으로 스냅 처리
+							for (auto& tri : m_NaviTriangles)
+							{
+								for (int i = 0; i < 3; ++i)
+								{
+									_float3& pt = tri.points[i];
+									_vector diff = XMLoadFloat3(&newPoint) - XMLoadFloat3(&pt);
+									float dist = XMVectorGetX(XMVector3Length(diff));
+
+									if (dist < snapThreshold)
+									{
+										newPoint = pt;
+										break;
+									}
+								}
+								if (newPoint.x != roundf(m_vPickingPos.x) ||
+									newPoint.y != roundf(m_vPickingPos.y) ||
+									newPoint.z != roundf(m_vPickingPos.z))
+									break;
+							}
+
+							// 찍은 점 저장
+							m_eTri.points[m_iPickCount] = newPoint;
+
+							if (m_iPickCount == 2)
+							{
+								// 시계 방향 체크 및 교정
+								_float3 a = m_eTri.points[0];
+								_float3 b = m_eTri.points[1];
+								_float3 c = m_eTri.points[2];
+
+								_vector v1 = XMLoadFloat3(&b) - XMLoadFloat3(&a);
+								_vector v2 = XMLoadFloat3(&c) - XMLoadFloat3(&a);
+								_vector cross = XMVector3Cross(v1, v2);
+
+								if (XMVectorGetY(cross) < 0)
+									std::swap(b, c);
+
+								m_eTri.points[0] = a;
+								m_eTri.points[1] = b;
+								m_eTri.points[2] = c;
+
+								m_NaviTriangles.push_back(m_eTri);
+
+								CCell* pCell = CCell::Create(m_pDevice, m_pContext, m_eTri.points, m_pCells.size());
+								if (nullptr == pCell)
+									return;
+								m_pCells.push_back(pCell);
+
+								ZeroMemory(&m_eTri, sizeof(Triangle));
+								m_iPickCount = 0;
+							}
+							else
+							{
+								++m_iPickCount;
+							}
 						}
-						
+
+
 					}
 				}
+
+
+				
 			}
 		}
 	
 	}
-	bPrevLeftDown = bCurrentLeftDown;
+	
 }
 
 HRESULT CMyImgui::Render()
@@ -179,6 +237,9 @@ HRESULT CMyImgui::Render()
 	// 그린 UI를 렌더링
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	for (auto& cell : m_pCells)
+		cell->Render();
 	
 
 	return S_OK;
@@ -266,12 +327,12 @@ void CMyImgui::Render_Create_Window()
 
 	if (ImGui::Button("Save_Navi"))
 	{
-		Save_Navi("../Bin/Data/Navi_Test.bin");
+		Save_Navi("../Bin/Data/Navi_Test1.bin");
 	}
 
 	if (ImGui::Button("Load_Navi"))
 	{
-		Load_Navi("../Bin/Data/Navi_Test.bin");
+		Load_Navi("../Bin/Data/Navi_Test1.bin");
 	}
 
 	ImGui::End();
@@ -476,4 +537,7 @@ void CMyImgui::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pGrid);
+
+	for (auto& cell : m_pCells)
+		Safe_Release(cell);
 }

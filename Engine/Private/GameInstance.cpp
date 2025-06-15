@@ -93,6 +93,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	
 	m_pInput_Device->Update();
 
+	m_pCollider_Manager->Check_Nullptr();
+
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
 	m_pPipeLine->Update();
@@ -107,7 +109,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 	m_pLevel_Manager->Update(fTimeDelta);
 
-	m_pCollider_Manager->Check_Nullptr();
+	
 }
 
 HRESULT CGameInstance::Begin_Draw()
@@ -125,6 +127,8 @@ HRESULT CGameInstance::Draw()
 {
 	if (nullptr == m_pGraphic_Device)
 		return E_FAIL;
+
+	
 
 	m_pRenderer->Draw();
 
@@ -464,7 +468,6 @@ HRESULT CGameInstance::Add_Collider_Group(pair<_uint, _uint> typePair)
 
 void CGameInstance::Release_Engine()
 {
-	Safe_Release(m_pCollider_Manager);
 
 	Safe_Release(m_pSound_Manager);
 
@@ -481,6 +484,8 @@ void CGameInstance::Release_Engine()
 	Safe_Release(m_pRenderer);
 
 	Safe_Release(m_pObject_Manager);
+
+	Safe_Release(m_pCollider_Manager);
 
 	Safe_Release(m_pPrototype_Manager);
 

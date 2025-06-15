@@ -17,6 +17,7 @@ public:
 	virtual CObject_State* Check_Transition(CGameObject* pObj) { return nullptr; }
 
 protected:
+	ATTACK m_eAttackState = { ATTACK::ATTACK_IN };
 	CDiscord* m_pDiscord = { nullptr };
 
 };

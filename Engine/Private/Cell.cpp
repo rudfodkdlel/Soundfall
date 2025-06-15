@@ -15,6 +15,8 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
 
 	memcpy(m_vPoints, pPoints, sizeof(_float3) * POINT_END);
 
+	XMStoreFloat3(&m_vMiddlePoint, (XMLoadFloat3(&m_vPoints[POINT_A]) + XMLoadFloat3(&m_vPoints[POINT_B]) + XMLoadFloat3(&m_vPoints[POINT_C])) / 3.f);
+
 	_vector		vLine = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 
 	vLine = XMLoadFloat3(&m_vPoints[POINT_B]) - XMLoadFloat3(&m_vPoints[POINT_A]);
@@ -25,6 +27,8 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex)
 
 	vLine = XMLoadFloat3(&m_vPoints[POINT_A]) - XMLoadFloat3(&m_vPoints[POINT_C]);
 	m_vNormals[LINE_CA] = _float3(vLine.m128_f32[2] * -1.f, 0.f, vLine.m128_f32[0]);
+
+	
 
 
 #ifdef _DEBUG
@@ -101,6 +105,8 @@ HRESULT CCell::Render()
 {
 	m_pVIBuffer->Bind_Buffers();
 	m_pVIBuffer->Render();
+
+	
 
 	return S_OK;
 }

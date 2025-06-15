@@ -7,6 +7,7 @@
 
 NS_BEGIN(Engine)
 class CModel;
+class CNavigation;
 NS_END
 
 NS_BEGIN(Client)
@@ -41,6 +42,7 @@ private:
 	_float		m_fPatternTime = { 2.f };
 
 	CCombatStat* m_pCombatCom = { nullptr };
+	CNavigation* m_pNavigationCom = { nullptr };
 
 public:
 	static CDefender* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

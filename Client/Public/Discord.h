@@ -4,6 +4,7 @@
 #include "Monster_Base.h"
 #include "CombatStat.h"
 #include "PartObject.h"
+#include "Body_Discord.h"
 
 
 NS_BEGIN(Engine)
@@ -29,7 +30,9 @@ public:
 	void		 Add_Phase() { ++m_iPhase; }
 	void         Set_bUseSummon(_bool bUse) { m_bUseSummon = bUse; }
 	CPartObject* Get_Body() { return m_PartObjects[0]; }
-
+	_bool		 Is_Attack_Hit() { return static_cast<CBody_Discord*>(m_PartObjects[0])->Get_Attack_Hit(); }
+	void		 Reset_Attack_Hit() { static_cast<CBody_Discord*>(m_PartObjects[0])->Set_Attack_Hit(); }
+	DIR_STATE    Check_Head_HitDir() { return static_cast<CBody_Discord*>(m_PartObjects[0])->Get_Hit_Dir(); }
 
 public:
 	virtual HRESULT Initialize_Prototype();

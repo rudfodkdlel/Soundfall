@@ -17,7 +17,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	// bpm 123
 	m_pGameInstance->StopSound(SOUND_BGM);
-	m_pGameInstance->PlaySound(TEXT("Discordance.ogg"), SOUND_BGM, 0.7f);
+	m_pGameInstance->PlaySound(TEXT("Discordance.ogg"), SOUND_BGM, 0.5f);
 	m_pGameInstance->SetBPM(TEXT("Discordance.ogg"));
 
 	if (FAILED(Ready_Lights()))
@@ -120,6 +120,11 @@ HRESULT CLevel_GamePlay::Render()
 
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
 {
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
 	CTerrain::TERRAIN_DESC pDesc = {};
 
 	pDesc.bWired = false;

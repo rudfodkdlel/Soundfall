@@ -35,6 +35,8 @@ private:
 	_int m_iOverloadCount = { 4 };
 	_float m_fOverloadTime = { 0.f };
 
+	
+
 public:
 	static CKeyboard* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

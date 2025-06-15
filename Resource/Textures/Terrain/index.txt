@@ -1,1 +1,0 @@
-짝수번째는 diffuse, 홀수번째는 normal

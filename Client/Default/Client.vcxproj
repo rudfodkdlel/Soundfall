@@ -185,7 +185,12 @@
     <ClInclude Include="..\public\Monster_Base.h" />
     <ClInclude Include="..\public\Monster_HP.h" />
     <ClInclude Include="..\public\Monster_Pattern_EchoSlam.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Melee.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Missile.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Summon.h" />
+    <ClInclude Include="..\public\Monster_Pattern_Wall.h" />
     <ClInclude Include="..\public\Monster_State_Base.h" />
+    <ClInclude Include="..\public\Monster_State_Death.h" />
     <ClInclude Include="..\public\Monster_State_Groggy.h" />
     <ClInclude Include="..\public\Monster_State_Idle.h" />
     <ClInclude Include="..\public\Monster_State_Spawn.h" />
@@ -213,6 +218,7 @@
     <ClInclude Include="..\public\Projectile_Shockwave.h" />
     <ClInclude Include="..\public\Rifle.h" />
     <ClInclude Include="..\public\Sickle.h" />
+    <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\public\Structure.h" />
     <ClInclude Include="..\public\Tentacle_Melee.h" />
@@ -234,7 +240,12 @@
     <ClCompile Include="..\private\Metronome_Center_RIng.cpp" />
     <ClCompile Include="..\private\Monster_HP.cpp" />
     <ClCompile Include="..\private\Monster_Pattern_EchoSlam.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Melee.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Missile.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Summon.cpp" />
+    <ClCompile Include="..\private\Monster_Pattern_Wall.cpp" />
     <ClCompile Include="..\private\Monster_State_Base.cpp" />
+    <ClCompile Include="..\private\Monster_State_Death.cpp" />
     <ClCompile Include="..\private\Monster_State_Groggy.cpp" />
     <ClCompile Include="..\private\Monster_State_Idle.cpp" />
     <ClCompile Include="..\private\Monster_State_Spawn.cpp" />
@@ -249,6 +260,7 @@
     <ClCompile Include="..\private\Player_State_Hit.cpp" />
     <ClCompile Include="..\private\Player_State_Move.cpp" />
     <ClCompile Include="..\Private\Player_State_Spawn.cpp" />
+    <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\Tentacle_Melee.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />

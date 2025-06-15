@@ -39,13 +39,15 @@ public:
 
 	eDirState Get_Hit_Dir() { return m_eHitDir; }
 	eDirState Calc_Hit_Dir(_vector vDir);
-
+	_bool	  Get_Attack_Hit() { return m_IsAttackHit; }
+	void	  Set_Attack_Hit() { m_IsAttackHit = false; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom[5] = {nullptr};
 	CCombatStat* m_pCombatCom = { nullptr };
 	_bool	m_IsFinished = { false };
+	_bool	m_IsAttackHit = { false };
 
 	const _float4x4* m_pSocketMatrix = { nullptr };
 	eDirState		 m_eHitDir = {};

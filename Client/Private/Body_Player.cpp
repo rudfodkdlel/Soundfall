@@ -117,8 +117,8 @@ HRESULT CBody_Player::On_Collision(CGameObject* Other, CCollider* pCollider)
 
 	m_eHitDir = Calc_Hit_Dir(vDir);
 
-
-	m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
+	if(CG_MONSTER == pCollider->Get_Group())
+		m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
 
 
 

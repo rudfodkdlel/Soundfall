@@ -1,7 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Client_Defines.h"
-
+#include "Cell.h"
 
 
 
@@ -64,17 +64,17 @@ private:
 	ImGuizmo::OPERATION m_currentOperation = ImGuizmo::TRANSLATE;
 
 
+	_float4				m_vPickingPos = { 0.f,0.f,0.f,1.f };
 	// 오브젝트 설치할 때 사용할 그리드 설정, 버튼으로 껏다 키기
 	_bool				m_bCheckGrid = { false };
 	CGameObject*		m_pGrid = { nullptr };
 
+	// 네비 매쉬 용
 	_bool				m_bUseNaviPos = { false };
 	_int				m_iPickCount = {};
 	Triangle			m_eTri = {};
-
-	_float4				m_vPickingPos = { 0.f,0.f,0.f,1.f };
-
-
+	vector<CCell*>		m_pCells = {};
+	
 	vector<Triangle>		m_NaviTriangles = {};
 
 	CGameObject* m_pPickingObject = { nullptr };

@@ -9,8 +9,6 @@ namespace Client
 	
 	enum class ANIMSTATE {ANIM_IN, ANIM_LOOP, ANIM_OUT};
 
-	enum class OBJTYPE { PLAYER, MOSNTER, BOSS, END };
-
 	enum class TRIGGERTYPE {ZOOM_IN, ZOOM_OUT, SHAKE, END};
 
 	typedef enum  eDirState {

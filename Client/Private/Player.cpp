@@ -52,7 +52,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	/* 1. 서로 다른 애니메이션을 셋팅했음에도 같은 동작이 재생된다. : 뼈가 공유되기때문에. */
 	/* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
 
-	_vector vPos = { 3.f,0.f,3.f,1.f };
+	_vector vPos = { 5.f,0.f,5.f,1.f };
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 

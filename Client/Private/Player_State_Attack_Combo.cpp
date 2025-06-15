@@ -38,7 +38,7 @@ void CPlayer_State_Attack_Combo::Update(CGameObject* pObj, float fTimeDelta)
             m_IsInput = false;
             break;
         case 1:
-            if ((m_pGameInstance->Get_Timing() < 0.1f))
+            if ((m_pGameInstance->Get_Timing() < 0.15f))
             {
                 m_pModel->Set_Animation(8, false);
             }

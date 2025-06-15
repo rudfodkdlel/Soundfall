@@ -3,6 +3,7 @@
 #include "Body_Defender.h"
 #include "Weapon_Defender.h"
 #include "Monster_HP.h"
+#include "Navigation.h"
 
 CDefender::CDefender(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CMonster_Base{pDevice, pContext}
@@ -39,7 +40,7 @@ HRESULT CDefender::Initialize(void* pArg)
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
-	_vector vPos = { 10.f,0.f,0.f,1.f };
+	_vector vPos = { 35.f,0.f,5.f,1.f };
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
@@ -73,7 +74,8 @@ void CDefender::Update(_float fTimeDelta)
 		if (STATE_MAIN::MOVE == m_eMainState)
 		{
 			m_pTransformCom->LookAt(m_pTarget->Get_Transform()->Get_State(STATE::POSITION));
-			m_pTransformCom->Go_Straight(fTimeDelta);
+
+			m_pTransformCom->Go_Straight(fTimeDelta, m_pNavigationCom);
 		}
 		else if (STATE_MAIN::IDLE == m_eMainState)
 		{
@@ -130,7 +132,8 @@ void CDefender::Late_Update(_float fTimeDelta)
 
 		vPos += vSumDir;
 
-		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+		if(m_pNavigationCom->isMove(vPos))
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 		static_cast<CBody_Defender*>(m_PartObjects[0])->Clear_PushVectors();
 	}
@@ -235,7 +238,16 @@ HRESULT CDefender::Ready_Components()
 		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom),&eDesc)))
 		return E_FAIL;
 
-    return S_OK;
+	/* For.Com_Navigation */
+	CNavigation::NAVIGATION_DESC		NaviDesc{};
+	NaviDesc.iIndex = 2;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
+		return E_FAIL;
+
+	return S_OK;
+
 }
 
 CDefender* CDefender::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -269,5 +281,6 @@ void CDefender::Free()
 	__super::Free();
 
 	Safe_Release(m_pCombatCom);
+	Safe_Release(m_pNavigationCom);
 }
 

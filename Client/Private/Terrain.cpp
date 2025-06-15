@@ -73,8 +73,8 @@ HRESULT CTerrain::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (nullptr != m_pNavigationCom)
-		m_pNavigationCom->Render();
+	
+	m_pNavigationCom->Render();
 #endif
 
 	
@@ -104,13 +104,12 @@ HRESULT CTerrain::Ready_Components()
 		TEXT("Com_Texture_Normal"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
 
-	if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::GAMEPLAY))
-	{
+	
 		/* For.Com_Navigation */
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
 			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 			return E_FAIL;
-	}
+	
 	
 
 	return S_OK;

@@ -9,7 +9,7 @@
 #include "Structure.h"
 #include "VIBuffer_Cube.h"
 //#include "Effect.h"
-//#include "Sky.h"
+#include "Sky.h"
 #include "Static_UI.h"
 #include "Metronome.h"
 #include "Metronome_Counter.h"
@@ -207,6 +207,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Monster/Shockwave.dds"), 1))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Skybox/Skybox.dds"), 1))))
+		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Sky */
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"),
@@ -295,6 +299,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 
 
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
 	//	return E_FAIL;
@@ -340,6 +345,12 @@ HRESULT CLoader::Loading_For_GamePlay()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_HP_Bar"),
 		CHP_BAR::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_Sky */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -524,9 +535,13 @@ HRESULT CLoader::Loading_For_Edit()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
-	// 추가 필요하고...
 
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test1.bin")))))
+		return E_FAIL;
+
+	// 추가
 	
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

@@ -38,6 +38,8 @@ HRESULT CKeyboard::Initialize(void* pArg)
 
     m_fDelay = 0.f;
 
+    m_vColor = { 0.f,0.f,1.f,1.f };
+
     return S_OK;
 }
 
@@ -108,8 +110,9 @@ void CKeyboard::Attack(_vector vDir)
 
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
+    eDesc.vColor = m_vColor;
 
-    _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 , m_CombinedWorldMatrix._43 , 1.f };
+    _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 + 0.8f , m_CombinedWorldMatrix._43 , 1.f };
     XMStoreFloat4(&eDesc.vPos, vPos);
 
     _vector vRotateDir = {};
@@ -126,7 +129,8 @@ void CKeyboard::Attack(_vector vDir)
    
 
     // 소리 추가
-
+    m_pGameInstance->StopSound(SOUND_WEAPON);
+    m_pGameInstance->PlaySound(TEXT("Shotgun_Attack.wav"), SOUND_WEAPON, 0.7f);
    
     m_fDelay = 0.2f;
 }
@@ -185,6 +189,7 @@ CGameObject* CKeyboard::Clone(void* pArg)
 
 void CKeyboard::Free()
 {
+    
     __super::Free();
 
 
