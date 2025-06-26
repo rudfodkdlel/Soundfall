@@ -223,6 +223,7 @@
     <ClInclude Include="..\public\Projectile_Player_Ult_Sickle.h" />
     <ClInclude Include="..\public\Projectile_Shell.h" />
     <ClInclude Include="..\public\Projectile_Shockwave.h" />
+    <ClInclude Include="..\public\Range_Effect.h" />
     <ClInclude Include="..\public\Rifle.h" />
     <ClInclude Include="..\public\Sickle.h" />
     <ClInclude Include="..\public\Sky.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\private\Projectile_Falling.cpp" />
     <ClCompile Include="..\private\Projectile_Player_Ult_Sickle.cpp" />
     <ClCompile Include="..\private\Projectile_Shell.cpp" />
+    <ClCompile Include="..\private\Range_Effect.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\Structure_Instance.cpp" />

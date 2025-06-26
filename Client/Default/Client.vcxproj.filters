@@ -304,6 +304,15 @@
     <Filter Include="01.Levels\Forest">
       <UniqueIdentifier>{cbb6c47f-1133-43d5-8cfb-d5d89a95673b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Peon">
+      <UniqueIdentifier>{c2dd2299-4e37-474e-979e-07da575e4f5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Hit">
+      <UniqueIdentifier>{376591e8-196c-4a00-ba5e-fcf8f7be6106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Range">
+      <UniqueIdentifier>{c31682c9-b25e-4512-b968-4e21e79ccc9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -546,14 +555,17 @@
     <ClInclude Include="..\public\Structure_Instance.h">
       <Filter>02.GameObjects\02. Structure\Instance</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Hit_Effect_Texture.h">
-      <Filter>02.GameObjects\10. Effect\Texture</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Music_Note.h">
       <Filter>02.GameObjects\10. Effect\Paticle\MusicNote</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Forest.h">
       <Filter>01.Levels\Forest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Hit_Effect_Texture.h">
+      <Filter>02.GameObjects\10. Effect\Texture\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Range_Effect.h">
+      <Filter>02.GameObjects\10. Effect\Texture\Range</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -792,14 +804,17 @@
     <ClCompile Include="..\private\Structure_Instance.cpp">
       <Filter>02.GameObjects\02. Structure\Instance</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Hit_Effect_Texture.cpp">
-      <Filter>02.GameObjects\10. Effect\Texture</Filter>
-    </ClCompile>
     <ClCompile Include="..\public\Music_Note.cpp">
       <Filter>02.GameObjects\10. Effect\Paticle\MusicNote</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Forest.cpp">
       <Filter>01.Levels\Forest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hit_Effect_Texture.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Range_Effect.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture\Range</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
