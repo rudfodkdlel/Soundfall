@@ -21,7 +21,7 @@ HRESULT CMusic_Note::Initialize_Prototype()
 
 HRESULT CMusic_Note::Initialize(void* pArg)
 {
-	GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	MUSICNOTE_DESC* pDesc = static_cast<MUSICNOTE_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -30,6 +30,8 @@ HRESULT CMusic_Note::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&pDesc->vPos));
+
+	m_isSpread = pDesc->isSpread;
 
 	return S_OK;
 }
@@ -41,8 +43,10 @@ void CMusic_Note::Priority_Update(_float fTimeDelta)
 
 void CMusic_Note::Update(_float fTimeDelta)
 {
-	
-	m_pVIBufferCom->Spread(fTimeDelta);
+	if (m_isSpread)
+		m_pVIBufferCom->Spread(fTimeDelta);
+	else
+		m_pVIBufferCom->Gather(fTimeDelta);
 }
 
 void CMusic_Note::Late_Update(_float fTimeDelta)
@@ -59,6 +63,9 @@ HRESULT CMusic_Note::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
 
 
@@ -80,7 +87,7 @@ HRESULT CMusic_Note::Render()
 HRESULT CMusic_Note::Ready_Components()
 {
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxRectInstance"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosInstance"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

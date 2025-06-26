@@ -1,6 +1,7 @@
 #include "Projectile_Player.h"
 #include "GameInstance.h"
 #include "CombatStat.h"
+#include "Music_Note.h"
 
 CProjectile_Player::CProjectile_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CProjectile_Base(pDevice, pContext)
@@ -59,8 +60,9 @@ void CProjectile_Player::Priority_Update(_float fTimeDelta)
 	{
 		Set_Dead();
 
-		CGameObject::GAMEOBJECT_DESC eDesc = {};
+		CMusic_Note::MUSICNOTE_DESC eDesc = {};
 		eDesc.fRotationPerSec = 90.f;
+		eDesc.isSpread = true;
 
 		XMStoreFloat4(&eDesc.vPos, m_pTransformCom->Get_State(STATE::POSITION));
 

@@ -6,13 +6,17 @@
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
-class CVIBuffer_Rect_Instance;
+class CVIBuffer_Point_Instance;
 NS_END
 
 NS_BEGIN(Client)
 
 class CMusic_Note final : public CGameObject
 {
+public:
+	typedef struct tagMusicNoteDesc : public CGameObject::GAMEOBJECT_DESC{
+		_bool isSpread;
+	}MUSICNOTE_DESC;
 private:
 	CMusic_Note(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMusic_Note(const CMusic_Note& Prototype);
@@ -26,13 +30,17 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-private:
-	CShader* m_pShaderCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
-	CVIBuffer_Rect_Instance* m_pVIBufferCom = { nullptr };
 
 private:
 	HRESULT Ready_Components();
+
+private:
+	CShader* m_pShaderCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+	CVIBuffer_Point_Instance* m_pVIBufferCom = { nullptr };
+
+private:
+	_bool	m_isSpread = {};
 
 public:
 	static CMusic_Note* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

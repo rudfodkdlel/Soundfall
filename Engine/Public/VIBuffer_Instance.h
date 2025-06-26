@@ -33,6 +33,7 @@ public:
 
 	virtual void Drop(_float fTimeDelta);
 	virtual void Spread(_float fTimeDelta);
+	virtual void Gather(_float fTimeDelta);
 
 
 protected:

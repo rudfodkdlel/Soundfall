@@ -166,6 +166,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxPosInstance */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPosInstance"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosInstance.hlsl"), VTXPOS_PARTICLE_INSTANCE::Elements, VTXPOS_PARTICLE_INSTANCE::iNumElements))))
+		return E_FAIL;
+
 	// combat
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
 		CCombatStat::Create(m_pDevice, m_pContext))))
@@ -456,18 +461,19 @@ HRESULT CMainApp::Ready_Static()
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Snow */
-	CVIBuffer_Rect_Instance::RECT_INSTANCE_DESC		NoteDesc{};
+	CVIBuffer_Point_Instance::POINT_INSTANCE_DESC		NoteDesc{};
 	NoteDesc.iNumInstance = 20;
 	NoteDesc.vCenter = _float3(0.f, 0.f, 0.f);
-	NoteDesc.vRange = _float3(10.f, 10.f, 10.f);
+	NoteDesc.vRange = _float3(5.f, 5.f, 5.f);
 	NoteDesc.vSize = _float2(1.f, 1.f);
-	NoteDesc.vLifeTime = _float2(5.f, 8.f);
-	NoteDesc.vSpeed = _float2(3.f, 5.f);
+	NoteDesc.vLifeTime = _float2(1.f, 3.f);
+	NoteDesc.vSpeed = _float2(0.5f, 2.f);
 	NoteDesc.isLoop = false;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Note"),
-		CVIBuffer_Rect_Instance::Create(m_pDevice, m_pContext, &NoteDesc))))
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &NoteDesc))))
 		return E_FAIL;
+
 
 	return S_OK;
 }

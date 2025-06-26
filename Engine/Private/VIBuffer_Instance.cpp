@@ -71,6 +71,10 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 {
 }
 
+void CVIBuffer_Instance::Gather(_float fTimeDelta)
+{
+}
+
 void CVIBuffer_Instance::Free()
 {
 	__super::Free();

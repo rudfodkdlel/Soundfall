@@ -134,7 +134,7 @@ namespace Engine
 
 		static const unsigned int					iNumElements = { 7 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
-	}VTXPOINT_PARTICLE_INSTANCE;
+	}VTXPOS_PARTICLE_INSTANCE;
 
 
 

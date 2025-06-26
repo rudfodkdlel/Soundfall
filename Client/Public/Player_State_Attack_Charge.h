@@ -17,6 +17,7 @@ public:
 private:
 	ATTACK	m_eAttackState = { ATTACK::ATTACK_IN };
 	_float  m_fElapsedTime = {0.f};
+	_float  m_fMakeParticleTime = { 0.f };
 	_vector m_vDir = {};
 };
 

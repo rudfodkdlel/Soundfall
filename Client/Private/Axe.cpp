@@ -1,6 +1,7 @@
 #include "Axe.h"
 #include "GameInstance.h"
 #include "CombatStat.h"
+#include "Music_Note.h"
 
 CAxe::CAxe(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CWeapon_Base{ pDevice, pContext }
@@ -78,6 +79,23 @@ HRESULT CAxe::On_Collision( CCollider* pCollider)
 
 void CAxe::Attack(_vector vDir)
 {
+
+    CMusic_Note::MUSICNOTE_DESC eDesc = {};
+    eDesc.fRotationPerSec = 90.f;
+    eDesc.isSpread = false;
+
+    // 콜라이더 위치에 맞추는걸로
+
+    _vector vPos = { 1.f,1.5f,1.f,1.f };
+
+    vPos = XMVector3TransformCoord(vPos, XMLoadFloat4x4(&m_CombinedWorldMatrix));
+
+    XMStoreFloat4(&eDesc.vPos, vPos);
+   
+
+    if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Music_Note"),
+        m_pGameInstance->Get_Current_Level(), TEXT("Layer_Paticle"), &eDesc)))
+        return;
 }
 
 HRESULT CAxe::Ready_Components()

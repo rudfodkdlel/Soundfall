@@ -19,6 +19,13 @@ void CPlayer_State_Attack_Charge::Update(CGameObject* pObj, float fTimeDelta)
     if (ATTACK::ATTACK_IN == m_eAttackState)
     {
         m_fElapsedTime += fTimeDelta;
+        m_fMakeParticleTime -= fTimeDelta;
+        if (m_fMakeParticleTime < 0.f)
+        {
+            m_pPlayer->Get_Melee_Weapon()->Attack(m_vDir);
+            m_fMakeParticleTime = 1.f;
+        }
+           
       
         if (m_pGameInstance->Key_Up(DIK_SPACE))
         {
