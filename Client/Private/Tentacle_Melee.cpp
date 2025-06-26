@@ -78,6 +78,8 @@ void CTentacle_Melee::Update(_float fTimeDelta)
 
 	m_bDead = m_pCombatCom->Update(fTimeDelta);
 
+	
+
 	__super::Update(fTimeDelta);
 }
 
@@ -125,7 +127,7 @@ HRESULT CTentacle_Melee::Render()
 	return S_OK;
 }
 
-HRESULT CTentacle_Melee::On_Collision(CGameObject* Other, class CCollider* pCollider)
+HRESULT CTentacle_Melee::On_Collision(class CCollider* pCollider)
 {
 	if (m_IsColl)
 		return S_OK;
@@ -134,7 +136,7 @@ HRESULT CTentacle_Melee::On_Collision(CGameObject* Other, class CCollider* pColl
 	if (STATE_MAIN::ATTACK == m_eMainState && m_pModelCom->Get_Current_Anim_Ratio() > 0.3f)
 	{
 		
-			m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+			m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
 			m_IsColl = true;
 		
 	}
@@ -153,11 +155,6 @@ void CTentacle_Melee::Select_State()
 		return;
 	}
 
-	//if (m_pColliderCom->Get_IsColl() && STATE_MAIN::IDLE == m_eMainState)
-	//{
-	//	m_eMainState = STATE_MAIN::HIT;
-
-	//}
 
 
 	if (STATE_MAIN::DEAD == m_eMainState)

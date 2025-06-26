@@ -102,17 +102,17 @@ HRESULT CProjectile_Shockwave::Render()
 	return S_OK;
 }
 
-HRESULT CProjectile_Shockwave::On_Collision(CGameObject* Other, class CCollider* pCollider)
+HRESULT CProjectile_Shockwave::On_Collision(class CCollider* pCollider)
 {
 	if (m_IsColl)
 		return S_OK;
 
-	if (static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat")))->Get_bInvinsible())
+	if (static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat")))->Get_bInvinsible())
 		return S_OK;
 
 	if (m_pOuterCollider->Get_IsColl() && !m_pInnerCollider->Get_IsColl())
 	{
-		m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+		m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
 		m_IsColl = true;
 	}
 	

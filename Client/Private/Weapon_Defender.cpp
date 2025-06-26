@@ -107,10 +107,10 @@ HRESULT CWeapon_Defender::Render()
 	return S_OK;
 }
 
-HRESULT CWeapon_Defender::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CWeapon_Defender::On_Collision(CCollider* pCollider)
 {
 	if(STATE_MAIN::ATTACK == *m_eMainState && m_fDelay < 0.f)
-		m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+		m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
 
 	return S_OK;
 }

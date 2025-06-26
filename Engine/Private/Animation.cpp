@@ -55,9 +55,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		}
 		else
 		{
-			m_fCurrentTrackPosition = 0.f;
-			for (auto& indices : m_CurrentKeyFrameIndices)
-				indices = 0;
+			Reset();
 		
 			isFinished = true;
 		}

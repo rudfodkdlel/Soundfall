@@ -33,6 +33,12 @@ public:
 	HRESULT Initialize(const CBounding::BOUNDING_DESC* pDesc);
 	virtual void Update(_fmatrix WorldMatrix) override;
 	virtual _bool Intersect(CBounding* pTarget) override;
+
+	_bool Collision_OBB_To_OBB(CBounding* pTarget);
+	_bool Collision_OBB_To_Sphere(CBounding* pTarget);
+	_bool Collision_OBB_To_AABB(CBounding* pTarget);
+
+
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch, _fvector vColor) override;

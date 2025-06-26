@@ -49,11 +49,13 @@ using namespace FMOD;
 #include <list>
 #include <vector>
 #include <locale>
-#include <codecvt>
 #include <fstream>  
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
+#include <functional>
+#include <optional>
+#include <algorithm>
 using namespace std;
 
 

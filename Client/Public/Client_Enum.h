@@ -3,7 +3,7 @@
 
 namespace Client
 {
-	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, BOSS, EDIT, END };
+	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, FOREST, BOSS, EDIT, END };
 
 	enum class PART_DEFAULT { BODY, WEAPON, UI, EFFECT, END };
 	

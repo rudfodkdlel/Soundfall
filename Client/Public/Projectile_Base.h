@@ -22,6 +22,7 @@ public:
 
 		// 만드는 객체마다 색이 다름
 		_float4 vColor;
+		_float	fMaxDistance;
 	}PROJECTILE_DESC;
 
 protected:
@@ -39,6 +40,9 @@ public:
 
 	// 궤적 나중에 생성하도록
 	void Make_Trail();
+
+	void Billboard_Proejctile();
+	
 protected:
 
 	CShader* m_pShaderCom = { nullptr };
@@ -50,6 +54,10 @@ protected:
 	_float4 m_vColor = {};
 	_bool	m_IsColl = { false };
 	_float	m_fSpeed = {};
+	_float  m_fMaxDistance = {};
+	_float  m_fDistance = {};
+	_float  m_fDuration = { 3.f };
+	
 
 private:
 	HRESULT Ready_Components();

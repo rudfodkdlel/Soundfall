@@ -88,7 +88,7 @@ HRESULT CBody_Artillery::Render()
     return S_OK;
 }
 
-HRESULT CBody_Artillery::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CBody_Artillery::On_Collision(CCollider* pCollider)
 {
     return S_OK;
 }

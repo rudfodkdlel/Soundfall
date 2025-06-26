@@ -5,6 +5,8 @@
 #include "HP_Bar.h"
 #include "Terrain.h"
 #include "Trigger.h"
+#include "Structure.h"
+#include "Structure_Instance.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -14,6 +16,9 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+
+	if (FAILED(Ready_Map_Data("../Bin/Data/test.bin")))
+		return E_FAIL;
 
 	// bpm 123
 	m_pGameInstance->StopSound(SOUND_BGM);
@@ -31,6 +36,8 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	if (FAILED(Ready_Layer_Player()))
 		return E_FAIL;
+
+	
 
 
 	// Boss
@@ -121,15 +128,23 @@ HRESULT CLevel_GamePlay::Render()
 HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
 {
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
 		return E_FAIL;
 
 	CTerrain::TERRAIN_DESC pDesc = {};
-
+	pDesc.iCurrentLevel = ENUM_CLASS(LEVEL::GAMEPLAY);
 	pDesc.bWired = false;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	CStructure_Instance::STRUCTURE_INSTANCE_DESC objDesc = {};
+	objDesc.fRotationPerSec = 90;
+	objDesc.vPos = { 0.f,0.f,0.f,1.f };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Structure_Instance"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &objDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -146,8 +161,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player()
 {
+	CGameObject::GAMEOBJECT_DESC eDesc = {};
+	eDesc.vPos = { 65.f,0.f,15.f, 1.f };
+	eDesc.iProtoIndex = ENUM_CLASS(LEVEL::GAMEPLAY);
+
 	if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Player"))))
+		static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Player"), &eDesc)))
 		return E_FAIL;
 
 	CStatic_UI::STATIC_UI_DESC staticDesc{};
@@ -257,6 +276,74 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Map_Data(const char* pFliePath)
+{
+	std::ifstream fin(pFliePath, std::ios::binary);
+	if (!fin)
+		return E_FAIL;
+
+	while (fin.peek() != EOF)
+	{
+		OBJECT_SAVE_DESC* desc = new OBJECT_SAVE_DESC{};
+
+		// 월드 행렬 읽기
+		fin.read(reinterpret_cast<char*>(&desc->matWorld), sizeof(_float4x4));
+		if (fin.eof()) break;
+
+		// 프로토타입 태그 문자열 읽기
+		size_t protoLen = 0;
+		fin.read(reinterpret_cast<char*>(&protoLen), sizeof(size_t));
+		if (fin.eof()) break;
+
+		if (protoLen > 0)
+		{
+			std::wstring temp(protoLen, L'\0');
+			fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * protoLen);
+			desc->strPrototypetag = temp;
+		}
+
+		// 모델 태그 문자열 읽기
+		size_t modelLen = 0;
+		fin.read(reinterpret_cast<char*>(&modelLen), sizeof(size_t));
+		if (fin.eof()) break;
+
+		if (modelLen > 0)
+		{
+			std::wstring temp(modelLen, L'\0');
+			fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * modelLen);
+			desc->strModeltag = temp;
+		}
+
+		// 프로토타입 레벨 인덱스 읽기
+		fin.read(reinterpret_cast<char*>(&desc->PrototypeLevelIndex), sizeof(int));
+		if (fin.eof()) break;
+
+		CStructure::STRUCTURE_DESC structureDesc = {};
+		structureDesc.iProtoIndex = desc->PrototypeLevelIndex;
+		structureDesc.strPrototag = desc->strPrototypetag;
+		structureDesc.strModeltag = desc->strModeltag;
+
+		HRESULT hr = m_pGameInstance->Add_GameObject(desc->PrototypeLevelIndex, desc->strPrototypetag, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Mapdata"), &structureDesc);
+
+		if (hr < 0)
+			return E_FAIL;
+
+		auto pObject =(m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Mapdata")));
+
+
+
+		memcpy(pObject->Get_Transform()->Get_WorldMatrix(), &desc->matWorld, sizeof(_float4x4));
+
+		Safe_Delete(desc);
+	}
+
+	fin.close();
+
+
+	return S_OK;
+
 }
 
 CLevel_GamePlay* CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

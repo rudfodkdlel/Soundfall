@@ -63,6 +63,10 @@ void CProjectile_Base::Make_Trail()
 {
 }
 
+void CProjectile_Base::Billboard_Proejctile()
+{
+}
+
 
 HRESULT CProjectile_Base::Ready_Components()
 {

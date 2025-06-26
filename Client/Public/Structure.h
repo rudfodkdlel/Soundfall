@@ -12,6 +12,24 @@ NS_BEGIN(Client)
 
 class CStructure final : public CGameObject
 {
+public:
+	typedef struct tagStructDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		_wstring strModeltag;
+	}STRUCTURE_DESC;
+
+	virtual OBJECT_SAVE_DESC Get_Save_Desc() override
+	{
+		OBJECT_SAVE_DESC eDesc = {};
+		eDesc.strPrototypetag = m_strProtoTag;
+		eDesc.PrototypeLevelIndex = m_iProtoIndex;
+		eDesc.strModeltag = m_strModelTag;
+		memcpy(&eDesc.matWorld, m_pTransformCom->Get_WorldMatrix(), sizeof(_float4x4));
+	
+		
+		return eDesc;
+	}
+
 private:
 	CStructure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CStructure(const CStructure& Prototype);
@@ -33,8 +51,9 @@ private:
 	_uint	m_iAnimnum = { 0 };
 
 	_bool	m_isAnim = { false };
+	_wstring m_strModelTag = {};
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(STRUCTURE_DESC* eDesc);
 
 public:
 	static CStructure* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

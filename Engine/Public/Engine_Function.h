@@ -53,9 +53,14 @@ namespace Engine
 
 
 
-	static string WStringToString(const std::wstring& wstr) {
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
-		return conv.to_bytes(wstr);
+	static std::string WStringToString(const std::wstring& wstr) {
+		if (wstr.empty()) return {};
+
+		int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.data(), (int)wstr.size(), NULL, 0, NULL, NULL);
+		std::string result(size_needed, 0);
+		WideCharToMultiByte(CP_UTF8, 0, wstr.data(), (int)wstr.size(), &result[0], size_needed, NULL, NULL);
+
+		return result;
 	}
 
 

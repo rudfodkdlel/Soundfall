@@ -60,10 +60,7 @@ void CPlayer_State_Attack_Combo::Update(CGameObject* pObj, float fTimeDelta)
 void CPlayer_State_Attack_Combo::Exit(CGameObject* pObj)
 {
     __super::Exit(pObj);
-    m_pPlayer->Get_Range_Weapon()->Set_Active(true);
-    m_pPlayer->Get_Melee_Weapon()->Set_Active(false);
-    static_cast<CSickle*>(m_pPlayer->Get_Melee_Weapon())->Reset();
-    static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(false);
+  
 }
 
 CObject_State* CPlayer_State_Attack_Combo::Check_Transition(CGameObject* pObj)
@@ -72,7 +69,14 @@ CObject_State* CPlayer_State_Attack_Combo::Check_Transition(CGameObject* pObj)
     {
         // ATTACK_OUT 상태이거나, 입력이 없을 경우 
         if (m_eAttackState == ATTACK::ATTACK_OUT || !m_IsInput)
+        {
+            m_pPlayer->Get_Range_Weapon()->Set_Active(true);
+            m_pPlayer->Get_Melee_Weapon()->Set_Active(false);
+            static_cast<CSickle*>(m_pPlayer->Get_Melee_Weapon())->Reset();
+            static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(false);
             return new CPlayer_State_Idle;
+        }
+           
     }
 
     return nullptr;

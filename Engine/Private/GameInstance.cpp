@@ -14,6 +14,7 @@
 #include "Light_Manager.h"
 #include "Sound_Manager.h"
 #include "Collider_Manager.h"
+#include "GameObject.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance);
@@ -93,8 +94,6 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	
 	m_pInput_Device->Update();
 
-	m_pCollider_Manager->Check_Nullptr();
-
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
 	m_pPipeLine->Update();
@@ -165,6 +164,7 @@ _float CGameInstance::Compute_Random(_float fMin, _float fMax)
 {
 	return fMin + (fMax - fMin) * Compute_Random_Normal();	
 }
+
 
 #pragma region LEVEL_MANAGER
 
@@ -469,6 +469,8 @@ HRESULT CGameInstance::Add_Collider_Group(pair<_uint, _uint> typePair)
 void CGameInstance::Release_Engine()
 {
 
+	Safe_Release(m_pObserver_Manager);
+
 	Safe_Release(m_pSound_Manager);
 
 	Safe_Release(m_pFont_Manager);
@@ -483,15 +485,13 @@ void CGameInstance::Release_Engine()
 
 	Safe_Release(m_pRenderer);
 
-	Safe_Release(m_pObject_Manager);
-
 	Safe_Release(m_pCollider_Manager);
+
+	Safe_Release(m_pObject_Manager);
 
 	Safe_Release(m_pPrototype_Manager);
 
 	Safe_Release(m_pLevel_Manager);
-
-	Safe_Release(m_pObserver_Manager);
 
 	Safe_Release(m_pInput_Device);
 

@@ -67,7 +67,7 @@ private:
 	_int			m_iLoopCount = { 3 };
 
 	_int		   m_iIndex = { 0 };
-	vector<_uint>  m_normalSequence = {0,1,2,4,3,0 };
+	vector<_uint>  m_normalSequence = {3,2,1,4,3,0 };
 
 	
 

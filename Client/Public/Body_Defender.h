@@ -31,7 +31,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) override;
+	virtual HRESULT On_Collision( class CCollider* pCollider) override;
 
 private:
 	CShader*		m_pShaderCom = { nullptr };

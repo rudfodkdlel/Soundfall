@@ -34,15 +34,18 @@ HRESULT CDefender::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
+	_vector vPos = { 15.f,0.f,5.f,1.f };
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
 
-	_vector vPos = { 35.f,0.f,5.f,1.f };
+	
 
-	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	
 
 	
 
@@ -240,9 +243,10 @@ HRESULT CDefender::Ready_Components()
 
 	/* For.Com_Navigation */
 	CNavigation::NAVIGATION_DESC		NaviDesc{};
-	NaviDesc.iIndex = 2;
+	NaviDesc.iIndex = -1;
+	XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::FOREST), TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
 		return E_FAIL;
 

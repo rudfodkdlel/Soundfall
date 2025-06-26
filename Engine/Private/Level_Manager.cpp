@@ -19,7 +19,6 @@ HRESULT CLevel_Manager::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
     }   
 
     m_pCurrentLevel = pNewLevel;
-
  
    m_iCurrentLevelIndex = iLevelIndex;
 

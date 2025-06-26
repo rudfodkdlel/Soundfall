@@ -217,6 +217,18 @@
     <ClInclude Include="..\public\VIBuffer_Cell.h">
       <Filter>01.Utility\04.Components\VIBuffer\Cell</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Instance.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Rect_Instance.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Mesh_Instance.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\VIBuffer_Model_Instance.h">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Mesh\VIBuffer_Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Timer.cpp">
@@ -395,6 +407,18 @@
     </ClCompile>
     <ClCompile Include="..\private\VIBuffer_Cell.cpp">
       <Filter>01.Utility\04.Components\VIBuffer\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Instance.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Rect_Instance.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Mesh_Instance.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\VIBuffer_Model_Instance.cpp">
+      <Filter>01.Utility\04.Components\VIBuffer\Instance\Mesh\VIBuffer_Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -580,6 +604,18 @@
     </Filter>
     <Filter Include="98. ShaderFile">
       <UniqueIdentifier>{696ee693-17ec-495d-81cf-08fcbe9ba597}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Instance">
+      <UniqueIdentifier>{61c2dda2-b323-4f9f-b870-1727bf9b6689}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Rect">
+      <UniqueIdentifier>{9d5161f8-1b26-4be3-a977-4e66b92df378}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Mesh">
+      <UniqueIdentifier>{8fc39d98-76fa-4a7b-9e97-7abc915179e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Mesh\VIBuffer_Model">
+      <UniqueIdentifier>{b55864bd-1102-41f3-a7a7-eeffb72a5b7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

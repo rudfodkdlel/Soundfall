@@ -30,6 +30,7 @@ public:
 	HRESULT Ready_Font();
 	// 콜라이더 그룹 설정해서 넣어주기? 등등 
 	HRESULT Ready_Collision_Setting();
+	HRESULT Ready_Static();
 
 
 	HRESULT Start_Level(LEVEL eStartLevel);

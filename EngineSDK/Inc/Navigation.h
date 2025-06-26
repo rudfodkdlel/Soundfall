@@ -12,6 +12,7 @@ public:
 	typedef struct tagNavigationDesc
 	{
 		_int			iIndex = {};
+		_float4			vInitPos = {};
 	}NAVIGATION_DESC;
 private:
 	CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -26,6 +27,8 @@ public:
 	_bool isMove(_fvector vWorldPos);
 	_vector SetUp_Height(_fvector vWorldPos);
 
+	_int Find_Index(_float4 vPos);
+
 #ifdef _DEBUG
 public:
 	HRESULT Render();
@@ -33,7 +36,7 @@ public:
 #endif
 
 private:
-	vector<class CCell*>				m_Cells;
+	vector<class CCell*>				m_Cells = {};
 	_int								m_iIndex = {};
 
 	static _float4x4					m_WorldMatrix;

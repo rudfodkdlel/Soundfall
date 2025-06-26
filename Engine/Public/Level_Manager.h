@@ -25,8 +25,10 @@ public:
 
 private:
 	_uint					m_iCurrentLevelIndex = {};
-	CLevel*			m_pCurrentLevel = { nullptr };
+	CLevel*					m_pCurrentLevel = { nullptr };
 	class CGameInstance*	m_pGameInstance = { nullptr };
+
+
 
 public:
 	static CLevel_Manager* Create();

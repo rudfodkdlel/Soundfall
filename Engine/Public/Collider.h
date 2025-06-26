@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Bounding.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 
@@ -13,6 +14,22 @@ private:
 	virtual ~CCollider() = default;
 
 public:
+	using InvalidateCallBack = function<void(CCollider*)>;
+
+	void Set_InvalidateCallBack(InvalidateCallBack cb) {
+		m_InvalidateCallback = cb;
+	}
+
+	void Check()
+	{
+		if (m_InvalidateCallback)
+			m_InvalidateCallback(this);
+	}
+
+
+	void  Set_Owner(CGameObject* pOwner) { m_pOwner = pOwner; }
+	CGameObject* Get_Owner() { return m_pOwner; }
+
 	_bool Get_IsColl() const { return m_isColl; }
 	void  Set_IsColl(_bool isColl) { m_isColl = isColl; }
 	_bool Get_Active() const { return m_IsActive; }
@@ -36,8 +53,10 @@ public:
 #endif
 
 private:
-	COLLIDER			m_eType = { COLLIDER::END };
-	CBounding* m_pBounding = { nullptr };
+	InvalidateCallBack m_InvalidateCallback;
+	CGameObject*			m_pOwner = { nullptr };
+	COLLIDER				m_eType = { COLLIDER::END };
+	CBounding*				m_pBounding = { nullptr };
 
 	_int				m_eGroup = {};
 	_bool				m_isColl = { false };
@@ -45,6 +64,7 @@ private:
 
 #ifdef _DEBUG
 private:
+	
 	PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
 	BasicEffect* m_pEffect = { nullptr };
 	ID3D11InputLayout* m_pInputLayout = { nullptr };

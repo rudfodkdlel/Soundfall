@@ -75,7 +75,7 @@ private:
 
 private:
 	HRESULT Ready_PartObjects();
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -61,13 +61,13 @@ HRESULT CSickle::Render()
     return S_OK;
 }
 
-HRESULT CSickle::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CSickle::On_Collision(CCollider* pCollider)
 {
     if (m_HitObjectSet.find(pCollider) == m_HitObjectSet.end())
     {
         m_HitObjectSet.insert(pCollider);
         // 수정 필요함
-        m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+        m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
     }
 
 

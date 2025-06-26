@@ -21,13 +21,16 @@ _bool CDiscord::Check_Groggy()
 	if (m_bUseSummon)
 	{
 		auto& objList = *m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Boss_Spawn"));
+		
 		objList.remove_if([](CGameObject* p)
 			{
 				return p == nullptr;
 			});
-		
+
 		if (objList.empty())
 			return true;
+		
+	
 	}
 	
 
@@ -78,7 +81,7 @@ HRESULT CDiscord::Initialize(void* pArg)
 	m_pState = new CMonster_State_Spawn;
 	m_pState->Enter(this);
 
-	_vector vPos = { 15.f, 0.f, 30.f, 1.f };
+	_vector vPos = { 65.f, -10.f, 130.f, 1.f };
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	_vector vAxis = { 0.f, 1.f, 0.f, 0.f };

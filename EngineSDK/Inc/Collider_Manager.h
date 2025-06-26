@@ -24,7 +24,7 @@ public:
 	// 충돌 검사를 할 타입들을 미리 넣어둔다
 	HRESULT Add_Collider_Group(pair<_uint, _uint> typePair);
 	
-
+	void CallbackCollider(CCollider* p);
 
 	void Check_Nullptr();
 
@@ -35,11 +35,11 @@ public:
 	void Update();
 
 	// collider에서 만든 intersect를 순회하면서 다 처리하도록?
-	void Instercects_Group(list<pair<CCollider*, CGameObject*>> src, list<pair<CCollider*, CGameObject*>> dst);
+	void Instercects_Group(list<CCollider*> src, list<CCollider*> dst);
 
 private:
 
-	vector<list<pair<CCollider*, CGameObject*>>> m_pColliders = {};
+	vector<list<CCollider*>> m_pColliders = {};
 
 	// 클라에서 어떤 오브젝트 타입끼리 충동시킬지 정하기
 	vector<pair<_uint, _uint>> m_CollisionPairs = {};

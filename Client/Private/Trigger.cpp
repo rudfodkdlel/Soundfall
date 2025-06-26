@@ -66,7 +66,7 @@ HRESULT CTrigger::Render()
 	return S_OK;
 }
 
-HRESULT CTrigger::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CTrigger::On_Collision(CCollider* pCollider)
 {
 	if (TRIGGERTYPE::ZOOM_IN == m_eType)
 	{

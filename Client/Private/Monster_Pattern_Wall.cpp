@@ -1,5 +1,6 @@
 #include "Monster_Pattern_Wall.h"
 #include "Monster_State_Idle.h"
+#include "Monster_State_Groggy.h"
 
 void CMonster_Pattern_Wall::Enter(CGameObject* pObj)
 {
@@ -17,12 +18,19 @@ void CMonster_Pattern_Wall::Update(CGameObject* pObj, float fTimeDelta)
 			m_eAttackState = ATTACK::ATTACK_LOOP;
 
 			CGameObject::GAMEOBJECT_DESC eDesc = {};
-			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
+			_vector basePos = pObj->Get_Transform()->Get_State(STATE::POSITION);
 
-			vPos += {0.f, 0.f, -12.f * m_iCount, 0.f};
-			XMStoreFloat4(&eDesc.vPos, vPos);
-			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
-				TEXT("Layer_Boss_Wall"), &eDesc);
+			for (int i = 0; i < 3; ++i)
+			{
+				_vector vPos = basePos;  // 매 반복마다 초기 위치로 복원
+				_vector offset = { float(-20 + 20 * i), 10.f, -13.f * m_iCount, 0.f };
+				vPos += offset;
+
+				XMStoreFloat4(&eDesc.vPos, vPos);
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
+					TEXT("Layer_Monster_Wall"), &eDesc);
+			}
+
 			++m_iCount;
 		}
 	}
@@ -34,12 +42,19 @@ void CMonster_Pattern_Wall::Update(CGameObject* pObj, float fTimeDelta)
 		if (m_fDelay < 0.f)
 		{
 			CGameObject::GAMEOBJECT_DESC eDesc = {};
-			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
+			_vector basePos = pObj->Get_Transform()->Get_State(STATE::POSITION);
 
-			vPos += {0.f, 0.f, -12.f * m_iCount, 0.f};
-			XMStoreFloat4(&eDesc.vPos, vPos);
-			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
-				TEXT("Layer_Monster_Wall"), &eDesc);
+			for (int i = 0; i < 3; ++i)
+			{
+				_vector vPos = basePos;  // 매 반복마다 초기 위치로 복원
+				_vector offset = { float(-20 + 20 * i), 10.f, -13.f * m_iCount, 0.f };
+				vPos += offset;
+
+				XMStoreFloat4(&eDesc.vPos, vPos);
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
+					TEXT("Layer_Monster_Wall"), &eDesc);
+			}
+
 			++m_iCount;
 			m_fDelay = 0.5f;
 		}
@@ -61,6 +76,22 @@ void CMonster_Pattern_Wall::Exit(CGameObject* pObj)
 
 CObject_State* CMonster_Pattern_Wall::Check_Transition(CGameObject* pObj)
 {
+	if (m_pDiscord->Check_Groggy())
+	{
+		m_pDiscord->Set_bUseSummon(false);
+		auto list = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Monster_Wall"));
+		if (nullptr != list)
+		{
+			for (auto& object : *list)
+			{
+				if (object != nullptr)
+					object->Set_Dead();
+			}
+		}
+
+		return new CMonster_State_Groggy;
+	}
+
 	if (m_IsFinish && ATTACK::ATTACK_OUT == m_eAttackState)
 	{
 

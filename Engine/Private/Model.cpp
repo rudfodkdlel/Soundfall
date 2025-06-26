@@ -391,7 +391,7 @@ void CModel::Load_Binary(const _char* pModelFilePath)
 
 HRESULT CModel::Ready_Bones(const vector<BONE_DESC*>& eDesc)
 {
-	for (int i = 0; i < m_eModelDesc.iBoneNums; ++i)
+	for (_uint i = 0; i < m_eModelDesc.iBoneNums; ++i)
 	{
 		CBone* pBone = CBone::Create(*eDesc[i]);
 		if (nullptr == pBone)

@@ -38,7 +38,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	virtual HRESULT On_Collision(CGameObject* Other, CCollider* pCollider);
+	virtual HRESULT On_Collision(CCollider* pCollider);
 
 	eDirState Calc_Hit_Dir(_vector vDir);
 

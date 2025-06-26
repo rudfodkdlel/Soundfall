@@ -22,18 +22,23 @@ HRESULT CStructure::Initialize_Prototype()
 
 HRESULT CStructure::Initialize(void* pArg)
 {
-	GAMEOBJECT_DESC			Desc{};
+	STRUCTURE_DESC*			Desc = static_cast<STRUCTURE_DESC*>(pArg);
 
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
-	lstrcpy(Desc.szName, TEXT("Monster"));
+	Desc->fRotationPerSec = 0.f;
+	Desc->fSpeedPerSec = 0.f;
+	lstrcpy(Desc->szName, TEXT("Structure"));
 
-	if (FAILED(__super::Initialize(&Desc)))
+	
+
+	if (FAILED(__super::Initialize(Desc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
-		return E_FAIL;
+	m_strProtoTag = TEXT("Prototype_GameObject_Structure");
+	
 
+	if (FAILED(Ready_Components(Desc)))
+		return E_FAIL;
+	 
 	/* 1. 서로 다른 애니메이션을 셋팅했음에도 같은 동작이 재생된다. : 뼈가 공유되기때문에. */
 	/* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
 
@@ -79,7 +84,7 @@ HRESULT CStructure::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
 			return E_FAIL;
 
-		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+		//m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		// alpha 안쓰는	
 		if (FAILED(m_pShaderCom->Begin(1)))
@@ -97,7 +102,7 @@ HRESULT CStructure::Render()
 	return S_OK;
 }
 
-HRESULT CStructure::Ready_Components()
+HRESULT CStructure::Ready_Components(STRUCTURE_DESC* eDesc)
 {
 	// non anim
 	/* For.Com_Shader */
@@ -106,10 +111,11 @@ HRESULT CStructure::Ready_Components()
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_0"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), eDesc->strModeltag,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	m_strModelTag = eDesc->strModeltag;
 
 
 	return S_OK;

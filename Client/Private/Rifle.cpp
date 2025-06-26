@@ -121,7 +121,15 @@ void CRifle::Attack(_vector vDir)
 
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
-    eDesc.vColor = m_vColor;
+    eDesc.fMaxDistance = 50;
+    if ((m_IsPerfect))
+    {
+        eDesc.vColor = m_vColor;
+    }
+    else
+    {
+        eDesc.vColor = { 0.f,0.f,0.f,1.f };
+    }
 
     _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 , m_CombinedWorldMatrix._43 , 1.f };
 
@@ -131,6 +139,10 @@ void CRifle::Attack(_vector vDir)
     // 투사체 생성해서 날아가게 해보자
     m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
         TEXT("Layer_Projectile_Player"), &eDesc);
+
+    m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shell"), m_pGameInstance->Get_Current_Level(),
+        TEXT("Layer_Projectile_Shell"), &eDesc);
+
 
     // 소리 추가
     m_pGameInstance->StopSound(SOUND_WEAPON);

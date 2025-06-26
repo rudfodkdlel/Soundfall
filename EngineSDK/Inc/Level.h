@@ -22,6 +22,10 @@ protected:
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 	class CGameInstance*	m_pGameInstance = { nullptr };
 
+protected:
+	// initilaize때 사용할... 
+	_int					m_iInitLevel = {};
+
 public:	
 	virtual void Free() override;
 

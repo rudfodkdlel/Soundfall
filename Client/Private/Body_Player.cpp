@@ -107,7 +107,7 @@ HRESULT CBody_Player::Render()
 	return S_OK;
 }
 
-HRESULT CBody_Player::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CBody_Player::On_Collision(CCollider* pCollider)
 {
 	_float3 otherCenter = pCollider->Get_Center();
 	_float3 myCenter = m_pColliderCom->Get_Center();
@@ -115,10 +115,17 @@ HRESULT CBody_Player::On_Collision(CGameObject* Other, CCollider* pCollider)
 
 	_vector vDir = XMVectorSetW(XMLoadFloat3(&otherCenter) - XMLoadFloat3(&myCenter), 0.f);
 
-	m_eHitDir = Calc_Hit_Dir(vDir);
+	_float3 f3Mtv = m_pColliderCom->Get_Bounding()->Get_Mtv();
 
-	if(CG_MONSTER == pCollider->Get_Group())
-		m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
+	_float4 vMtv = {};
+	XMStoreFloat4(&vMtv, XMVectorSetW(XMLoadFloat3(&f3Mtv), 0.f));
+
+	vMtv.y = 0;
+
+	m_eHitDir = Calc_Hit_Dir(XMVector3Normalize(XMLoadFloat4(&vMtv)));
+
+	if(CG_MONSTER == pCollider->Get_Group() || CG_STRUCTURE_WALL == pCollider->Get_Group())
+		m_pushVectors.push_back(vMtv);
 
 
 

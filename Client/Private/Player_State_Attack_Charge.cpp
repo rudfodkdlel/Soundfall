@@ -64,10 +64,7 @@ void CPlayer_State_Attack_Charge::Update(CGameObject* pObj, float fTimeDelta)
 void CPlayer_State_Attack_Charge::Exit(CGameObject* pObj)
 {
     __super::Exit(pObj);
-    static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(false);
-    static_cast<CAxe*>(m_pPlayer->Get_Melee_Weapon())->Reset();
-    m_pPlayer->Get_Range_Weapon()->Set_Active(true);
-    m_pPlayer->Get_Melee_Weapon()->Set_Active(false);
+   
 
 }
 
@@ -75,6 +72,10 @@ CObject_State* CPlayer_State_Attack_Charge::Check_Transition(CGameObject* pObj)
 {
     if (m_IsFinish && ATTACK::ATTACK_OUT == m_eAttackState)
     {
+        static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(false);
+        static_cast<CAxe*>(m_pPlayer->Get_Melee_Weapon())->Reset();
+        m_pPlayer->Get_Range_Weapon()->Set_Active(true);
+        m_pPlayer->Get_Melee_Weapon()->Set_Active(false);
         return new CPlayer_State_Idle;
     }
 

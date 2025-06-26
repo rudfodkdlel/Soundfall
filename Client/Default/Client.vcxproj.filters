@@ -28,9 +28,6 @@
     <Filter Include="96. Imgui">
       <UniqueIdentifier>{2ce9f54c-531a-4b3c-bd5d-df99f45fdf0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02. Structure">
-      <UniqueIdentifier>{b8214dc0-8735-4542-a02d-8f47df1526a7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03. Projectile">
       <UniqueIdentifier>{9b90c68d-5fdd-4bab-aff1-02650a7d183d}</UniqueIdentifier>
     </Filter>
@@ -274,6 +271,39 @@
     <Filter Include="02.GameObjects\06. State\Monster\Attack\Summon">
       <UniqueIdentifier>{8b050c01-dd5a-45c9-977b-bf2d703f0819}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player\Ult">
+      <UniqueIdentifier>{11566cd6-7e71-4a47-8f52-2535ce9029b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Discord\Tentacle\Amp">
+      <UniqueIdentifier>{3d0d68b6-e66c-4a03-8a7c-423dd99026bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Monster\Artillery\Falling">
+      <UniqueIdentifier>{c79a6fff-6852-46bc-aa92-a0e9a8388314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player\Shell">
+      <UniqueIdentifier>{6f2ac3db-90e4-4271-ae18-3b88aca86d21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect">
+      <UniqueIdentifier>{ca4bf1bc-3ee1-4f34-b5cf-1a6cd80d3ed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle">
+      <UniqueIdentifier>{1824e2de-b692-442f-8d45-6b223ab47527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02. Structure">
+      <UniqueIdentifier>{b8214dc0-8735-4542-a02d-8f47df1526a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02. Structure\Instance">
+      <UniqueIdentifier>{b213357a-0365-43d8-8a39-9884704d4bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture">
+      <UniqueIdentifier>{fddeef56-cda6-474c-8630-13265ef33332}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle\MusicNote">
+      <UniqueIdentifier>{4162e726-d0f0-4a0d-ba68-6fd5aea11ef3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Forest">
+      <UniqueIdentifier>{cbb6c47f-1133-43d5-8cfb-d5d89a95673b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -498,6 +528,33 @@
     <ClInclude Include="..\public\Monster_State_Death.h">
       <Filter>02.GameObjects\06. State\Monster\Death</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_State_Ult.h">
+      <Filter>02.GameObjects\06. State\Player\Ult</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Player_Ult_Sickle.h">
+      <Filter>02.GameObjects\03. Projectile\Player\Ult</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Tentacle_Amp.h">
+      <Filter>02.GameObjects\05. Monster\Discord\Tentacle\Amp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Falling.h">
+      <Filter>02.GameObjects\03. Projectile\Monster\Artillery\Falling</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Shell.h">
+      <Filter>02.GameObjects\03. Projectile\Player\Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Structure_Instance.h">
+      <Filter>02.GameObjects\02. Structure\Instance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Hit_Effect_Texture.h">
+      <Filter>02.GameObjects\10. Effect\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Music_Note.h">
+      <Filter>02.GameObjects\10. Effect\Paticle\MusicNote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Forest.h">
+      <Filter>01.Levels\Forest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -717,6 +774,33 @@
     <ClCompile Include="..\private\Monster_State_Death.cpp">
       <Filter>02.GameObjects\06. State\Monster\Death</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Player_State_Ult.cpp">
+      <Filter>02.GameObjects\06. State\Player\Ult</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Player_Ult_Sickle.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player\Ult</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Tentacle_Amp.cpp">
+      <Filter>02.GameObjects\05. Monster\Discord\Tentacle\Amp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Falling.cpp">
+      <Filter>02.GameObjects\03. Projectile\Monster\Artillery\Falling</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Shell.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player\Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Structure_Instance.cpp">
+      <Filter>02.GameObjects\02. Structure\Instance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hit_Effect_Texture.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\Music_Note.cpp">
+      <Filter>02.GameObjects\10. Effect\Paticle\MusicNote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Forest.cpp">
+      <Filter>01.Levels\Forest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -735,6 +819,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxRectInstance.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

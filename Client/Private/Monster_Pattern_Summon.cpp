@@ -14,21 +14,46 @@ void CMonster_Pattern_Summon::Update(CGameObject* pObj, float fTimeDelta)
 
 	if (m_fDelay < 0.f)
 	{
+		CContainerObject::CONTAINEROBJECT_DESC eDesc = {};
+		eDesc.iNumPartObjects = ENUM_CLASS(PART_DEFAULT::END);
+		_vector vBasePos = pObj->Get_Transform()->Get_State(STATE::POSITION);
+
 		if (m_iSpawnCount > 0)
 		{
-			CContainerObject::CONTAINEROBJECT_DESC eDesc = {};
-			eDesc.iNumPartObjects = ENUM_CLASS(PART_DEFAULT::END);
-
-			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
-			vPos += {m_pGameInstance->Compute_Random_Normal() * 40 - 20, 0.f, -m_pGameInstance->Compute_Random_Normal() * 30, 0.f};
+			_vector vPos = vBasePos;
+			 vPos += {m_pGameInstance->Compute_Random_Normal() * 40 - 20, 10.f, -m_pGameInstance->Compute_Random_Normal() * 30, 0.f};
 
 			XMStoreFloat4(&eDesc.vPos, vPos);
 
 			m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Tentacle_Melee"),
 				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Boss_Spawn"), &eDesc);
 
+
 			--m_iSpawnCount;
+
+			if (m_iSpawnCount % 2 == 0)
+			{
+
+
+
+				_vector vPos = vBasePos;
+				if (m_isLeft)
+					vPos += { -30, 10.f, -m_pGameInstance->Compute_Random_Normal() * 30, 0.f};
+				else
+					vPos += {30, 10.f, -m_pGameInstance->Compute_Random_Normal() * 30, 0.f};
+				XMStoreFloat4(&eDesc.vPos, vPos);
+
+				m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Tentacle_Amp"),
+					static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Boss_Spawn"), &eDesc);
+				m_isLeft = !m_isLeft;
+			}
 		}
+
+		
+
+		
+	
+		
 
 		// 원거리 추가, 원거리는 지정된 위치에 생성
 

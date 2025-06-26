@@ -54,6 +54,26 @@ void CProjectile_Artillery::Update(_float fTimeDelta)
     if (m_fDuration < 0.f)
     {
         ++m_iTextureType;
+
+        if (m_iTextureType == 2)
+        {
+            // falling 추가
+
+            CProjectile_Base::PROJECTILE_DESC eDesc = {};
+            eDesc.fSpeedPerSec = 1.f;
+
+            eDesc.vColor = { 1.f,1.f,1.f,1.f };
+
+            _vector vDir = {0.f,-1.f,0.f,0.f};
+
+            vDir = XMVector3Normalize(vDir);
+
+            XMStoreFloat4(&eDesc.vPos, m_pTransformCom->Get_State(STATE::POSITION));
+            XMStoreFloat4(&eDesc.vDir, vDir);
+            // 투사체 생성해서 날아가게 해보자
+            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Falling"), m_pGameInstance->Get_Current_Level(),
+                TEXT("Layer_Projectile_Monster"), &eDesc);
+        }
         m_fDuration = 1.f;
     }
 }
@@ -61,7 +81,7 @@ void CProjectile_Artillery::Update(_float fTimeDelta)
 void CProjectile_Artillery::Late_Update(_float fTimeDelta)
 {
     
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
 
 HRESULT CProjectile_Artillery::Render()
@@ -75,11 +95,13 @@ HRESULT CProjectile_Artillery::Render()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
         return E_FAIL;
 
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vProjectileColor", &m_vColor, sizeof(m_vColor))))
+        return E_FAIL;
 
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureType)))
         return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Begin(1)))
+    if (FAILED(m_pShaderCom->Begin(4)))
         return E_FAIL;
 
     if (FAILED(m_pVIBufferCom->Bind_Buffers()))

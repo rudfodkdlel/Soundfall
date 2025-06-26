@@ -23,15 +23,12 @@ HRESULT CTerrain::Initialize_Prototype()
 
 HRESULT CTerrain::Initialize(void* pArg)
 {
-	GAMEOBJECT_DESC			Desc{};
-
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
-
-	if (FAILED(__super::Initialize(&Desc)))
+	TERRAIN_DESC* pDesc = static_cast<TERRAIN_DESC*>(pArg);
+	
+	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pDesc)))
 		return E_FAIL;
 
 	if(nullptr != pArg)
@@ -82,7 +79,7 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
-HRESULT CTerrain::Ready_Components()
+HRESULT CTerrain::Ready_Components(TERRAIN_DESC* pDesc)
 {
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNorTex"),
@@ -104,11 +101,16 @@ HRESULT CTerrain::Ready_Components()
 		TEXT("Com_Texture_Normal"), reinterpret_cast<CComponent**>(&m_pTextureNormalCom))))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Boss_Terrain_Mask"),
+		TEXT("Com_Texture_Mask"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
+		return E_FAIL;
+
 	
-		/* For.Com_Navigation */
-		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
-			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-			return E_FAIL;
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(pDesc->iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
 	
 	
 
@@ -130,6 +132,13 @@ HRESULT CTerrain::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
+
+	if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::GAMEPLAY))
+	{
+		if (FAILED(m_pTextureMaskCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+	}
+
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
 		return E_FAIL;
@@ -185,4 +194,5 @@ void CTerrain::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pTextureNormalCom);
+	Safe_Release(m_pTextureMaskCom);
 }

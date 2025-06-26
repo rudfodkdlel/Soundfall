@@ -57,7 +57,7 @@ HRESULT CMesh::Initialize_Prototype(MODEL eType, const MESH_DESC& eDesc, const v
 
 	memcpy(m_pIndices, m_iIndices.data(), sizeof(_uint) * m_iNumIndices);
 
-	m_iIndices.clear();
+	
 
 
 
@@ -96,6 +96,7 @@ HRESULT CMesh::Ready_NonAnim_Mesh(const MESH_DESC& eDesc, _fmatrix PreTransformM
 	{
 		XMStoreFloat3(&m_NonAnimVertexes[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&m_NonAnimVertexes[i].vPosition), PreTransformMatrix));
 		XMStoreFloat3(&m_NonAnimVertexes[i].vNormal, XMVector3TransformNormal(XMLoadFloat3(&m_NonAnimVertexes[i].vNormal), PreTransformMatrix));
+		XMStoreFloat2(&m_NonAnimVertexes[i].vTexcoord, XMVector2TransformNormal(XMLoadFloat2(&m_NonAnimVertexes[i].vTexcoord), PreTransformMatrix));
 	}
 
 
@@ -108,7 +109,7 @@ HRESULT CMesh::Ready_NonAnim_Mesh(const MESH_DESC& eDesc, _fmatrix PreTransformM
 	if (FAILED(m_pDevice->CreateBuffer(&VBBufferDesc, &VBInitialData, &m_pVB)))
 		return E_FAIL;
 
-	m_NonAnimVertexes.clear();
+	
 
 	return S_OK;
 }
@@ -196,5 +197,7 @@ void CMesh::Free()
 {
 	__super::Free();
 
+	m_iIndices.clear();
+	m_NonAnimVertexes.clear();
 
 }

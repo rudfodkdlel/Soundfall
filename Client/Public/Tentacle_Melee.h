@@ -26,7 +26,7 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) override;
+	virtual HRESULT On_Collision(class CCollider* pCollider) override;
 
 	void Select_State();
 
@@ -43,6 +43,7 @@ private:
 	_bool		 m_IsTargeted = { false };
 
 	CCollider*	m_pColliderCom = { nullptr };
+	CCollider*	m_pAttackCollider = { nullptr };
 	_bool		m_IsColl = { false };
 	
 	class CCombatStat* m_pCombatCom = { nullptr };

@@ -18,8 +18,7 @@ void CPlayer_State_Hit::Update(CGameObject* pObj, float fTimeDelta)
 
 void CPlayer_State_Hit::Exit(CGameObject* pObj)
 {
-	m_pPlayer->Toggle_Collider(true);
-	m_pPlayer->Get_CombatCom()->Set_bInvinsible(false);
+	
 	__super::Exit(pObj);
 }
 
@@ -27,6 +26,8 @@ CObject_State* CPlayer_State_Hit::Check_Transition(CGameObject* pObj)
 {
 	if (m_IsFinish)
 	{
+		m_pPlayer->Toggle_Collider(true);
+		m_pPlayer->Get_CombatCom()->Set_bInvinsible(false);
 		return new CPlayer_State_Idle;
 	}
 

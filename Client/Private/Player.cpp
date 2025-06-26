@@ -31,6 +31,7 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
 	CONTAINEROBJECT_DESC			Desc{};
 
 	Desc.fRotationPerSec = 90.f;
@@ -42,8 +43,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
+	_float4 fPos = pDesc->vPos;
+	_vector vPos = XMLoadFloat4(&fPos);
 
-	if (FAILED(Ready_Components()))
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_PartObjects()))
@@ -51,10 +56,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* 1. 서로 다른 애니메이션을 셋팅했음에도 같은 동작이 재생된다. : 뼈가 공유되기때문에. */
 	/* 2. 같은 애니메이션을 셋했다면 재생속도가 빨라진다. : */
-
-	_vector vPos = { 5.f,0.f,5.f,1.f };
-
-	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	m_pState = new CPlayer_State_Spawn;
 	m_pState->Enter(this);
@@ -228,8 +229,11 @@ void CPlayer::Move_Pos(_vector& vDir, _float fTimeDelta, _float fSpeedRatio)
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	vPos += vDir * fTimeDelta * m_fSpeed * fSpeedRatio;
 
-	if(m_pNavigationCom->isMove(vPos))
+	if (m_pNavigationCom->isMove(vPos))
+	{
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	}
+		
 
 }
 
@@ -365,8 +369,10 @@ HRESULT CPlayer::Ready_PartObjects()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_Components()
+HRESULT CPlayer::Ready_Components(void* pArg)
 {
+	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+
 	CCombatStat::COMBAT_DESC eDesc = {};
 	eDesc.iCurrentHp = 100;
 	eDesc.iMaxHp = 100;
@@ -378,9 +384,10 @@ HRESULT CPlayer::Ready_Components()
 
 	/* For.Com_Navigation */
 	CNavigation::NAVIGATION_DESC		NaviDesc{};
-	NaviDesc.iIndex = 0;
+	NaviDesc.iIndex = -1;
+	XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(pDesc->iProtoIndex, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
 		return E_FAIL;
 
@@ -416,6 +423,8 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
+	__super::Free();
+
 	if (nullptr != m_pState)
 	{
 		CObject_State* pOldState = m_pState;
@@ -425,7 +434,7 @@ void CPlayer::Free()
 		Safe_Delete(pOldState);
 	}
 
-	__super::Free();
+	
 
 
 

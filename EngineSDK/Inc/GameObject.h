@@ -17,10 +17,10 @@ public:
 
 
 
-	OBJECT_SAVE_DESC Get_Save_Desc()
+	virtual OBJECT_SAVE_DESC Get_Save_Desc()
 	{
 		OBJECT_SAVE_DESC eDesc = {};
-		eDesc.szPrototypetag = m_strProtoTag;
+		eDesc.strPrototypetag = m_strProtoTag;
 		eDesc.PrototypeLevelIndex = m_iProtoIndex;
 		memcpy(&eDesc.matWorld,m_pTransformCom->Get_WorldMatrix(), sizeof(_float4x4));
 		
@@ -48,7 +48,7 @@ public:
 	virtual HRESULT Render();
 
 	// 필요하면 무조건 구현하기
-	virtual HRESULT On_Collision(CGameObject* Other, class CCollider* pCollider) { return E_FAIL; }
+	virtual HRESULT On_Collision(class CCollider* pCollider) { return E_FAIL; }
 
 	void Billboarding();
 	

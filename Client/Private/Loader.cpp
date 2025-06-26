@@ -8,28 +8,24 @@
 #include "Model.h"
 #include "Structure.h"
 #include "VIBuffer_Cube.h"
+#include "VIBuffer_Rect_Instance.h"
+#include "VIBuffer_Model_Instance.h"
 //#include "Effect.h"
 #include "Sky.h"
-#include "Static_UI.h"
-#include "Metronome.h"
-#include "Metronome_Counter.h"
-#include "Metronome_Center_RIng.h"
-#include "HP_Bar.h"
-#include "PlayerRing.h"
 #include "Player.h"
 #include "Body_Player.h"
-#include "Rifle.h"
-#include "Keyboard.h"
-#include "Sickle.h"
-#include "Axe.h"
 #include "Projectile_Monster.h"
 #include "Projectile_Player.h"
+#include "Projectile_Player_Ult_Sickle.h"
 #include "Projectile_Artillery.h"
 #include "Projectile_Shockwave.h"
+#include "Projectile_Falling.h"
+#include "Projectile_Shell.h"
 #include "Discord.h"
 #include "Body_Discord.h"
 #include "Discord_Wall.h"
 #include "Tentacle_Melee.h"
+#include "Tentacle_Amp.h"
 #include "Defender.h"
 #include "Body_Defender.h"
 #include "Weapon_Defender.h"
@@ -38,6 +34,9 @@
 #include "Artillery.h"
 #include "Body_Artillery.h"
 #include "Navigation.h"
+#include "Music_Note.h"
+#include "Structure_Instance.h"
+#include "Hit_Effect_Texture.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -99,6 +98,9 @@ HRESULT CLoader::Loading()
 	case LEVEL::EDIT:
 		hr = Loading_For_Edit();
 		break;
+	case LEVEL::FOREST:
+		hr = Loading_For_Forest();
+		break;
 	}
 
 	
@@ -147,128 +149,19 @@ HRESULT CLoader::Loading_For_GamePlay()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Anchor"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/Anchor.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Center_Ring"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/Center_Ring.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Bar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/MainBar.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Metronome_Counter"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/UI/Metronome/Counter.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Ring"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/PlayerRing.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Ky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Potrait_Ky.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Ult_Bar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/UltimateBar.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Frame"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Hp_Frame.dds"), 1))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Idle"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/HealthBar_Idle.dds"), 1))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_HP_Damaged"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/HealthBar_Damage.dds"), 1))))
-		return E_FAIL;
-
-
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Diffuse"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Terrain/Forest_D_%d.dds"), 3))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Normal"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Terrain/Forest_N_%d.dds"), 3))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Global/Projectile/Projectile_Core.dds"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Artillery_Projectile"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Monster/Artillery/Artillery_Projectile_%d.dds"), 4))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Shockwave"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Monster/Shockwave.dds"), 1))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Sky */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Skybox/Skybox.dds"), 1))))
-		return E_FAIL;
-
-	///* For.Prototype_Component_Texture_Sky */
-	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBE, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
-	//	return E_FAIL;
-
-
-	///* For.Prototype_Component_Texture_Explosion */
-	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_Texture_Explosion"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_2D, TEXT("../Bin/Resources/Textures/Explosion/Explosion%d.png"), 90))))
-	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
-	/* For.Prototype_Component_Shader_VtxCube */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxCube"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
-		return E_FAIL;
 
-	/* For.Prototype_Component_VIBuffer_Cube */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Cube"),
-		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
-	/* For.Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
+	
 
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
-	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Ky"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixIdentity();
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Rifle"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Rifle/Rifle.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixIdentity() ;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Sickle"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Sickle/Sickle.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixIdentity() ;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Keyboard"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Keyboard/Keyboard.bin", PreTransformMatrix))))
-		return E_FAIL;
-	PreTransformMatrix = XMMatrixIdentity();
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Axe"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Axe/Axe.bin", PreTransformMatrix))))
-		return E_FAIL;
-
- 	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+ 	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
  	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Discord"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Discord/Discord.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -283,22 +176,59 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Tentacle_Melee/Tentacle_Melee.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Defender"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Defender/Defender.bin", PreTransformMatrix))))
+	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Tentacle_Amp"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Tentacle_Amp/Tentacle_Amp.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	// bossmap
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CliffRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CliffRock/CliffRock_A.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixIdentity();
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Shield"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Monster/Defender/Shield/Shield.bin", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CliffRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CliffRock/CliffRock_B.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Artillery"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Artillery/Artillery.bin", PreTransformMatrix))))
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CorruptionRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CorruptionRock/CorruptionRock_A.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CorruptionRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CorruptionRock/CorruptionRock_B.bin", PreTransformMatrix))))
+		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_A.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_B.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_C"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_C.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Snow */
+	CVIBuffer_Model_Instance::Model_INSTANCE_DESC		structDesc{};
+	structDesc.iNumInstance = 100;
+	structDesc.vCenter = _float3(64.f, -40.f, 64.0f);
+	structDesc.vRange = _float3(256.f, 20.0f, 256.f);
+	structDesc.vSize = _float2(1.f, 1.f);
+	structDesc.strModelDesc = TEXT("Prototype_Component_Model_PlatformRock_B");
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock"),
+		CVIBuffer_Model_Instance::Create(m_pDevice, m_pContext, &structDesc))))
+		return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
@@ -310,7 +240,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	/* Prototype_Component_Navigation */
   	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Boss.bin")))))
 		return E_FAIL;
 
 
@@ -319,49 +249,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
-	/* For.Prototype_GameObject_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UI*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome"),
-		CMetronome::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Center_Ring"),
-		CMetronome_Center_RIng::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-		CMetronome_Counter::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Static_UI"),
-		CStatic_UI::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player_Ring"),
-		CPlayerRing::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_HP_Bar"),
-		CHP_BAR::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-	/* For.Prototype_GameObject_Sky */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Sky"),
-		CSky::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-	/* For.Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Player"),
-		CBody_Player::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	/* For.Prototype_GameObject_Discord */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord"),
@@ -380,40 +267,40 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CTentacle_Melee::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Weapon */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Rifle"),
-		CRifle::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Tentacle_Amp"),
+		CTentacle_Amp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Keyboard"),
-		CKeyboard::Create(m_pDevice, m_pContext))))
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Forest()
+{
+
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Defender"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Defender/Defender.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sickle"),
-		CSickle::Create(m_pDevice, m_pContext))))
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Shield"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Monster/Defender/Shield/Shield.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Axe"),
-		CAxe::Create(m_pDevice, m_pContext))))
+	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Artillery"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Artillery/Artillery.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Projecttile_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Monster"),
-		CProjectile_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	/* For.Prototype_GameObject_Projecttile_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Artillery"),
-		CProjectile_Artillery::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Projecttile_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shockwave"),
-		CProjectile_Shockwave::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Projecttile_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"),
-		CProjectile_Player::Create(m_pDevice, m_pContext))))
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::FOREST), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
 		return E_FAIL;
 
 
@@ -439,24 +326,6 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CBody_Artillery::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HP"),
-		CMonster_HP::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Trigger"),
-		CTrigger::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	///* For.Prototype_GameObject_Sky */
-	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_GameObject_Sky"),
-	//	CSky::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
-
-	///* For.Prototype_GameObject_Effect */
-	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_GameObject_Effect"),
-	//	CEffect::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
-
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -467,32 +336,18 @@ HRESULT CLoader::Loading_For_GamePlay()
 HRESULT CLoader::Loading_For_Edit()
 {
 
+
+
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Global/Projectile/Projectile_Core.dds"), 1))))
-		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Diffuse"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Terrain/Forest_D_%d.dds"), 3))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Terrain_Normal"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Terrain/Forest_N_%d.dds"), 3))))
-		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
-	/* For.Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
-	// slope
+	// forest
 	//PreTransformMatrix = XMMatrixScaling(0.0002f, 0.0002f, 0.0002f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_0"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope0.bin", PreTransformMatrix))))
@@ -503,9 +358,40 @@ HRESULT CLoader::Loading_For_Edit()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope1.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Ky"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Ky/Ky.bin", PreTransformMatrix))))
+	// bossmap
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CliffRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CliffRock/CliffRock_A.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CliffRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CliffRock/CliffRock_B.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CorruptionRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CorruptionRock/CorruptionRock_A.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CorruptionRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/CorruptionRock/CorruptionRock_B.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_A"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_A.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_B"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_B.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_C"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_C.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
@@ -516,29 +402,13 @@ HRESULT CLoader::Loading_For_Edit()
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
-	/* For.Prototype_GameObject_Projecttile_Monster */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Monster"),
-		CProjectile_Monster::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	
 
-	/* For.Prototype_GameObject_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Terrain */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Structure"),
-		CStructure::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	
 
 	/* Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test1.bin")))))
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::EDIT), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
 		return E_FAIL;
 
 	// 추가

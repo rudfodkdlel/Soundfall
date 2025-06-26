@@ -66,7 +66,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype()
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, 0.f, i);
+			pVertices[iIndex].vPosition = _float3(j , 0.f, i  );
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesX - 1.f));
 		}

@@ -49,7 +49,7 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 		
 		fin.read(reinterpret_cast<char*>(&tri), sizeof(Triangle));
 
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, tri.points, m_Cells.size());
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, tri.points, static_cast<_uint>(m_Cells.size()));
 		if (nullptr == pCell)
 			return E_FAIL;
 
@@ -83,6 +83,14 @@ HRESULT CNavigation::Initialize(void* pArg)
 	NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
 
 	m_iIndex = pDesc->iIndex;
+
+	// index를 생성 후에 구하고 싶으면...?
+
+	if (-1 == m_iIndex)
+		m_iIndex = Find_Index(pDesc->vInitPos);
+
+	if (-1 == m_iIndex)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -133,6 +141,56 @@ _vector CNavigation::SetUp_Height(_fvector vWorldPos)
 	vLocalPos = XMVectorSetY(vLocalPos, m_Cells[m_iIndex]->Compute_Height(vLocalPos));
 
 	return XMVector3TransformCoord(vLocalPos, XMLoadFloat4x4(&m_WorldMatrix));
+}
+
+_int CNavigation::Find_Index(_float4 vPos)
+{
+	// y = 0에 투영시킨다
+	_vector vProjPos = XMLoadFloat4(&vPos);
+	XMVectorSetY(vProjPos, 0.f);
+
+	for (auto& cell : m_Cells)
+	{
+		//점들을 순회하면서 vPos가 평면 안에 있는지 확인한다.
+		_vector vProjPointA = cell->Get_Point(CCell::POINT_A);
+		_vector vProjPointB = cell->Get_Point(CCell::POINT_B);
+		_vector vProjPointC = cell->Get_Point(CCell::POINT_C);
+
+		XMVectorSetY(vProjPointA, 0.f);
+		XMVectorSetY(vProjPointB, 0.f);
+		XMVectorSetY(vProjPointC, 0.f);
+
+		// 바리센트릭 좌표 계산을 통해 확인
+
+		_float2 v0 = { XMVectorGetX(vProjPointB) - XMVectorGetX(vProjPointA), XMVectorGetZ(vProjPointB) - XMVectorGetZ(vProjPointA) };
+		_float2 v1 = { XMVectorGetX(vProjPointC) - XMVectorGetX(vProjPointA), XMVectorGetZ(vProjPointC) - XMVectorGetZ(vProjPointA) };
+		_float2 v2 = { XMVectorGetX(vProjPos) - XMVectorGetX(vProjPointA), XMVectorGetZ(vProjPos) - XMVectorGetZ(vProjPointA) };
+
+		float d00 = v0.x * v0.x + v0.y * v0.y;
+		float d01 = v0.x * v1.x + v0.y * v1.y;
+		float d11 = v1.x * v1.x + v1.y * v1.y;
+		float d20 = v2.x * v0.x + v2.y * v0.y;
+		float d21 = v2.x * v1.x + v2.y * v1.y;
+
+		float denom = d00 * d11 - d01 * d01;
+
+		// 세 점이 일직선일 경우
+		if (denom == 0.f)
+			continue;
+
+		float v = (d11 * d20 - d01 * d21) / denom;
+		float w = (d00 * d21 - d01 * d20) / denom;
+		float u = 1.f - v - w;
+
+		const float epsilon = 1e-6f;
+		bool inside = (u >= -epsilon) && (v >= -epsilon) && (w >= -epsilon);
+
+		if (inside)
+			return cell->Get_index();
+	}
+
+
+	return -1;
 }
 
 #ifdef _DEBUG

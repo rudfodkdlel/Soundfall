@@ -22,10 +22,15 @@ HRESULT CLevel_Edit::Initialize()
 
 	CTerrain::TERRAIN_DESC pDesc = {};
 
+	pDesc.iCurrentLevel = ENUM_CLASS(LEVEL::EDIT);
 	pDesc.bWired = true;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Terrain"),
 		ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Grid"), &pDesc)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
+		ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Sky"), &pDesc)))
 		return E_FAIL;
 
 	m_pImgui = CMyImgui::Create(m_pDevice, m_pContext);

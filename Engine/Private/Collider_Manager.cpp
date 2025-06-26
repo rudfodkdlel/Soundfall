@@ -14,12 +14,14 @@ HRESULT CCollider_Manager::Add_Collider(_uint iIndex, CCollider* Collider, CGame
 	if (m_pColliders.size() <= iIndex)
 		m_pColliders.resize(iIndex + 1);
 
-	m_pColliders[iIndex].push_back({ Collider, pOwner });
-
-	//Safe_AddRef(Collider);
-	//Safe_AddRef(pOwner);
+	m_pColliders[iIndex].push_back( Collider );
 
 	Collider->Set_Group(iIndex);
+	Collider->Set_Owner(pOwner);
+
+	Collider->Set_InvalidateCallBack(
+		[this](CCollider* p) {this->CallbackCollider(p); }
+	);
 
 	return S_OK;
 }
@@ -41,18 +43,40 @@ HRESULT CCollider_Manager::Add_Collider_Group(pair<_uint, _uint> typePair)
     return S_OK;
 }
 
+void CCollider_Manager::CallbackCollider(CCollider* p)
+{
+	if (m_pColliders.empty())
+		return;
+
+	if (m_pColliders[p->Get_Group()].empty())
+		return;
+
+	auto& pList = m_pColliders[p->Get_Group()];
+
+	for (auto& pCollider : pList)
+	{
+		if (pCollider == p)
+		{
+			pCollider = nullptr;
+			break;
+		}
+	}
+}
+
 void CCollider_Manager::Check_Nullptr()
 {
 	for (auto& list : m_pColliders)
 	{
-		list.remove_if([](std::pair<CCollider*, CGameObject*>& p)
+		list.remove_if([](CCollider* p)
 			{
-				if (p.first == nullptr || p.second == nullptr || p.second->Get_Dead())
+				if (p == nullptr)
+					return true;
+
+				if (nullptr == p->Get_Owner())
 				{
-					//Safe_Release(p.first);
-					//Safe_Release(p.second);
 					return true;
 				}
+
 				return false;
 			});
 	}
@@ -65,10 +89,8 @@ void CCollider_Manager::Clear()
 	{
 		for (auto& ptr : list)
 		{
-			if(nullptr != ptr.first)
-				Safe_Release(ptr.first);
-			if(nullptr != ptr.second)
-				Safe_Release(ptr.second);
+			if(nullptr != ptr)
+				Safe_Release(ptr);
 		}
 		list.clear();
 	}
@@ -77,6 +99,8 @@ void CCollider_Manager::Clear()
 
 void CCollider_Manager::Update()
 {
+	Check_Nullptr();
+
 
 	if (m_pColliders.empty())
 		return;
@@ -91,53 +115,47 @@ void CCollider_Manager::Update()
 		Instercects_Group(m_pColliders[pair.first], m_pColliders[pair.second]);
 	}
 
-	//Check_Nullptr();
+	
 
 }
 
-void CCollider_Manager::Instercects_Group(list<pair<CCollider*, CGameObject*>> src, list<pair<CCollider*, CGameObject*>> dst)
+void CCollider_Manager::Instercects_Group(list<CCollider*> src, list<CCollider*> dst)
 {
-	vector<tuple<CGameObject*, CGameObject*, CCollider*, CCollider*>> collisions;
-
-	for (auto& srcCollider : src)
-	{
-		if (nullptr == srcCollider.first || nullptr == srcCollider.second)
+	for (auto& pSrcCollider : src)
+	{ 
+		if (pSrcCollider->Get_Group() < 0)
 			continue;
-		if (!srcCollider.first->Get_Active() || srcCollider.second->Get_Dead())
+		if (nullptr == pSrcCollider || nullptr == pSrcCollider->Get_Owner())
 			continue;
 
-		for (auto& dstCollider : dst)
+		if ( !pSrcCollider->Get_Active() || pSrcCollider->Get_Owner()->Get_Dead())
+			continue;
+
+		for (auto& pDstCollider : dst)
 		{
-			if (nullptr == dstCollider.first || nullptr == dstCollider.second)
-				continue;
-			if (!dstCollider.first->Get_Active() || dstCollider.second->Get_Dead())
-				continue;
-			if (srcCollider.second == dstCollider.second)
+
+			if (pDstCollider->Get_Group() < 0)
 				continue;
 
-			if (srcCollider.first->Intersect(dstCollider.first))
+			if (pSrcCollider == pDstCollider)
+				continue;
+
+			if (nullptr == pDstCollider || nullptr == pDstCollider->Get_Owner())
+				continue;
+
+			if (!pDstCollider->Get_Active() || pDstCollider->Get_Owner()->Get_Dead())
+				continue;
+
+			if (pSrcCollider->Intersect(pDstCollider))
 			{
-				// 충돌 목록에 저장만 해둠
-				collisions.emplace_back(
-					srcCollider.second, dstCollider.second,
-					srcCollider.first, dstCollider.first);
+				if (nullptr != pSrcCollider->Get_Owner())
+					pSrcCollider->Get_Owner()->On_Collision(pDstCollider);
+				if (nullptr != pDstCollider->Get_Owner())
+					pDstCollider->Get_Owner()->On_Collision(pSrcCollider);
 			}
+
+			
 		}
-	}
-
-	// 이후 일괄 처리
-	for (auto& collision : collisions)
-	{
-		CGameObject* srcObj = get<0>(collision);
-		CGameObject* dstObj = get<1>(collision);
-		CCollider* srcCol = get<2>(collision);
-		CCollider* dstCol = get<3>(collision);
-
-		if (srcObj->Get_Dead() || dstObj->Get_Dead())
-			continue;
-
-		srcObj->On_Collision(dstObj, dstCol);
-		dstObj->On_Collision(srcObj, srcCol);
 	}
 }
 
@@ -150,7 +168,7 @@ void CCollider_Manager::Free()
 {
 	__super::Free();
 
-	//Clear();
+	Clear();
 
 	m_pColliders.clear();
 	m_CollisionPairs.clear();

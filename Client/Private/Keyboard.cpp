@@ -98,7 +98,7 @@ void CKeyboard::Attack(_vector vDir)
 
         if (m_iOverloadCount == 0)
         {
-            m_fOverloadTime = 0.3f;
+            m_fOverloadTime = 0.5f;
         }
     }
 
@@ -110,7 +110,15 @@ void CKeyboard::Attack(_vector vDir)
 
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
-    eDesc.vColor = m_vColor;
+    eDesc.fMaxDistance = 25;
+    if ((m_IsPerfect))
+    {
+        eDesc.vColor = m_vColor;
+    }
+    else
+    {
+        eDesc.vColor = { 0.f,0.f,0.f,1.f };
+    }
 
     _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 + 0.8f , m_CombinedWorldMatrix._43 , 1.f };
     XMStoreFloat4(&eDesc.vPos, vPos);
@@ -126,7 +134,9 @@ void CKeyboard::Attack(_vector vDir)
             TEXT("Layer_Projectile_Player"), &eDesc);
     }
 
-   
+    m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shell"), m_pGameInstance->Get_Current_Level(),
+        TEXT("Layer_Projectile_Shell"), &eDesc);
+
 
     // 소리 추가
     m_pGameInstance->StopSound(SOUND_WEAPON);
@@ -138,7 +148,7 @@ void CKeyboard::Attack(_vector vDir)
 void CKeyboard::Reset()
 {
     m_iCurrentAmmo = 1;
-    m_iOverloadCount = 4;
+    m_iOverloadCount = 2;
 }
 
 HRESULT CKeyboard::Ready_Components()

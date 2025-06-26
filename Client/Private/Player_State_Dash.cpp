@@ -69,13 +69,14 @@ void CPlayer_State_Dash::Exit(CGameObject* pObj)
 {
 	__super::Exit(pObj);
 
-	m_pPlayer->Toggle_Collider(true);
+
 }
 
 CObject_State* CPlayer_State_Dash::Check_Transition(CGameObject* pObj)
 {
 	if (m_IsFinish)
 	{
+		m_pPlayer->Toggle_Collider(true);
 		return new CPlayer_State_Idle;
 	}
 

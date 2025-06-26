@@ -103,7 +103,7 @@ HRESULT CBody_Defender::Render()
     return S_OK;
 }
 
-HRESULT CBody_Defender::On_Collision(CGameObject* Other, class CCollider* pCollider)
+HRESULT CBody_Defender::On_Collision(class CCollider* pCollider)
 {
     if (CG_WEAPON_MONSTER == pCollider->Get_Group())
         return S_OK;

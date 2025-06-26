@@ -13,6 +13,18 @@ protected:
 	virtual ~CModel() = default;
 
 public:
+
+	vector<class CMesh*>& Get_Mesh()
+	{
+		return m_Meshes;
+	}
+
+	vector<class CMaterial*>& Get_Material()
+	{
+		return m_Materials;
+	}
+
+
 	_uint Get_NumMeshes() const {
 		return m_iNumMeshes;
 	}

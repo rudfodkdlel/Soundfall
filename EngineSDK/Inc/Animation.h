@@ -17,7 +17,7 @@ public:
 	{
 		ANIM_DESC eDesc = {};
 		eDesc.iNumChannels = m_iNumChannels;
-		for (int i = 0; i < m_iNumChannels; ++i)
+		for (_uint i = 0; i < m_iNumChannels; ++i)
 		{
 			CHANNEL_DESC cDesc = m_Channels[i]->Get_Desc();
 			eDesc.Channels.push_back(cDesc);
@@ -40,11 +40,11 @@ private:
 	_float					m_fDuration = {};
 	_float					m_fTickPerSecond = {};
 	_float					m_fCurrentTrackPosition = {};
-	vector<_uint>			m_CurrentKeyFrameIndices;
+	vector<_uint>			m_CurrentKeyFrameIndices = {};
 
 	/* 이 애니메이션을 표현하기위해서 사용하는 뼈의 갯수 */
-	_uint					m_iNumChannels;
-	vector<CChannel*>		m_Channels;
+	_uint					m_iNumChannels = {};
+	vector<CChannel*>		m_Channels = {};
 
 public:
 	static CAnimation* Create(const ANIM_DESC& eDesc, const vector<class CBone*>& Bones);

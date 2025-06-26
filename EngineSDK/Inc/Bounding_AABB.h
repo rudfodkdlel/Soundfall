@@ -27,7 +27,10 @@ public:
 	virtual void Update(_fmatrix WorldMatrix) override;
 	virtual _bool Intersect(CBounding* pTarget) override;
 
-
+	_bool Collision_AABB_To_AABB(CBounding* pTarget);
+	_bool Collision_AABB_To_OBB(CBounding* pTarget);
+	_bool Collision_AABB_To_Sphere(CBounding* pTarget);
+	
 
 #ifdef _DEBUG
 public:

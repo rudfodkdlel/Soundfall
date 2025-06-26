@@ -49,12 +49,13 @@ private:
 	const map<const _wstring, class CBase*>* m_pPrototypes = {};
 
 	_wstring	m_strSelectKey = {};
+	_wstring	m_strSelectModelKey = {};
 
 	// 여기에 추가해서 오브젝트 저장 하고 불러오고 할거
 
 	// 구조 일단 이대로 하고, 삭제 기능 만들면 없애기
 	list<CGameObject*> m_pObjects = {};
-	list<OBJECT_SAVE_DESC> m_ObjectDescs = {};
+	list<OBJECT_SAVE_DESC>m_ObjectDescs = {};
 
 	// 이 구조로 나중에 바꾸기
 	map<_uint, CGameObject*> m_pObjectMap = {};

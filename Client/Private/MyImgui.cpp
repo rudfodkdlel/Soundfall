@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "VIBuffer.h"
 #include "Model.h"
+#include "Structure.h"
 
 
 CMyImgui::CMyImgui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -150,7 +151,7 @@ void CMyImgui::Update(_float fTimeDelta)
 							_float3 newPoint = { roundf(m_vPickingPos.x), roundf(m_vPickingPos.y), roundf(m_vPickingPos.z) };
 
 							// 스냅 거리 임계값
-							const float snapThreshold = 5.0f;
+							const float snapThreshold = 2.0f;
 
 							// 가까운 점으로 스냅 처리
 							for (auto& tri : m_NaviTriangles)
@@ -251,11 +252,11 @@ void CMyImgui::Render_Create_Window()
 	bool g_bBigWindow = false;
 
 	// Grid Check 창 크기 줄임
-	ImVec2 windowSize1 = ImVec2(200, 200);
+	ImVec2 windowSize1 = ImVec2(200, 150);
 	ImVec2 windowSize2 = ImVec2(300, 400); // Create Window 크기 유지
 
 	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
-	ImGui::SetNextWindowPos(ImVec2(50, 100), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(250, 100), ImGuiCond_Once);
 
 	if (ImGui::Begin("Util")) {
 		ImGui::Checkbox("Grid", &m_bCheckGrid);
@@ -287,10 +288,14 @@ void CMyImgui::Render_Create_Window()
 			}
 		}
 	}
+	
 
 	if (ImGui::Button("Create")) {
-		CGameObject::GAMEOBJECT_DESC pDesc = {};
+		CStructure::STRUCTURE_DESC pDesc = {};
 		pDesc.vPos = { 0.f, 0.f, 0.f,1.f };
+		pDesc.strModeltag = m_strSelectModelKey;
+		pDesc.strPrototag = m_strSelectKey;
+		pDesc.iProtoIndex = 0;
 
 		if (!m_strSelectKey.empty())
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), m_strSelectKey,
@@ -299,17 +304,38 @@ void CMyImgui::Render_Create_Window()
 		m_pObjects.push_back(m_pGameInstance->GetLastObjectFromLayer(ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit")));
 
 
-
-		OBJECT_SAVE_DESC objDesc = {};
-		objDesc.szPrototypetag = m_strSelectKey;
-		objDesc.PrototypeLevelIndex = ENUM_CLASS(LEVEL::STATIC);
-		m_ObjectDescs.push_back(objDesc);
-
 		if (m_vPickingPos.w == 1.f)
 			m_pObjects.back()->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
 	}
 
 	ImGui::End();
+
+	if (m_strSelectKey.find(L"Structure") != m_strSelectKey.npos)
+	{
+		ImGui::SetNextWindowSize(windowSize2, ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(900, windowSize1.y + 100), ImGuiCond_Once);
+
+
+		ImGui::Begin("Structure Models");
+
+		if (m_pPrototypes) {
+			for (const auto& pair : *m_pPrototypes) {
+				std::string keyStr = WStringToString(pair.first);
+
+				if (keyStr.find("Model") != std::string::npos) {
+					bool isSelected = (pair.first == m_strSelectModelKey);
+					
+					if (ImGui::Selectable(keyStr.c_str(), isSelected)) {
+						m_strSelectModelKey = pair.first;
+					}
+					
+				}
+			}
+		}
+
+		ImGui::End();
+	}
+	
 
 	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
 	ImGui::SetNextWindowPos(ImVec2(100 + windowSize2.x + 600,  100), ImGuiCond_Once);
@@ -327,12 +353,12 @@ void CMyImgui::Render_Create_Window()
 
 	if (ImGui::Button("Save_Navi"))
 	{
-		Save_Navi("../Bin/Data/Navi_Test1.bin");
+		Save_Navi("../Bin/Data/Navi_Test.bin");
 	}
 
 	if (ImGui::Button("Load_Navi"))
 	{
-		Load_Navi("../Bin/Data/Navi_Test1.bin");
+		Load_Navi("../Bin/Data/Navi_Test.bin");
 	}
 
 	ImGui::End();
@@ -342,6 +368,22 @@ void CMyImgui::Render_Gizmo()
 {
 	if (m_pPickingObject == nullptr || m_pPickingObject->Get_Dead())
 		return;
+
+	_float4x4* pWorld = m_pPickingObject->Get_Transform()->Get_WorldMatrix();
+	float worldMatrix[16];
+	memcpy(worldMatrix, pWorld, sizeof(float) * 16);
+
+	// GUI용 트랜스폼 컴포넌트
+	static float position[3];
+	static float rotation[3];
+	static float scale[3];
+
+
+
+	// 행렬을 position/rotation/scale로 분해
+	ImGuizmo::DecomposeMatrixToComponents(worldMatrix, position, rotation, scale);
+
+	ImGui::SetNextWindowSize(ImVec2(200, 200), ImGuiCond_Always);
 
 	if (ImGui::Begin("Gizmo Control"))
 	{
@@ -353,6 +395,19 @@ void CMyImgui::Render_Gizmo()
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Scale", m_currentOperation == ImGuizmo::SCALE))
 			m_currentOperation = ImGuizmo::SCALE;
+
+		//
+
+		ImGui::Separator();
+
+		// 값 입력 UI
+		ImGui::DragFloat3("Position", position, 0.1f);
+		ImGui::DragFloat3("Rotation", rotation, 0.1f);
+		ImGui::DragFloat3("Scale", scale, 0.01f);
+
+		// 값이 바뀌었을 경우 재조합
+		ImGuizmo::RecomposeMatrixFromComponents(position, rotation, scale, worldMatrix);
+		memcpy(pWorld, worldMatrix, sizeof(float) * 16);
 	}
 	ImGui::End();
 
@@ -365,7 +420,7 @@ void CMyImgui::Render_Gizmo()
 	ImGuizmo::SetRect(0, 0, g_iWinSizeX, g_iWinSizeY);
 
 	
-	_float4x4* pWorld = m_pPickingObject->Get_Transform()->Get_WorldMatrix();
+	
 	const _float4x4*  pView = m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW);
 	const _float4x4* pProj = m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ);
 
@@ -384,16 +439,7 @@ void CMyImgui::Render_Gizmo()
 
 void CMyImgui::Save_Data(const char* pFliePath)
 {
-	auto iter = m_pObjects.begin();
-	auto DescIter = m_ObjectDescs.begin();
 
-	for (int i = 0; i < m_pObjects.size(); ++i)
-	{
-		XMStoreFloat4x4(&(*DescIter).matWorld, XMLoadFloat4x4((*iter)->Get_Transform()->Get_WorldMatrix()));
-		
-		++iter;
-		++DescIter;
-	}
 
 	// 파일 만들기 
 	ofstream fout(pFliePath, std::ios::binary);
@@ -402,19 +448,30 @@ void CMyImgui::Save_Data(const char* pFliePath)
 		return;
 	}
 
-	size_t count = m_ObjectDescs.size();
-	fout.write(reinterpret_cast<const char*>(&count), sizeof(size_t));
-
-	for (const auto& desc : m_ObjectDescs)
+	for (auto& object : m_pObjects)
 	{
-		fout.write(reinterpret_cast<const char*>(&desc.matWorld), sizeof(_float4x4));
+		if (nullptr != object && !(object->Get_Dead()))
+		{
+			OBJECT_SAVE_DESC eDesc = object->Get_Save_Desc();
 
-		// 문자열 저장 (길이 먼저, 그 다음 데이터)
-		size_t len = desc.szPrototypetag.length();
-		fout.write(reinterpret_cast<const char*>(&len), sizeof(size_t));
-		fout.write(reinterpret_cast<const char*>(desc.szPrototypetag.c_str()), sizeof(wchar_t) * len);
+			fout.write(reinterpret_cast<const char*>(&eDesc.matWorld), sizeof(_float4x4));
 
-		fout.write(reinterpret_cast<const char*>(&desc.PrototypeLevelIndex), sizeof(int));
+			// 문자열 저장 (길이 먼저, 그 다음 데이터)
+			size_t len = eDesc.strPrototypetag.length();
+			fout.write(reinterpret_cast<const char*>(&len), sizeof(size_t));
+			fout.write(reinterpret_cast<const char*>(eDesc.strPrototypetag.c_str()), sizeof(wchar_t) * len);
+
+			size_t Moedeltaglen = eDesc.strModeltag.length();
+			fout.write(reinterpret_cast<const char*>(&Moedeltaglen), sizeof(size_t));
+			if (Moedeltaglen > 0)
+			{
+				fout.write(reinterpret_cast<const char*>(eDesc.strModeltag.c_str()), sizeof(wchar_t) * Moedeltaglen);
+			}
+
+		
+			fout.write(reinterpret_cast<const char*>(&eDesc.PrototypeLevelIndex), sizeof(int));
+		}
+	
 	}
 
 	fout.close();
@@ -430,23 +487,41 @@ void CMyImgui::Load_Data(const char* pFliePath)
 	if (!fin)
 		return;
 
-	size_t count = 0;
-	fin.read(reinterpret_cast<char*>(&count), sizeof(size_t));
-
-	for (size_t i = 0; i < count; ++i)
+	while (fin.peek() != EOF)
 	{
 		OBJECT_SAVE_DESC desc = {};
 
+		// 월드 행렬 읽기
 		fin.read(reinterpret_cast<char*>(&desc.matWorld), sizeof(_float4x4));
+		if (fin.eof()) break;
 
-		size_t len = 0;
-		fin.read(reinterpret_cast<char*>(&len), sizeof(size_t));
+		// 프로토타입 태그 문자열 읽기
+		size_t protoLen = 0;
+		fin.read(reinterpret_cast<char*>(&protoLen), sizeof(size_t));
+		if (fin.eof()) break;
 
-		std::wstring temp(len, L'\0');
-		fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * len);
-		desc.szPrototypetag = temp;
+		if (protoLen > 0)
+		{
+			std::wstring temp(protoLen, L'\0');
+			fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * protoLen);
+			desc.strPrototypetag = temp;
+		}
 
+		// 모델 태그 문자열 읽기
+		size_t modelLen = 0;
+		fin.read(reinterpret_cast<char*>(&modelLen), sizeof(size_t));
+		if (fin.eof()) break;
+
+		if (modelLen > 0)
+		{
+			std::wstring temp(modelLen, L'\0');
+			fin.read(reinterpret_cast<char*>(&temp[0]), sizeof(wchar_t) * modelLen);
+			desc.strModeltag = temp;
+		}
+
+		// 프로토타입 레벨 인덱스 읽기
 		fin.read(reinterpret_cast<char*>(&desc.PrototypeLevelIndex), sizeof(int));
+		if (fin.eof()) break;
 
 		m_ObjectDescs.push_back(desc);
 	}
@@ -455,9 +530,12 @@ void CMyImgui::Load_Data(const char* pFliePath)
 
 	for (auto& desc : m_ObjectDescs)
 	{
-		CGameObject::GAMEOBJECT_DESC pDesc = {};
-		pDesc.vPos = { 0.f, 0.f, 0.f,1.f };
-		HRESULT hr = m_pGameInstance->Add_GameObject(desc.PrototypeLevelIndex, desc.szPrototypetag, ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"),&pDesc);
+		CStructure::STRUCTURE_DESC pDesc = {};
+		pDesc.iProtoIndex = desc.PrototypeLevelIndex;
+		pDesc.strModeltag = desc.strModeltag;
+		pDesc.strPrototag = desc.strPrototypetag;
+
+		HRESULT hr = m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), pDesc.strPrototag, ENUM_CLASS(LEVEL::EDIT), TEXT("Layer_Edit"), &pDesc);
 
 		if (hr < 0)
 			return;
@@ -469,6 +547,8 @@ void CMyImgui::Load_Data(const char* pFliePath)
 		memcpy(m_pObjects.back()->Get_Transform()->Get_WorldMatrix(), &desc.matWorld, sizeof(_float4x4));
 	
 	}
+
+	m_ObjectDescs.clear();
 }
 
 void CMyImgui::Save_Navi(const char* pFliePath)

@@ -5,6 +5,7 @@
 #include "Player_State_Hit.h"
 #include "Player_State_Attack_Charge.h"
 #include "Player_State_Attack_Combo.h"
+#include "Player_State_Ult.h"
 
 
 void CPlayer_State_Idle::Enter(CGameObject* pObj)
@@ -55,6 +56,12 @@ CObject_State* CPlayer_State_Idle::Check_Transition(CGameObject* pObj)
 	{
 		return nullptr;
 	}
+	if (m_pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+	{
+
+		return new CPlayer_State_Ult;
+	}
+
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_LSHIFT) & 0x80)
 	{

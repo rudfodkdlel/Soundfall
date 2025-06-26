@@ -1,6 +1,7 @@
 #include "Monster_Pattern_Melee.h"
 #include "Monster_State_Idle.h"
 #include "Body_Discord.h"
+#include "Monster_State_Groggy.h"
 
 void CMonster_Pattern_Melee::Enter(CGameObject* pObj)
 {
@@ -94,20 +95,46 @@ void CMonster_Pattern_Melee::Update(CGameObject* pObj, float fTimeDelta)
 void CMonster_Pattern_Melee::Exit(CGameObject* pObj)
 {
 	__super::Exit(pObj);
-	m_pDiscord->Reset_Attack_Hit();
+	
 }
 
 CObject_State* CMonster_Pattern_Melee::Check_Transition(CGameObject* pObj)
 {
-	if (m_IsFinish && ATTACK::ATTACK_OUT == m_eAttackState)
+	if (m_pDiscord->Check_Groggy())
 	{
-
-		auto colliders = static_cast<CBody_Discord*>(static_cast<CDiscord*>(pObj)->Get_Body())->Get_Colliders();
+		m_pDiscord->Reset_Attack_Hit();
+		auto colliders = static_cast<CBody_Discord*>(m_pDiscord->Get_Body())->Get_Colliders();
 
 		for (int i = 0; i < 5; ++i)
 			colliders[i]->Set_Active(false);
 
 		static_cast<CDiscord*>(pObj)->Get_CombatCom()->Set_Damage(0);
+
+		m_pDiscord->Set_bUseSummon(false);
+		auto list = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Monster_Wall"));
+		if (nullptr != list)
+		{
+			for (auto& object : *list)
+			{
+				if (object != nullptr)
+					object->Set_Dead();
+			}
+		}
+
+		return new CMonster_State_Groggy;
+	}
+
+
+	if (m_IsFinish && ATTACK::ATTACK_OUT == m_eAttackState)
+	{
+		m_pDiscord->Reset_Attack_Hit();
+		auto colliders = static_cast<CBody_Discord*>(m_pDiscord->Get_Body())->Get_Colliders();
+
+		for (int i = 0; i < 5; ++i)
+			colliders[i]->Set_Active(false);
+
+		static_cast<CDiscord*>(pObj)->Get_CombatCom()->Set_Damage(0);
+	
 
 		return new CMonster_State_Idle;
 	}

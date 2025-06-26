@@ -28,14 +28,6 @@ HRESULT CLayer::Add_GameObject(CGameObject* pGameObject)
 
 void CLayer::Priority_Update(_float fTimeDelta)
 {
-	for (auto& pGameObject : m_GameObjects)
-	{
-		if (nullptr != pGameObject && pGameObject->Get_Dead())
-			Safe_Release(pGameObject);
-
-
-	}
-
 
 	for (auto& pGameObject : m_GameObjects)
 	{
@@ -67,7 +59,14 @@ void CLayer::Late_Update(_float fTimeDelta)
 		
 	}
 
-	
+	for (auto& pGameObject : m_GameObjects)
+	{
+		if (nullptr != pGameObject && pGameObject->Get_Dead())
+			Safe_Release(pGameObject);
+
+
+	}
+
 }
 
 CLayer* CLayer::Create()

@@ -4,6 +4,7 @@
 #include "Level_GamePlay.h"
 #include "Level_Logo.h"
 #include "Level_Edit.h"
+#include "Level_Forest.h"
 #include "Loader.h"
 #include "BackGround.h"
 
@@ -87,6 +88,9 @@ void CLevel_Loading::Update(_float fTimeDelta)
 				break;
 			case LEVEL::EDIT:
 				pLevel = CLevel_Edit::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::FOREST:
+				pLevel = CLevel_Forest::Create(m_pDevice, m_pContext);
 				break;
 			}
 

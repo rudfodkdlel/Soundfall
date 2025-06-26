@@ -16,7 +16,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-	virtual HRESULT On_Collision(CGameObject* Other, CCollider* pCollider);
+	virtual HRESULT On_Collision( CCollider* pCollider);
 
 	virtual void Attack(_vector vDir) override;
 

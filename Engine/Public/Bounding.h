@@ -29,6 +29,12 @@ public:
 	virtual _float3 Get_Center() = 0;
 	virtual _float3 Get_Extents() = 0;
 
+	_float Get_Depth() { return m_fDepth; }
+	void   Set_Depth(_float fDepth) { m_fDepth = fDepth; }
+	_float3 Get_Mtv() { return m_vMtv; }
+	void Set_Mtv(_float3 vMtv) { m_vMtv = vMtv; }
+
+
 public:
 	HRESULT Initialize(const CBounding::BOUNDING_DESC* pDesc);
 	virtual void Update(_fmatrix WorldMatrix) = 0;
@@ -44,6 +50,10 @@ protected:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	COLLIDER					m_eType = { };
+
+	_float		m_fDepth = {};
+	_float3		m_vMtv = {};
+	
 
 public:
 	virtual void Free() override;

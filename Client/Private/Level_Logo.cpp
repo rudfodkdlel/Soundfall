@@ -12,6 +12,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 { 
+	m_iInitLevel = ENUM_CLASS(LEVEL::LOGO);
+
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
@@ -34,6 +36,16 @@ void CLevel_Logo::Update(_float fTimeDelta)
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::EDIT))))
 			return;
 		
+	}
+
+	else if (GetKeyState('F') & 0x8000)
+	{
+		// go forest
+
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::FOREST))))
+			return;
+
 	}
 }
 

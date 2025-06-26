@@ -1,6 +1,7 @@
 #include "Monster_Pattern_Missile.h"
 #include "Monster_State_Idle.h"
 #include "Projectile_Artillery.h"
+#include "Monster_State_Groggy.h"
 
 void CMonster_Pattern_Missile::Enter(CGameObject* pObj)
 {
@@ -30,8 +31,8 @@ void CMonster_Pattern_Missile::Update(CGameObject* pObj, float fTimeDelta)
 
 			_vector vDir = XMVector3Normalize(pObj->Get_Transform()->Get_State(STATE::LOOK));
 			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
-			vPos += {m_pGameInstance->Compute_Random_Normal() * 20 - 10, 0.f, -m_pGameInstance->Compute_Random_Normal() * 20, 0.f};
-
+			vPos += {m_pGameInstance->Compute_Random_Normal() * 20 - 10, 10.1f, -m_pGameInstance->Compute_Random_Normal() * 20, 0.f};
+			eDesc.vColor = { 1.f,0.f,0.f,1.f };
 			XMStoreFloat4(&eDesc.vPos, vPos);
 			XMStoreFloat4(&eDesc.vDir, vDir);
 			// 투사체 생성해서 날아가게 해보자
@@ -58,6 +59,22 @@ void CMonster_Pattern_Missile::Exit(CGameObject* pObj)
 
 CObject_State* CMonster_Pattern_Missile::Check_Transition(CGameObject* pObj)
 {
+	if (m_pDiscord->Check_Groggy())
+	{
+		m_pDiscord->Set_bUseSummon(false);
+		auto list = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Monster_Wall"));
+		if (nullptr != list)
+		{
+			for (auto& object : *list)
+			{
+				if (object != nullptr)
+					object->Set_Dead();
+			}
+		}
+		
+		return new CMonster_State_Groggy;
+	}
+
 	if (m_IsFinish && ATTACK::ATTACK_OUT == m_eAttackState)
 	{
 		return new CMonster_State_Idle;

@@ -16,7 +16,7 @@ public:
 private:
 
 	_float		m_fDuration = { 1.5f };
-	_float      m_fDelay = { 0.5f };
+	_float      m_fDelay = { 0.3f };
 	_int		m_iCount = { 0 };
 
 };

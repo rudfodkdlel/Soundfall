@@ -128,7 +128,7 @@ HRESULT CBody_Discord::Render()
     return S_OK;
 }
 
-HRESULT CBody_Discord::On_Collision(CGameObject* Other, CCollider* pCollider)
+HRESULT CBody_Discord::On_Collision(CCollider* pCollider)
 {
 
     _float3 otherCenter = pCollider->Get_Center();
@@ -141,7 +141,7 @@ HRESULT CBody_Discord::On_Collision(CGameObject* Other, CCollider* pCollider)
 
     if (m_pCombatCom->Get_Damage() > 0)
     {
-        m_pCombatCom->Attack(static_cast<CCombatStat*>(Other->Get_Component(TEXT("Com_Combat"))));
+        m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
         for (int i = 1; i < 5; ++i)
             m_pColliderCom[i]->Set_Active(false);
         m_IsAttackHit = true;
@@ -211,29 +211,29 @@ HRESULT CBody_Discord::Ready_Components()
         TEXT("Com_Collider_Head"), reinterpret_cast<CComponent**>(&m_pColliderCom[0]), &AABBDesc)))
         return E_FAIL;
 
-    AABBDesc.vExtents = _float3(3.f, 6.f, 20.f);
-    AABBDesc.vCenter = { 15.f,3.f,-10.f };
+    AABBDesc.vExtents = _float3(4.f, 10.f, 30.f);
+    AABBDesc.vCenter = { 20.f,5.f,-20.f };
 
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
         TEXT("Com_Collider_Arm_Left"), reinterpret_cast<CComponent**>(&m_pColliderCom[1]), &AABBDesc)))
         return E_FAIL;
 
-    AABBDesc.vExtents = _float3(3.f, 6.f, 20.f);
-    AABBDesc.vCenter = { 6.f,3.f,-10.f };
+    
+    AABBDesc.vCenter = { 8.f,5.f,-20.f };
 
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
         TEXT("Com_Collider_Arm_Left_Front"), reinterpret_cast<CComponent**>(&m_pColliderCom[2]), &AABBDesc)))
         return E_FAIL;
 
-    AABBDesc.vExtents = _float3(3.f, 6.f, 20.f);
-    AABBDesc.vCenter = { -6.f,3.f,-10.f };
+  
+    AABBDesc.vCenter = { -12.f,5.f,-20.f };
 
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
         TEXT("Com_Collider_Arm_Right_Front"), reinterpret_cast<CComponent**>(&m_pColliderCom[3]), &AABBDesc)))
         return E_FAIL;
 
-    AABBDesc.vExtents = _float3(3.f, 6.f, 20.f);
-    AABBDesc.vCenter = { -15.f,3.f,-10.f };
+   
+    AABBDesc.vCenter = { -24.f,5.f, -20.f };
 
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
         TEXT("Com_Collider_Arm_Right"), reinterpret_cast<CComponent**>(&m_pColliderCom[4]), &AABBDesc)))

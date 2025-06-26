@@ -34,8 +34,10 @@ void CMonster_State_Death::Update(CGameObject* pObj, float fTimeDelta)
 
 		
 	}
-
-	m_IsFinish = m_pModel->Play_Animation(fTimeDelta * 0.3f);
+	if(m_eAnimState != ANIMSTATE::ANIM_OUT)
+		m_IsFinish = m_pModel->Play_Animation(fTimeDelta * 0.3f);
+	else
+		m_IsFinish = m_pModel->Play_Animation(fTimeDelta * 0.05f);
 }
 
 void CMonster_State_Death::Exit(CGameObject* pObj)

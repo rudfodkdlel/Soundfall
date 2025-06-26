@@ -42,21 +42,40 @@ CObject_State* CMonster_State_Idle::Check_Transition(CGameObject* pObj)
     if (m_pDiscord->Get_CombatCom()->Get_Current_HP() <= 0)
     {
         m_pDiscord->Set_bUseSummon(false);
+        auto list = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Monster_Wall"));
+        if (nullptr != list)
+        {
+            for (auto& object : *list)
+            {
+                if (object != nullptr)
+                    object->Set_Dead();
+            }
+        }
+
         return new CMonster_State_Groggy;
     }
 
     if (m_pDiscord->Check_Groggy())
     {
         m_pDiscord->Set_bUseSummon(false);
+        auto list = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Monster_Wall"));
+        if (nullptr != list)
+        {
+            for (auto& object : *list)
+            {
+                if (object != nullptr)
+                    object->Set_Dead();
+            }
+        }
+
         return new CMonster_State_Groggy;
     }
 
     if (m_IsFinish)
     {
         
-         return new CMonster_State_Groggy;
+        // return new CMonster_State_Groggy;
         
-
         //m_pDiscord->Get_Next_Skill()
         switch (m_pDiscord->Get_Next_Skill())
         {

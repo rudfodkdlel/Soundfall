@@ -19,6 +19,7 @@ public:
 	typedef struct tagTerrainDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_bool		bWired;
+		_int		iCurrentLevel;
 	}TERRAIN_DESC;
 
 private:
@@ -39,13 +40,14 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Terrain* m_pVIBufferCom = { nullptr };
 	CTexture* m_pTextureNormalCom = { nullptr };
+	CTexture* m_pTextureMaskCom = { nullptr };
 	CNavigation* m_pNavigationCom = { nullptr };
 
 	_uint	  m_iType = { 0 };
 
 	_bool     m_bWired = { false };
 private:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(TERRAIN_DESC* pDesc);
 
 	HRESULT Bind_ShaderResources();
 

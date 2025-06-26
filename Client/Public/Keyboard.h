@@ -32,7 +32,7 @@ private:
 	_int m_iCurrentAmmo = { 1 };
 	_int m_iMaxAmmo = { 1 };
 	// 4번 연속 틀리면 못쏘게 바꾸기
-	_int m_iOverloadCount = { 4 };
+	_int m_iOverloadCount = { 2 };
 	_float m_fOverloadTime = { 0.f };
 
 	

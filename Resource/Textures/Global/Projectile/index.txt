@@ -1,0 +1,4 @@
+0 일반
+1 shard
+2 hex
+3 dia
