@@ -99,7 +99,7 @@ void CCollider_Manager::Clear()
 
 void CCollider_Manager::Update()
 {
-	Check_Nullptr();
+ 	Check_Nullptr();
 
 
 	if (m_pColliders.empty())

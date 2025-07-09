@@ -55,7 +55,7 @@ void CMonster_HP::Late_Update(_float fTimeDelta)
 {
     XMFLOAT4X4 parentMatrix = *m_pParentMatrix;
 
-    // 회전 성분 제거 (스케일은 유지할지 여부에 따라 다름, 여기선 단위 행렬처럼 처리)
+   
     parentMatrix._11 = 1.0f; parentMatrix._12 = 0.0f; parentMatrix._13 = 0.0f;
     parentMatrix._21 = 0.0f; parentMatrix._22 = 1.0f; parentMatrix._23 = 0.0f;
     parentMatrix._31 = 0.0f; parentMatrix._32 = 0.0f; parentMatrix._33 = 1.0f;
@@ -70,7 +70,7 @@ void CMonster_HP::Late_Update(_float fTimeDelta)
 
    // Billboarding();
 
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CMonster_HP::Render()

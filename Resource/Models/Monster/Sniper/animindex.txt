@@ -1,0 +1,17 @@
+0 attack burst out
+1 attack in
+2 attack rapid out
+3 쓰지마
+4 idle
+5 쓰
+6 지
+7 마
+8 hitreact backward
+9 hitreact forward
+10 hitreact left
+11 hitreact right
+11 run back
+12 run forward
+13 run left
+14 run right
+15 spawn

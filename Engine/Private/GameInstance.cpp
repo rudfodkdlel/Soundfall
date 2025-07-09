@@ -14,6 +14,7 @@
 #include "Light_Manager.h"
 #include "Sound_Manager.h"
 #include "Collider_Manager.h"
+#include "Target_Manager.h"
 #include "GameObject.h"
 
 
@@ -47,6 +48,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 
 	m_pObject_Manager = CObject_Manager::Create(EngineDesc.iNumLevels);
 	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	m_pTarget_Manager = CTarget_Manager::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
 	m_pRenderer = CRenderer::Create(*ppDeviceOut, *ppContextOut);
@@ -146,6 +151,9 @@ HRESULT CGameInstance::End_Draw()
 void CGameInstance::Clear(_uint iLevelIndex)
 {
 	/* 특정 레벨의 자원을 삭제한다. */
+
+	//m_pCollider_Manager->Clear();
+
 	
 	/* 특정 레벨의 객체을 삭제한다. */
 	m_pObject_Manager->Clear(iLevelIndex);
@@ -175,6 +183,10 @@ HRESULT CGameInstance::Change_Level(_uint iLevelIndex, CLevel* pNewLevel)
 _uint CGameInstance::Get_Current_Level() const
 {
 	return m_pLevel_Manager->Get_Current_Level();
+}
+CLevel* CGameInstance::Get_Current_Level_Pointer()
+{
+	return m_pLevel_Manager->Get_Current_Level_Pointer();
 }
 #pragma endregion
 
@@ -275,6 +287,11 @@ _matrix CGameInstance::Get_Transform_Matrix_Inverse(D3DTS eState) const
 	return m_pPipeLine->Get_Transform_Matrix_Inverse(eState);
 }
 
+const _float4x4* CGameInstance::Get_Transform_Float4x4_Inverse(D3DTS eState) const
+{
+	return m_pPipeLine->Get_Transform_Float4x4_Inverse(eState);
+}
+
 #pragma endregion
 
 #pragma region INPUTDEVICE
@@ -315,6 +332,7 @@ _bool CGameInstance::Key_Down(_ubyte byKeyID)
 
 _bool CGameInstance::Key_Down(DIM eMouse)
 {
+
 	return m_pInput_Device->Key_Down(eMouse);
 }
 
@@ -391,6 +409,14 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
 }
+HRESULT CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	return m_pLight_Manager->Render_Lights(pShader, pVIBuffer);
+}
+void CGameInstance::Light_Clear()
+{
+	m_pLight_Manager->Clear();
+}
 #pragma endregion
 
 
@@ -466,8 +492,52 @@ HRESULT CGameInstance::Add_Collider_Group(pair<_uint, _uint> typePair)
 
 #pragma endregion
 
+#pragma region TARGET_MANAGER
+HRESULT CGameInstance::Add_RenderTarget(const _wstring& strTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
+{
+	return m_pTarget_Manager->Add_RenderTarget(strTargetTag, iWidth, iHeight, ePixelFormat, vClearColor);
+}
+
+HRESULT CGameInstance::Add_MRT(const _wstring& strMRTTag, const _wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Add_MRT(strMRTTag, strTargetTag);
+}
+
+HRESULT CGameInstance::Begin_MRT(const _wstring& strMRTTag)
+{
+	return m_pTarget_Manager->Begin_MRT(strMRTTag);
+}
+
+HRESULT CGameInstance::End_MRT()
+{
+	return m_pTarget_Manager->End_MRT();
+}
+
+HRESULT CGameInstance::Bind_RT_ShaderResource(const _wstring& strTargetTag, CShader* pShader, const _char* pContantName)
+{
+	return m_pTarget_Manager->Bind_ShaderResource(strTargetTag, pShader, pContantName);
+}
+
+#ifdef _DEBUG
+
+HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+	return m_pTarget_Manager->Ready_Debug(strTargetTag, fX, fY, fSizeX, fSizeY);
+}
+
+HRESULT CGameInstance::Render_MRT_Debug(const _wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	return m_pTarget_Manager->Render_Debug(strMRTTag, pShader, pVIBuffer);
+}
+
+#endif
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
+
+	Safe_Release(m_pTarget_Manager);
 
 	Safe_Release(m_pObserver_Manager);
 

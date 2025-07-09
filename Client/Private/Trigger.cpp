@@ -2,6 +2,9 @@
 #include "Collider.h"
 #include "GameInstance.h"
 #include "Observer_Trigger.h"
+#include "CSpawner.h"
+#include "Level_Forest.h"
+#include "Level_Loading.h"
 
 CTrigger::CTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject{pDevice, pContext}
@@ -33,7 +36,7 @@ HRESULT CTrigger::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&pDesc->vPos));
 
-	m_eType = pDesc->eType;
+	m_eType = static_cast<TRIGGERTYPE>(pDesc->iProtoIndex);
 
 	m_pGameInstance->Add_Collider(CG_TRIGGER, m_pColliderCom, this);
 
@@ -75,6 +78,19 @@ HRESULT CTrigger::On_Collision(CCollider* pCollider)
 	else if (TRIGGERTYPE::ZOOM_OUT == m_eType)
 	{
 		m_pGameInstance->Find_Observer(TEXT("Observer_Trigger"))->OnNotify(TEXT("ZOOM_OUT"));
+	}
+
+	else if (TRIGGERTYPE::SPAWN == m_eType)
+	{
+
+		static_cast<CLevel_Forest*>(m_pGameInstance->Get_Current_Level_Pointer())->Get_Spawner()->Spawn_Normal_Forest();
+
+		
+	}
+	else if (TRIGGERTYPE::CHANGE == m_eType)
+	{
+		static_cast<CLevel_Forest*>(m_pGameInstance->Get_Current_Level_Pointer())->Set_IsChange();
+			
 	}
 	
 	m_IsColl = true;

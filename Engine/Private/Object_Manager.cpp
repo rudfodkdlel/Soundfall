@@ -82,7 +82,7 @@ void CObject_Manager::Late_Update(_float fTimeDelta)
 
 void CObject_Manager::Clear(_uint iLevelIndex)
 {
-	if (iLevelIndex >= m_iNumLevels)
+ 	if (iLevelIndex >= m_iNumLevels)
 		return;
 
 	for (auto& Pair : m_pLayers[iLevelIndex])

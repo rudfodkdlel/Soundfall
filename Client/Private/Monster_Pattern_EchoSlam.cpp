@@ -21,11 +21,12 @@ void CMonster_Pattern_EchoSlam::Update(CGameObject* pObj, float fTimeDelta)
 		{
 			CProjectile_Base::PROJECTILE_DESC eDesc = {};
 			eDesc.fSpeedPerSec = 1.f;
+			eDesc.vColor = { 1.f,0.f,0.f,0.5f };
 
 			_vector vDir = XMVector3Normalize(pObj->Get_Transform()->Get_State(STATE::LOOK));
 			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
 			vPos += { 0.f, 10.1f, -10.f, 0.f};
-
+			
 			XMStoreFloat4(&eDesc.vPos, vPos);
 			XMStoreFloat4(&eDesc.vDir, vDir);
 

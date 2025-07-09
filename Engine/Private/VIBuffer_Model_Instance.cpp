@@ -38,7 +38,7 @@ HRESULT CVIBuffer_Model_Instance::Initialize_Prototype(const INSTANCE_DESC* pArg
 	// 모델이 가지고 있던 메쉬 수 만큼 돌면서 각 매쉬마다 instancing 할 수 있게
 	for (auto& pMesh : pModel->Get_Mesh())
 	{
-		CVIBuffer_Mesh_Instance* pTemp = CVIBuffer_Mesh_Instance::Create(m_pDevice, m_pContext, pDesc, pMesh->Get_Desc());
+ 		CVIBuffer_Mesh_Instance* pTemp = CVIBuffer_Mesh_Instance::Create(m_pDevice, m_pContext, pDesc, pMesh->Get_Desc());
 		
 		m_MeshIntances.push_back(pTemp);
 	}

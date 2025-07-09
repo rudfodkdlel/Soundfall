@@ -58,7 +58,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 	Safe_AddRef(m_pTransformCom);
 
-
 	return S_OK;
 }
 

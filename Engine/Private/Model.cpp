@@ -91,8 +91,9 @@ HRESULT CModel::Initialize_Prototype(MODEL eType, const _char* pModelFilePath, _
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
 
 	m_eType = eType;
-
-	Load_Binary(pModelFilePath);
+ 
+	 
+ 	Load_Binary(pModelFilePath);
 
 	 m_iNumAnimations = m_eModelDesc.iNumAnimations;
 	 m_iNumMaterials = m_eModelDesc.iNumMaterials;

@@ -2,6 +2,19 @@
 #include "GameInstance.h"
 #include "Model.h"
 
+WEAPON_INFO_DESC CWeapon_Base::Get_Weapon_Info_Desc()
+{
+	WEAPON_INFO_DESC eDesc = {};
+
+	eDesc.eWeaponType = m_eWeaponType;
+	eDesc.iIndex ; // inven에서 넣는게.. ?
+	eDesc.isEquip = true;
+	eDesc.strModelTag = m_strModelTag; // 
+	eDesc.vColor = m_vColor;
+
+	return eDesc;
+}
+
 CWeapon_Base::CWeapon_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {
@@ -70,7 +83,11 @@ HRESULT CWeapon_Base::Render()
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, 6, 0)))
 			return E_FAIL;
 
 		// alpha 안쓰는	
@@ -119,19 +136,6 @@ HRESULT CWeapon_Base::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-		return E_FAIL;
-
-	const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_Light(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
 		return E_FAIL;
 
 	return S_OK;

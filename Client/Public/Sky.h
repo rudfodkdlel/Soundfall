@@ -13,6 +13,7 @@ NS_BEGIN(Client)
 
 class CSky final : public CGameObject
 {
+
 private:
 	CSky(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CSky(const CSky& Prototype);

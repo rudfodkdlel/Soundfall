@@ -68,6 +68,9 @@ HRESULT CStructure_Instance::Render()
 	if (FAILED(m_pVIBufferCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", 0, 1, 0)))
 		return E_FAIL;
 
+	if (FAILED(m_pVIBufferCom->Bind_Material(m_pShaderCom, "g_NormalTexture", 0, 6, 0)))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
 

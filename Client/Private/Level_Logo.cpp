@@ -47,6 +47,27 @@ void CLevel_Logo::Update(_float fTimeDelta)
 			return;
 
 	}
+
+
+	else if (GetKeyState('S') & 0x8000)
+	{
+		// go forest
+
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHOP))))
+			return;
+
+	}
+
+	else if (GetKeyState('A') & 0x8000)
+	{
+		// go forest
+
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::ARENA))))
+			return;
+
+	}
 }
 
 HRESULT CLevel_Logo::Render()

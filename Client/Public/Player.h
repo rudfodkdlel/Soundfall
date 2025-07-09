@@ -32,6 +32,11 @@ public:
 	CWeapon_Base* Get_Melee_Weapon() { return m_pMeleeWeapon; }
 	DIR_STATE     Get_Hit_Dir();
 	void		  Set_Weapon_Active(_bool IsActive) { m_pRangedWeapon->Set_Active(IsActive); }
+	vector<CPartObject*>& Get_PartObjects() { return m_PartObjects; }
+	_int		  Get_Money() { return m_iMoney; }
+
+
+
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -65,13 +70,15 @@ private:
 	CNavigation* m_pNavigationCom = { nullptr };
 
 	// inventory 만들어서 담아두자
-	//class CInventory* m_pInventory = { nullptr };
+	class CInventory* m_pInventory = { nullptr };
 
 	_float  m_fSpeed = {};
 
 	// test용. 나중에 지우기
 	_bool   m_IsGoodTiming = { false };
 	_float  m_fRenderTime = { 0.f };
+
+	_int	m_iMoney = {0};
 
 private:
 	HRESULT Ready_PartObjects();

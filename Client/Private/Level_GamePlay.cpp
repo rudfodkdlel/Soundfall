@@ -7,6 +7,9 @@
 #include "Trigger.h"
 #include "Structure.h"
 #include "Structure_Instance.h"
+#include "Camera.h"
+#include "Level_Loading.h"
+
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -17,7 +20,7 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 HRESULT CLevel_GamePlay::Initialize()
 {
 
-	if (FAILED(Ready_Map_Data("../Bin/Data/test.bin")))
+	if (FAILED(Ready_Map_Data("../Bin/Data/Map_Boss.bin")))
 		return E_FAIL;
 
 	// bpm 123
@@ -41,6 +44,10 @@ HRESULT CLevel_GamePlay::Initialize()
 
 
 	// Boss
+
+	
+
+
 	
 	
 
@@ -49,17 +56,6 @@ HRESULT CLevel_GamePlay::Initialize()
 
 void CLevel_GamePlay::Update(_float fTimeDelta)
 {
-
-	if (m_pGameInstance->Key_Up(DIK_P))
-	{
-		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Defender"),
-			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Monster"))))
-			return;
-
-		/*if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Artillery"),
-			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Monster"))))
-			return;*/
-	}
 
 	if (m_pGameInstance->Key_Up(DIK_T))
 	{
@@ -110,7 +106,20 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Boss"))))
 			return;
 
+		LIGHT_DESC			LightDesc{};
+
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = _float4(65.f, 5.f, 130.f, 1.f);
+		LightDesc.fRange = 100.f;
+		LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
+		LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+		LightDesc.vSpecular = _float4(1.f, 0.f, 0.f, 1.f);
+
+		if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+			return ; 
 	}
+
+
 	
 }
 
@@ -118,9 +127,16 @@ HRESULT CLevel_GamePlay::Render()
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
 
-	wstring str = std::wstring(TEXT("현재 Interval :")) + std::to_wstring(m_pGameInstance->Get_BeatInterval());
+	if (GetKeyState('S') & 0x8000)
+	{
+		// go forest
 
-	m_pGameInstance->Draw_Font(TEXT("Default"), str.c_str(), _float2(10.f, 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHOP))))
+			return E_FAIL;
+
+	}
+
 
 	return S_OK;
 }
@@ -152,8 +168,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring strLayerTag)
 {
+
+	CCamera::CAMERA_DESC eDesc = {};
+
+	eDesc.vEye = _float3(0.f, 40.f, -30.f);
+	eDesc.vAt = _float3(0.f, 0.f, 0.f);
+	eDesc.fFov = XMConvertToRadians(60.0f);
+	eDesc.fNear = 0.1f;
+	eDesc.fFar = 500.f;
+	eDesc.fRotationPerSec = XMConvertToRadians(180.0f);
+	eDesc.fSpeedPerSec = 10.0f;
+	eDesc.iProtoIndex = ENUM_CLASS(LEVEL::STATIC);
+	eDesc.strPrototag = TEXT("Prototype_GameObject_Camera_TopDown");
+
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_TopDown"),
-		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &eDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -267,13 +296,45 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LIGHT_DESC			LightDesc{};
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 0.4f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
 		return E_FAIL;
+
+	/*LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(55.f, 5.0f, 10.f, 1.f);
+	LightDesc.fRange = 10.f;
+	LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = _float4(1.f, 0.f, 0.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(70.f, 5.0f, 10.f, 1.f);
+	LightDesc.fRange = 10.f;
+	LightDesc.vDiffuse = _float4(0.f, 1.f, 0.f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	LightDesc.vSpecular = _float4(0.f, 1.f, 0.f, 1.f);
+
+	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;*/
+
+	
+
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(65.f, 5.f, 130.f, 1.f);
+	//LightDesc.fRange = 100.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
+	//LightDesc.vSpecular = _float4(1.f, 0.f, 0.f, 1.f);
+
+	//if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -325,7 +386,7 @@ HRESULT CLevel_GamePlay::Ready_Map_Data(const char* pFliePath)
 		structureDesc.strPrototag = desc->strPrototypetag;
 		structureDesc.strModeltag = desc->strModeltag;
 
-		HRESULT hr = m_pGameInstance->Add_GameObject(desc->PrototypeLevelIndex, desc->strPrototypetag, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Mapdata"), &structureDesc);
+		HRESULT hr = m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), desc->strPrototypetag, ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Layer_Mapdata"), &structureDesc);
 
 		if (hr < 0)
 			return E_FAIL;

@@ -52,7 +52,7 @@ void CHit_Effect_Texture::Update(_float fTimeDelta)
 
 void CHit_Effect_Texture::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CHit_Effect_Texture::Render()

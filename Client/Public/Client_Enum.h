@@ -3,13 +3,13 @@
 
 namespace Client
 {
-	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, FOREST, BOSS, EDIT, END };
+	enum class LEVEL { STATIC, LOADING, LOGO, LOBBY, GAMEPLAY, FOREST, SHOP, EDIT, ARENA, END };
 
 	enum class PART_DEFAULT { BODY, WEAPON, UI, EFFECT, END };
 	
 	enum class ANIMSTATE {ANIM_IN, ANIM_LOOP, ANIM_OUT};
 
-	enum class TRIGGERTYPE {ZOOM_IN, ZOOM_OUT, SHAKE, END};
+	enum class TRIGGERTYPE {ZOOM_IN, ZOOM_OUT, SHAKE, SPAWN, CHANGE, END};
 
 	typedef enum  eDirState {
 		NONE = 0, // idle ¿œ∂ß

@@ -30,6 +30,22 @@ HRESULT CProjectile_Monster::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Collider(CG_MONSTER_PROJECTILE, m_pColliderCom, this);
 
+	PROJECTILE_DESC* pDesc = static_cast<PROJECTILE_DESC*>(pArg);
+
+	float yaw = atan2f(XMVectorGetX(XMLoadFloat4(&m_vDir)), XMVectorGetZ(XMLoadFloat4(&m_vDir)));
+
+	_vector vQuaternion = XMQuaternionRotationRollPitchYaw(XMConvertToRadians(90.f), yaw, 0.0f);
+
+	_matrix matRotaion = XMMatrixRotationQuaternion(vQuaternion);
+
+	XMStoreFloat4x4(m_pTransformCom->Get_WorldMatrix(), matRotaion * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
+
+	_vector vPos = XMLoadFloat4(&pDesc->vPos);
+
+	vPos.m128_f32[1] += 0.5f;
+
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
     return S_OK;
 }
 
@@ -44,19 +60,19 @@ void CProjectile_Monster::Update(_float fTimeDelta)
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vDir = XMLoadFloat4(&m_vDir);
-	vPos += vDir * 10 * fTimeDelta;
+	vPos += vDir * 20 * fTimeDelta;
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	// 카메라 쳐다보도록
-	__super::Billboarding();
+	//__super::Billboarding();
 
 	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CProjectile_Monster::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CProjectile_Monster::Render()
@@ -72,7 +88,7 @@ HRESULT CProjectile_Monster::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vProjectileColor", &m_vColor, sizeof(m_vColor))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 2)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(1)))
@@ -107,7 +123,7 @@ HRESULT CProjectile_Monster::On_Collision( class CCollider* pCollider)
 
 	XMStoreFloat4(&eDesc.vPos, m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat3(&vMtv));
 
-	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Texture"), m_pGameInstance->Get_Current_Level(),
+	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Paticle"), m_pGameInstance->Get_Current_Level(),
 		TEXT("Layer_Effect"), &eDesc);
 	
 	return S_OK;

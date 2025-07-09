@@ -29,6 +29,11 @@ _matrix CPipeLine::Get_Transform_Matrix_Inverse(D3DTS eState) const
 	return XMLoadFloat4x4(&m_TransformationMatrixInverse[ENUM_CLASS(eState)]);
 }
 
+const _float4x4* CPipeLine::Get_Transform_Float4x4_Inverse(D3DTS eState) const
+{
+	return &m_TransformationMatrixInverse[ENUM_CLASS(eState)];
+}
+
 void CPipeLine::Update()
 {
 	for (size_t i = 0; i < ENUM_CLASS(D3DTS::END); i++)

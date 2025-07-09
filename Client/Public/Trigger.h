@@ -21,6 +21,9 @@ private:
 	virtual ~CTrigger() = default;
 
 public:
+	_int Get_TriggerType() { return static_cast<_int>(m_eType); }
+
+public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Priority_Update(_float fTimeDelta);
@@ -36,6 +39,7 @@ private:
 	TRIGGERTYPE m_eType = { TRIGGERTYPE::END };
 
 	_bool		m_IsColl = { false };
+	_bool		m_IsChange = { false };
 
 private:
 	HRESULT Ready_Components();

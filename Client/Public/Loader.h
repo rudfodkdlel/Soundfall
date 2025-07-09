@@ -47,6 +47,9 @@ public:
 	HRESULT Loading_For_GamePlay();
 	HRESULT Loading_For_Forest();
 	HRESULT Loading_For_Edit();
+	HRESULT Loading_For_Shop();
+	HRESULT Loading_For_Arena();
+
 
 public:
 	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID);

@@ -30,14 +30,23 @@ HRESULT CCamera_TopDown::Initialize(void* pArg)
 	Desc.fSpeedPerSec = 10.0f;
 	lstrcpy(Desc.szName, TEXT("Camera"));
 
+	CCamera::CAMERA_DESC* pDesc = static_cast<CAMERA_DESC*>(pArg);
+
 	m_fSensor = 0.15f;
 
-	if (FAILED(__super::Initialize(&Desc)))
+	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	m_pGameInstance->Add_Observer(TEXT("Observer_Trigger"), new CObserver_Trigger);
-
 	m_pObserver = static_cast<CObserver_Trigger*>(m_pGameInstance->Find_Observer(TEXT("Observer_Trigger")));
+
+	if (nullptr == m_pObserver)
+	{
+		m_pGameInstance->Add_Observer(TEXT("Observer_Trigger"), new CObserver_Trigger);
+		m_pObserver = static_cast<CObserver_Trigger*>(m_pGameInstance->Find_Observer(TEXT("Observer_Trigger")));
+	}
+		
+
+	
 
 	Safe_AddRef(m_pObserver);
 
@@ -77,11 +86,11 @@ void CCamera_TopDown::Update(_float fTimeDelta)
 
 	_vector vDir = vTargetPos - vPos;
 
-	if (XMVectorGetZ(vDir) > 35.f)
+	if ((XMVectorGetZ(vDir) > 35.f))
 	{
 		vPos += {0.f, 0.f, fTimeDelta * 10.f, 0.f};
 	}
-	else if (XMVectorGetZ(vDir) < 25.f)
+	else if ((XMVectorGetZ(vDir) < 25.f))
 	{
 		vPos -= {0.f, 0.f, fTimeDelta * 10.f, 0.f};
 	}

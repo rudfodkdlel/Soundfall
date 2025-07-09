@@ -27,6 +27,8 @@ HRESULT CStatic_UI::Initialize(void* pArg)
     if (FAILED(Ready_Components(pDesc->strTextureTag)))
         return E_FAIL;
 
+	m_iPassIndex = pDesc->iPassIndex;
+
     return S_OK;
 }
 
@@ -40,7 +42,7 @@ void CStatic_UI::Update(_float fTimeDelta)
 
 void CStatic_UI::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PRIORITY, this);
+    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 
 HRESULT CStatic_UI::Render()
@@ -56,7 +58,7 @@ HRESULT CStatic_UI::Render()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(0)))
+	if (FAILED(m_pShaderCom->Begin(m_iPassIndex)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))

@@ -57,6 +57,7 @@ HRESULT CVIBuffer_Mesh_Instance::Initialize_Prototype(const INSTANCE_DESC* pArg,
 	{
 		pVertices[i].vPosition = meshDesc.NonAnimMesh[i].vPosition;
 		pVertices[i].vNormal = meshDesc.NonAnimMesh[i].vNormal;
+		pVertices[i].vTangent = meshDesc.NonAnimMesh[i].vTangent;
 		pVertices[i].vTexcoord = meshDesc.NonAnimMesh[i].vTexcoord;
 	}
 

@@ -7,6 +7,7 @@
 
 NS_BEGIN(Engine)
 class CModel;
+class CNavigation;
 NS_END
 
 NS_BEGIN(Client)
@@ -38,6 +39,8 @@ private:
 
 
 private:
+	CNavigation* m_pNavigationCom = { nullptr };
+
 	_float		m_fPatternTime = { 2.f };
 	_float      m_fDuration = { 0.2f };
 

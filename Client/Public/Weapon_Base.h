@@ -19,6 +19,9 @@ public:
 		const _float4x4* pSocketMatrix = { nullptr };
 	}WEAPON_DESC;
 
+public:
+	WEAPON_INFO_DESC Get_Weapon_Info_Desc();
+
 protected:
 	CWeapon_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CWeapon_Base(const CWeapon_Base& Prototype);
@@ -63,6 +66,8 @@ protected:
 
 	_float			m_fDelay = { 0.f };
 	_bool			m_IsPerfect = {false};
+
+	_wstring		m_strModelTag = {};
 
 private:
 	HRESULT Ready_Components();

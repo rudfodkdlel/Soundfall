@@ -32,7 +32,7 @@ void CMonster_Pattern_Missile::Update(CGameObject* pObj, float fTimeDelta)
 			_vector vDir = XMVector3Normalize(pObj->Get_Transform()->Get_State(STATE::LOOK));
 			_vector vPos = pObj->Get_Transform()->Get_State(STATE::POSITION);
 			vPos += {m_pGameInstance->Compute_Random_Normal() * 20 - 10, 10.1f, -m_pGameInstance->Compute_Random_Normal() * 20, 0.f};
-			eDesc.vColor = { 1.f,0.f,0.f,1.f };
+			eDesc.vColor = { 1.f,0.f,0.f,0.5f };
 			XMStoreFloat4(&eDesc.vPos, vPos);
 			XMStoreFloat4(&eDesc.vDir, vDir);
 			// 투사체 생성해서 날아가게 해보자

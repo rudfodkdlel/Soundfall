@@ -70,7 +70,7 @@ void CHP_BAR::Late_Update(_float fTimeDelta)
 {
     if (nullptr != m_pCombatCom)
     {
-        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
     }
 }
 

@@ -41,6 +41,7 @@ private:
 
 private:
 	_bool	m_isSpread = {};
+	_float  m_fTotalTime = {0.f};
 
 public:
 	static CMusic_Note* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

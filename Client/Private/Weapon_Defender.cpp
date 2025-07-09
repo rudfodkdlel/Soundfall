@@ -109,8 +109,20 @@ HRESULT CWeapon_Defender::Render()
 
 HRESULT CWeapon_Defender::On_Collision(CCollider* pCollider)
 {
-	if(STATE_MAIN::ATTACK == *m_eMainState && m_fDelay < 0.f)
+	if (STATE_MAIN::ATTACK == *m_eMainState && m_fDelay < 0.f)
+	{
 		m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
+
+		CGameObject::GAMEOBJECT_DESC eDesc = {};
+
+		_float3 vMtv = m_pColliderCom->Get_Bounding()->Get_Mtv();
+		_vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42, m_CombinedWorldMatrix._43, 1.f };
+		XMStoreFloat4(&eDesc.vPos, vPos + XMLoadFloat3(&vMtv));
+
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Paticle"), m_pGameInstance->Get_Current_Level(),
+			TEXT("Layer_Effect"), &eDesc);
+	}
+	
 
 	return S_OK;
 }
@@ -155,19 +167,7 @@ HRESULT CWeapon_Defender::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-		return E_FAIL;
 
-	const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_Light(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
-		return E_FAIL;
 
 	return S_OK;
 }

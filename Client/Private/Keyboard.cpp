@@ -117,7 +117,7 @@ void CKeyboard::Attack(_vector vDir)
     }
     else
     {
-        eDesc.vColor = { 0.f,0.f,0.f,1.f };
+        eDesc.vColor = { 0.01f,0.f,0.f,1.f };
     }
 
     _vector vPos = { m_CombinedWorldMatrix._41, m_CombinedWorldMatrix._42 + 0.8f , m_CombinedWorldMatrix._43 , 1.f };
@@ -162,6 +162,8 @@ HRESULT CKeyboard::Ready_Components()
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Keyboard"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
+
+    m_strModelTag = TEXT("Prototype_Component_Model_Keyboard");
 
     return S_OK;
 }

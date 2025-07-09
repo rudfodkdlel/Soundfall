@@ -62,7 +62,7 @@ void CMetronome_Center_RIng::Update(_float fTimeDelta)
 	_vector vDir = XMVector3Normalize(m_pTarget->Get_Transform()->Get_State(STATE::LOOK));
 	vDir = vDir * 4.f;
 
-	vPos += {0.f, 0.31f, 0.f, 0.f};
+	vPos += {0.f, 0.1f, 0.f, 0.f};
 
 	vPos += vDir;
 
@@ -71,7 +71,7 @@ void CMetronome_Center_RIng::Update(_float fTimeDelta)
 
 void CMetronome_Center_RIng::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PRIORITY, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 
 HRESULT CMetronome_Center_RIng::Render()
@@ -88,7 +88,7 @@ HRESULT CMetronome_Center_RIng::Render()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(1)))
+	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))

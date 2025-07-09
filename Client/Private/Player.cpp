@@ -8,6 +8,7 @@
 #include "Observer_Animation.h"
 #include "Player_State_Spawn.h"
 #include "Navigation.h"
+#include "Inventory.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CContainerObject{ pDevice, pContext }
@@ -48,6 +49,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
+	m_pInventory = CInventory::Create(m_pDevice, m_pContext, this);
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
@@ -59,6 +62,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_pState = new CPlayer_State_Spawn;
 	m_pState->Enter(this);
+
+	
+
+	
 
 	return S_OK;
 }
@@ -85,6 +92,8 @@ void CPlayer::Update(_float fTimeDelta)
 	Look_Mouse();
 
 	m_pCombatCom->Update(fTimeDelta); 
+
+	//m_pInventory->Update();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -117,7 +126,7 @@ void CPlayer::Late_Update(_float fTimeDelta)
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 		vPos += vSumDir;
-		if (m_pNavigationCom->isMove(vPos))
+		if (nullptr != m_pNavigationCom && m_pNavigationCom->isMove(vPos))
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 		static_cast<CBody_Player*>(m_PartObjects[0])->Clear_PushVectors();
@@ -125,22 +134,12 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	
 
 
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 
 HRESULT CPlayer::Render()
 {
-	if (m_fRenderTime > 0.f)
-	{
-		if (m_IsGoodTiming)
-		{
-			m_pGameInstance->Draw_Font(TEXT("Default"), TEXT("GOOD Timing"), _float2(10.f, 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
-		}
-		else
-		{
-			m_pGameInstance->Draw_Font(TEXT("Default"), TEXT("BAD Timing"), _float2(10.f, 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
-		}
-	}
+
 	
 	return S_OK;
 }
@@ -228,12 +227,18 @@ void CPlayer::Move_Pos(_vector& vDir, _float fTimeDelta, _float fSpeedRatio)
 
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	vPos += vDir * fTimeDelta * m_fSpeed * fSpeedRatio;
-
-	if (m_pNavigationCom->isMove(vPos))
+	if (nullptr == m_pNavigationCom)
 	{
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	}
-		
+	else
+	{
+		if (m_pNavigationCom->isMove(vPos))
+		{
+			m_pTransformCom->Set_State(STATE::POSITION, vPos);
+		}
+	}
+
 
 }
 
@@ -382,14 +387,19 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eDesc)))
 		return E_FAIL;
 
-	/* For.Com_Navigation */
-	CNavigation::NAVIGATION_DESC		NaviDesc{};
-	NaviDesc.iIndex = -1;
-	XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
 
-	if (FAILED(__super::Add_Component(pDesc->iProtoIndex, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
-		return E_FAIL;
+	if (ENUM_CLASS(LEVEL::ARENA) != pDesc->iProtoIndex)
+	{
+		/* For.Com_Navigation */
+		CNavigation::NAVIGATION_DESC		NaviDesc{};
+		NaviDesc.iIndex = -1;
+		XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
+
+		if (FAILED(__super::Add_Component(pDesc->iProtoIndex, TEXT("Prototype_Component_Navigation"),
+			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
+			return E_FAIL;
+	}
+	
 
 	return S_OK;
 
@@ -423,6 +433,8 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
+	
+
 	__super::Free();
 
 	if (nullptr != m_pState)
@@ -434,14 +446,12 @@ void CPlayer::Free()
 		Safe_Delete(pOldState);
 	}
 
-	
+	Safe_Release(m_pInventory);
 
 
 
 	Safe_Release(m_pCombatCom);
 	Safe_Release(m_pNavigationCom);
-
-	
 
 	
 	

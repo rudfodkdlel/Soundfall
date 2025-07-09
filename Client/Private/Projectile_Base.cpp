@@ -53,7 +53,7 @@ void CProjectile_Base::Update(_float fTimeDelta)
 void CProjectile_Base::Late_Update(_float fTimeDelta)
 {
 }
-
+ 
 HRESULT CProjectile_Base::Render()
 {
     return S_OK;

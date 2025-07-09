@@ -23,6 +23,7 @@ public:
 		// 만드는 객체마다 색이 다름
 		_float4 vColor;
 		_float	fMaxDistance;
+		_int iType; // 
 	}PROJECTILE_DESC;
 
 protected:

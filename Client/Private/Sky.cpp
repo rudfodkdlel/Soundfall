@@ -56,8 +56,17 @@ HRESULT CSky::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
+	
+	_vector m_vColor = {};
+	if(ENUM_CLASS(LEVEL::GAMEPLAY) == m_pGameInstance->Get_Current_Level())
+		m_vColor = { 0.7f,0.f,0.7f,0.5f };
+	else
+		m_vColor = { 0.f,0.7f,0.7f,0.5f };
 
-	if (FAILED(m_pShaderCom->Begin(1)))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(m_vColor))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))

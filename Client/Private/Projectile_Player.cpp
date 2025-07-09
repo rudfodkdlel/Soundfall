@@ -33,8 +33,6 @@ HRESULT CProjectile_Player::Initialize(void* pArg)
 
 	PROJECTILE_DESC* pDesc = static_cast<PROJECTILE_DESC*>(pArg);
 
-	m_pTransformCom->Scaling(2.f, 1.f, 1.f);
-
 	float yaw = atan2f(XMVectorGetX(XMLoadFloat4(&m_vDir)), XMVectorGetZ(XMLoadFloat4(&m_vDir))); 
 
 	_vector vQuaternion = XMQuaternionRotationRollPitchYaw(XMConvertToRadians(90.f), yaw, 0.0f);
@@ -43,7 +41,13 @@ HRESULT CProjectile_Player::Initialize(void* pArg)
 
 	XMStoreFloat4x4(m_pTransformCom->Get_WorldMatrix(), matRotaion * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) );
 
-	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&pDesc->vPos));
+	_vector vPos = XMLoadFloat4(&pDesc->vPos);
+
+	vPos.m128_f32[1] += 0.5f;
+
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	m_pTransformCom->Scaling(1.f, 2.f, 1.f);
 
 
 	m_fMaxDistance = pDesc->fMaxDistance;
@@ -70,7 +74,20 @@ void CProjectile_Player::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Get_Current_Level(), TEXT("Layer_Paticle") , &eDesc)))
 			return;
 
+		CProjectile_Player::PROJECTILE_DESC eProjectileDesc = {};
+		eProjectileDesc.fSpeedPerSec = 1.f;
+		eProjectileDesc.fMaxDistance = 50;
 		
+
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+		vPos.m128_f32[1] = 0.f;
+
+		XMStoreFloat4(&eProjectileDesc.vPos, vPos);
+
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Fire"),
+			m_pGameInstance->Get_Current_Level(), TEXT("Layer_Projectile_Player"), &eProjectileDesc)))
+			return;
 	}
 		
 }
@@ -106,14 +123,14 @@ void CProjectile_Player::Update(_float fTimeDelta)
 void CProjectile_Player::Late_Update(_float fTimeDelta)
 {
 	if(!m_IsColl)
-		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
 }
 
 HRESULT CProjectile_Player::Render()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
-
+	 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))

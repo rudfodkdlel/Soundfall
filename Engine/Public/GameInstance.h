@@ -32,6 +32,7 @@ public:
 public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	_uint	Get_Current_Level() const;
+	class CLevel* Get_Current_Level_Pointer();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -64,6 +65,7 @@ public:
 	_matrix Get_Transform_Matrix(D3DTS eState) const;
 	const _float4* Get_CamPosition() const;
 	_matrix Get_Transform_Matrix_Inverse(D3DTS eState) const;
+	const _float4x4* Get_Transform_Float4x4_Inverse(D3DTS eState) const;
 #pragma endregion
 
 #pragma region INPUT_DEVICE
@@ -94,12 +96,14 @@ public:
 	HRESULT Add_Observer(const _wstring strTag, class CObserver* pObserver);
 	HRESULT Remove_Observer(const _wstring strTag);
 	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData = nullptr);
-	CObserver* Find_Observer(const _wstring& strTag);
+	class CObserver* Find_Observer(const _wstring& strTag);
 #pragma endregion
 
 #pragma region LIGHT_MANAGER
 	const LIGHT_DESC* Get_Light(_uint iIndex);
 	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
+	HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+	void	Light_Clear();
 #pragma endregion
 
 #pragma region FONT_MANAGER
@@ -107,7 +111,7 @@ public:
 	void Draw_Font(const _wstring& strFontTag, const _tchar* pText, const _float2& vPosition, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f), _float fRotation = 0.f, const _float2& vOrigin = _float2(0.f, 0.f), _float fScale = 1.f);
 #pragma endregion
 
-#pragma region FONT_MANAGER
+#pragma region SOUND_MANAGER
 	void PlaySound(const wstring pSoundKey, CHANNELID eID, float fVolume);
 	void PlayBGM(const wstring pSoundKey, float fVolume);
 	void StopSound(CHANNELID eID);
@@ -127,6 +131,19 @@ public:
 	
 #pragma endregion
 
+#pragma region TARGET_MANAGER
+	HRESULT Add_RenderTarget(const _wstring& strTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+	HRESULT Add_MRT(const _wstring& strMRTTag, const _wstring& strTargetTag);
+	HRESULT Begin_MRT(const _wstring& strMRTTag);
+	HRESULT End_MRT();
+	HRESULT Bind_RT_ShaderResource(const _wstring& strTargetTag, class CShader* pShader, const _char* pContantName);
+
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Render_MRT_Debug(const _wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+#endif
+#pragma endregion
+
 
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
@@ -143,6 +160,7 @@ private:
 	class CFont_Manager*		m_pFont_Manager = { nullptr };
 	class CSound_Manager*		m_pSound_Manager = { nullptr };
 	class CCollider_Manager*	m_pCollider_Manager = { nullptr };
+	class CTarget_Manager*		m_pTarget_Manager = { nullptr };
 
 public:
 	void Release_Engine();

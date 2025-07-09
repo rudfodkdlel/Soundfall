@@ -22,6 +22,7 @@ public:
 
 public:
 	_uint Get_Current_Level() const { return m_iCurrentLevelIndex; }
+	CLevel* Get_Current_Level_Pointer() { return m_pCurrentLevel; }
 
 private:
 	_uint					m_iCurrentLevelIndex = {};

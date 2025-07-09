@@ -85,7 +85,7 @@ void CMetronome::Update(_float fTimeDelta)
 			countDesc.fStartPoint = countDesc.fX;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+				m_pGameInstance->Get_Current_Level(), TEXT("Layer_Metronome_Counter"), &countDesc)))
 				return;
 
 
@@ -94,7 +94,7 @@ void CMetronome::Update(_float fTimeDelta)
 			countDesc.fStartPoint = countDesc.fX;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Metronome_Counter"),
-				static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Metronome_Counter"), &countDesc)))
+				m_pGameInstance->Get_Current_Level(), TEXT("Layer_Metronome_Counter"), &countDesc)))
 				return;
 
 			m_iNumCount += 2;
@@ -127,7 +127,7 @@ void CMetronome::Update(_float fTimeDelta)
 
 void CMetronome::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PRIORITY, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_UI, this);
 }
 
 HRESULT CMetronome::Render()

@@ -10,9 +10,6 @@
     <Filter Include="00.MainApp">
       <UniqueIdentifier>{ffac1f7d-cb22-4ce8-a7fd-43cfb62fb4db}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.ShaderFiles">
-      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{db82fc83-d01c-41cf-8115-cfc65328ad5c}</UniqueIdentifier>
     </Filter>
@@ -313,6 +310,63 @@
     <Filter Include="02.GameObjects\10. Effect\Texture\Range">
       <UniqueIdentifier>{c31682c9-b25e-4512-b968-4e21e79ccc9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="07. Spawner">
+      <UniqueIdentifier>{4dc94f99-2cfa-4858-9a6f-16ff1947858b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle\Hit">
+      <UniqueIdentifier>{cb411593-08fa-4117-bef7-7e9fe23e2c6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Sniper">
+      <UniqueIdentifier>{aae7ed96-45b3-4b5b-a95f-34c0e97e0582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Sniper\Body">
+      <UniqueIdentifier>{2083ec33-0e44-4723-a1de-f94056a9aee7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Sniper\Weapon">
+      <UniqueIdentifier>{bf3b08c5-60cb-4d43-8205-bfa2289479b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05. Monster\Peon\Body">
+      <UniqueIdentifier>{e776eb78-d871-4bb5-ac34-d5b88338e97b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Shop">
+      <UniqueIdentifier>{46dfb0ff-e06d-4fb1-bbde-2e4f67fdc709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Shop">
+      <UniqueIdentifier>{795013f7-5fac-4462-b8c0-0903b6411d62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Shop\Icon">
+      <UniqueIdentifier>{6207f5a1-1bda-4f82-8968-3e622d57148f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Shop\Icon\Navi">
+      <UniqueIdentifier>{127297cd-4739-4069-9040-19f41624bafc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Shop\Icon\Item">
+      <UniqueIdentifier>{200dbbed-8b0c-4fed-b3b8-fb454f741959}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{d3e6ac29-52aa-40a2-9d7d-35700ad7da3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Shop\Shop">
+      <UniqueIdentifier>{f1757895-916c-465a-aab5-cf6aba7eaea9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04. Player\Inventory">
+      <UniqueIdentifier>{4412a4b6-9b1a-4987-a054-5edbf8018660}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Arena">
+      <UniqueIdentifier>{409bf81a-bbcb-4071-b8ac-3db33d268f78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Trail">
+      <UniqueIdentifier>{f5d33598-b913-4680-9341-c9985624b80d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle\Flare">
+      <UniqueIdentifier>{dbeb87cf-a31f-4156-b7f7-c6ef14b2e263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player\Fire">
+      <UniqueIdentifier>{d3e61c54-1dcb-4ee1-a11e-d8e82872bb6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Crack">
+      <UniqueIdentifier>{1a698bfb-f397-42cc-8101-7c336a6632dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -567,6 +621,51 @@
     <ClInclude Include="..\public\Range_Effect.h">
       <Filter>02.GameObjects\10. Effect\Texture\Range</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Peon.h">
+      <Filter>02.GameObjects\05. Monster\Peon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Hit_Effect_Paticle.h">
+      <Filter>02.GameObjects\10. Effect\Paticle\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CSpawner.h">
+      <Filter>07. Spawner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Peon.h">
+      <Filter>02.GameObjects\05. Monster\Peon\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Sniper.h">
+      <Filter>02.GameObjects\05. Monster\Sniper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon_Sniper.h">
+      <Filter>02.GameObjects\05. Monster\Sniper\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Sniper.h">
+      <Filter>02.GameObjects\05. Monster\Sniper\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_Area_Monster.h">
+      <Filter>03. UI\Monster\AttackArea</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Shop.h">
+      <Filter>01.Levels\Shop\Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Shop.h">
+      <Filter>01.Levels\Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Navi_Icon.h">
+      <Filter>03. UI\Shop\Icon\Navi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item_Icon.h">
+      <Filter>03. UI\Shop\Icon\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Inventory.h">
+      <Filter>02.GameObjects\04. Player\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Arena.h">
+      <Filter>01.Levels\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Fire.h">
+      <Filter>02.GameObjects\03. Projectile\Player\Fire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -815,6 +914,51 @@
     </ClCompile>
     <ClCompile Include="..\private\Range_Effect.cpp">
       <Filter>02.GameObjects\10. Effect\Texture\Range</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Peon.cpp">
+      <Filter>02.GameObjects\05. Monster\Peon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hit_Effect_Paticle.cpp">
+      <Filter>02.GameObjects\10. Effect\Paticle\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CSpawner.cpp">
+      <Filter>07. Spawner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Peon.cpp">
+      <Filter>02.GameObjects\05. Monster\Peon\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Sniper.cpp">
+      <Filter>02.GameObjects\05. Monster\Sniper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon_Sniper.cpp">
+      <Filter>02.GameObjects\05. Monster\Sniper\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Sniper.cpp">
+      <Filter>02.GameObjects\05. Monster\Sniper\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_Area_Monster.cpp">
+      <Filter>03. UI\Monster\AttackArea</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Shop.cpp">
+      <Filter>01.Levels\Shop\Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Shop.cpp">
+      <Filter>01.Levels\Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Navi_Icon.cpp">
+      <Filter>03. UI\Shop\Icon\Navi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Item_Icon.cpp">
+      <Filter>03. UI\Shop\Icon\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Inventory.cpp">
+      <Filter>02.GameObjects\04. Player\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Arena.cpp">
+      <Filter>01.Levels\Arena</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Fire.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player\Fire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

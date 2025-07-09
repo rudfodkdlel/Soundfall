@@ -34,7 +34,7 @@ HRESULT CDefender::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	_vector vPos = { 15.f,0.f,5.f,1.f };
+	_vector vPos = XMLoadFloat4(&static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg)->vPos);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	if (FAILED(Ready_Components()))

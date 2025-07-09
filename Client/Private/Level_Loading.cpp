@@ -7,8 +7,9 @@
 #include "Level_Forest.h"
 #include "Loader.h"
 #include "BackGround.h"
-
+#include "Level_Shop.h"
 #include "GameInstance.h"
+#include "Level_Arena.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
@@ -29,17 +30,6 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelID)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
-
-	LIGHT_DESC			LightDesc{};
-
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-		return E_FAIL;
 
 	CBackGround::BACKGROUND_DESC				BackGroundDesc{};
 
@@ -78,6 +68,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		{
 			CLevel* pLevel = { nullptr };
 
+			m_pGameInstance->Light_Clear();
+
 			switch (m_eNextLevelID)
 			{
 			case LEVEL::LOGO:
@@ -92,10 +84,18 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			case LEVEL::FOREST:
 				pLevel = CLevel_Forest::Create(m_pDevice, m_pContext);
 				break;
+			case LEVEL::SHOP:
+				pLevel = CLevel_Shop::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL::ARENA:
+ 				pLevel = CLevel_Arena::Create(m_pDevice, m_pContext);
+				break;
 			}
+			 
 
 			if (nullptr == pLevel)
 				return;
+
 
 			if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(m_eNextLevelID), pLevel)))
 				return;

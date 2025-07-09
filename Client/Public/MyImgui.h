@@ -60,6 +60,8 @@ private:
 	// 이 구조로 나중에 바꾸기
 	map<_uint, CGameObject*> m_pObjectMap = {};
 	_uint		m_iObjectID = { 0 };
+	_int		m_iTriggerType = {};
+	_int		m_iSelectedIdx = { -1 };
 	
 
 	ImGuizmo::OPERATION m_currentOperation = ImGuizmo::TRANSLATE;

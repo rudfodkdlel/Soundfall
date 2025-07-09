@@ -108,6 +108,8 @@ HRESULT CSickle::Ready_Components()
         TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eCombatDesc)))
         return E_FAIL;
 
+    m_strModelTag = TEXT("Prototype_Component_Model_Sickle");
+
     return S_OK;
 }
 

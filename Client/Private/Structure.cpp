@@ -80,19 +80,23 @@ HRESULT CStructure::Render()
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMesh; i++)
-	{
+	{ 
+		
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, 6, 0)))
 			return E_FAIL;
 
 		//m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		// alpha ¾È¾²´Â	
-		if (FAILED(m_pShaderCom->Begin(1)))
+		if (FAILED(m_pShaderCom->Begin(2)))
 			return E_FAIL;
 
 		//if (FAILED(m_pShaderCom->Begin(0)))
 		//	return E_FAIL;
-
+		
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
 	}

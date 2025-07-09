@@ -33,10 +33,18 @@
 #include "Trigger.h"
 #include "Artillery.h"
 #include "Body_Artillery.h"
+#include "Peon.h"
+#include "Body_Peon.h"
 #include "Navigation.h"
 #include "Music_Note.h"
 #include "Structure_Instance.h"
 #include "Hit_Effect_Texture.h"
+#include "Sniper.h"
+#include "Body_Sniper.h"
+#include "Weapon_Sniper.h"
+#include "Attack_Area_Monster.h"
+#include "Navi_Icon.h"
+#include "Item_Icon.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -101,6 +109,12 @@ HRESULT CLoader::Loading()
 	case LEVEL::FOREST:
 		hr = Loading_For_Forest();
 		break;
+
+	case LEVEL::SHOP:
+		hr = Loading_For_Shop();
+		break;
+	case LEVEL::ARENA:
+		hr = Loading_For_Arena();
 	}
 
 	
@@ -218,13 +232,18 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_C.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Terrain_Chunk"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/TerrainChunk/Terrain_Chunk.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_VIBuffer_Snow */
 	CVIBuffer_Model_Instance::Model_INSTANCE_DESC		structDesc{};
-	structDesc.iNumInstance = 100;
-	structDesc.vCenter = _float3(64.f, -40.f, 64.0f);
-	structDesc.vRange = _float3(256.f, 20.0f, 256.f);
+	structDesc.iNumInstance = 400;
+	structDesc.vCenter = _float3(64.f, -0.1f, 104.0f);
+	structDesc.vRange = _float3(64.f, 0.0f, 40.f);
 	structDesc.vSize = _float2(1.f, 1.f);
-	structDesc.strModelDesc = TEXT("Prototype_Component_Model_PlatformRock_B");
+	structDesc.strModelDesc = TEXT("Prototype_Component_Model_Terrain_Chunk");
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock"),
 		CVIBuffer_Model_Instance::Create(m_pDevice, m_pContext, &structDesc))))
@@ -281,7 +300,30 @@ HRESULT CLoader::Loading_For_GamePlay()
 HRESULT CLoader::Loading_For_Forest()
 {
 
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Sniper_Range"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Monster/Sniper/Sniper_Range_%d.dds"), 4))))
+		return E_FAIL;
+
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+	// forest
+	PreTransformMatrix = XMMatrixScaling(4.f, 4.f, 4.f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_0"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope0.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_1"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope1.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	PreTransformMatrix = XMMatrixScaling(4.f, 4.f, 4.f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_2"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope2.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 
 	PreTransformMatrix = XMMatrixScaling(0.025f, 0.025f, 0.025f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Defender"),
@@ -298,9 +340,26 @@ HRESULT CLoader::Loading_For_Forest()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Artillery/Artillery.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Sniper"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Sniper/Sniper.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Sniper_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Monster/Sniper/Weapon/Sniper_Weapon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
 	/* Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::FOREST), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Forest.bin")))))
 		return E_FAIL;
 
 
@@ -326,6 +385,30 @@ HRESULT CLoader::Loading_For_Forest()
 		CBody_Artillery::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Peon"),
+		CPeon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Peon"),
+		CBody_Peon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Sniper"),
+		CSniper::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Sniper"),
+		CBody_Sniper::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sniper_Weapon"),
+		CWeapon_Sniper::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Attack_Area_Monster"),
+		CAttack_Area_Monster::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -348,16 +431,21 @@ HRESULT CLoader::Loading_For_Edit()
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
 	// forest
-	//PreTransformMatrix = XMMatrixScaling(0.0002f, 0.0002f, 0.0002f);
+	PreTransformMatrix = XMMatrixScaling(4.f, 4.f, 4.f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_0"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope0.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	//PreTransformMatrix = XMMatrixScaling(0.0002f, 0.0002f, 0.0002f);
+	PreTransformMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_1"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope1.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	//PreTransformMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	PreTransformMatrix = XMMatrixScaling(4.f, 4.f, 4.f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Slope_2"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Slope/forest_slope2.bin", PreTransformMatrix))))
+		return E_FAIL;
 	// bossmap
 	PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_CliffRock_A"),
@@ -407,12 +495,35 @@ HRESULT CLoader::Loading_For_Edit()
 	
 
 	/* Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::EDIT), TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Test.bin")))))
+  	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::EDIT), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Boss.bin")))))
 		return E_FAIL;
+
 
 	// 추가
 	
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Shop()
+{
+	/* For.Prototype_Component_Texture_BackGround*/
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Arena()
+{
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

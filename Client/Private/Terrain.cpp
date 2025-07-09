@@ -70,7 +70,7 @@ HRESULT CTerrain::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	
+if(nullptr != m_pNavigationCom)
 	m_pNavigationCom->Render();
 #endif
 
@@ -102,15 +102,29 @@ HRESULT CTerrain::Ready_Components(TERRAIN_DESC* pDesc)
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Boss_Terrain_Mask"),
-		TEXT("Com_Texture_Mask"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
-		return E_FAIL;
+	if (pDesc->iCurrentLevel == ENUM_CLASS(LEVEL::FOREST))
+	{
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Forest_Terrain_Mask"),
+			TEXT("Com_Texture_Mask"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
+			return E_FAIL;
+	}
+	else if(pDesc->iCurrentLevel == ENUM_CLASS(LEVEL::GAMEPLAY))
+	{
 
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Boss_Terrain_Mask"),
+			TEXT("Com_Texture_Mask"), reinterpret_cast<CComponent**>(&m_pTextureMaskCom))))
+			return E_FAIL;
+	}
 	
-	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(pDesc->iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-		return E_FAIL;
+
+	if (pDesc->iCurrentLevel != ENUM_CLASS(LEVEL::ARENA))
+	{
+		/* For.Com_Navigation */
+		if (FAILED(__super::Add_Component(pDesc->iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+			return E_FAIL;
+	}
+	
 	
 	
 
@@ -129,31 +143,28 @@ HRESULT CTerrain::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
+	
+	_int iType = 0;
+	if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::GAMEPLAY))
+	{
+		iType = 0;
+	}
+	else
+		iType = 1;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", iType)))
 		return E_FAIL;
 
-	if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::GAMEPLAY))
+	if (FAILED(m_pTextureNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", iType)))
+		return E_FAIL;
+
+	if (m_pGameInstance->Get_Current_Level() != ENUM_CLASS(LEVEL::ARENA))
 	{
 		if (FAILED(m_pTextureMaskCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
 			return E_FAIL;
 	}
-
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
-		return E_FAIL;
-
-	const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_Light(0);
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
-		return E_FAIL;
-
+	
+	
 
 
 	return S_OK;
@@ -183,6 +194,7 @@ CGameObject* CTerrain::Clone(void* pArg)
 	}
 
 	return pInstance;
+
 }
 
 void CTerrain::Free()

@@ -7,6 +7,7 @@
 #include "VIBuffer.h"
 #include "Model.h"
 #include "Structure.h"
+#include "Trigger.h"
 
 
 CMyImgui::CMyImgui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -226,6 +227,9 @@ void CMyImgui::Update(_float fTimeDelta)
 
 HRESULT CMyImgui::Render()
 {
+	m_pGrid->Render();
+	for (auto& cell : m_pCells)
+		cell->Render();
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -239,8 +243,7 @@ HRESULT CMyImgui::Render()
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-	for (auto& cell : m_pCells)
-		cell->Render();
+
 	
 
 	return S_OK;
@@ -258,17 +261,42 @@ void CMyImgui::Render_Create_Window()
 	ImGui::SetNextWindowSize(windowSize1, ImGuiCond_Always);
 	ImGui::SetNextWindowPos(ImVec2(250, 100), ImGuiCond_Once);
 
-	if (ImGui::Begin("Util")) {
+	if (ImGui::Begin("Util")) 
+	{
 		ImGui::Checkbox("Grid", &m_bCheckGrid);
 		ImGui::Checkbox("Navi_Point", &m_bUseNaviPos);
 		if (ImGui::Button("Delete Object"))
 		{
 			// 지우는 로직 추가
-			if(nullptr != m_pPickingObject)
+			if (nullptr != m_pPickingObject)
+			{
 				m_pPickingObject->Set_Dead();
+				m_pObjects.remove(m_pPickingObject);
+				m_pPickingObject = nullptr;
+				m_iSelectedIdx = -1;
+			}
+				
 			
 		}
+
+		
+
+		int idx = 0;
+		for (auto& object : m_pObjects)
+		{
+			if (nullptr == object)
+				continue;
+			bool is_selected = (m_iSelectedIdx == idx);
+			string keyStr = WStringToString(object->Get_Save_Desc().strPrototypetag);
+			if (ImGui::Selectable(keyStr.c_str(), is_selected))
+			{
+				m_iSelectedIdx = idx;
+				m_pPickingObject = object;
+			}
+			idx++;
+		}
 	}
+
 	ImGui::End();
 
 	ImGui::SetNextWindowSize(windowSize2, ImGuiCond_Always);
@@ -295,7 +323,10 @@ void CMyImgui::Render_Create_Window()
 		pDesc.vPos = { 0.f, 0.f, 0.f,1.f };
 		pDesc.strModeltag = m_strSelectModelKey;
 		pDesc.strPrototag = m_strSelectKey;
-		pDesc.iProtoIndex = 0;
+		if (m_strSelectKey.find(L"Trigger") != wstring::npos)
+			pDesc.iProtoIndex = m_iTriggerType;
+		else
+			pDesc.iProtoIndex = 0;
 
 		if (!m_strSelectKey.empty())
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), m_strSelectKey,
@@ -306,6 +337,8 @@ void CMyImgui::Render_Create_Window()
 
 		if (m_vPickingPos.w == 1.f)
 			m_pObjects.back()->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&m_vPickingPos));
+
+		m_pPickingObject = m_pObjects.back();
 	}
 
 	ImGui::End();
@@ -332,6 +365,19 @@ void CMyImgui::Render_Create_Window()
 				}
 			}
 		}
+
+		ImGui::End();
+	}
+
+	if (m_strSelectKey.find(L"Trigger") != m_strSelectKey.npos)
+	{
+		ImGui::SetNextWindowSize(windowSize2, ImGuiCond_Always);
+		ImGui::SetNextWindowPos(ImVec2(900, windowSize1.y + 100), ImGuiCond_Once);
+
+
+		ImGui::Begin("Trigger type");
+
+		ImGui::DragInt("Type", &m_iTriggerType, 0.f);
 
 		ImGui::End();
 	}
@@ -468,7 +514,19 @@ void CMyImgui::Save_Data(const char* pFliePath)
 				fout.write(reinterpret_cast<const char*>(eDesc.strModeltag.c_str()), sizeof(wchar_t) * Moedeltaglen);
 			}
 
-		
+
+			// trigger면 추가로 저장하는거까지 추가해야될듯? prototypetag로 구분하자
+			
+			if (eDesc.strPrototypetag.find(L"Trigger") != wstring::npos) 
+			{
+			
+				eDesc.PrototypeLevelIndex = static_cast<CTrigger*>(object)->Get_TriggerType();
+
+			}
+			else
+			{
+
+			}
 			fout.write(reinterpret_cast<const char*>(&eDesc.PrototypeLevelIndex), sizeof(int));
 		}
 	
