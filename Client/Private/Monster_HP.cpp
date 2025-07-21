@@ -31,11 +31,11 @@ HRESULT CMonster_HP::Initialize(void* pArg)
     if (FAILED(Ready_Components()))
         return E_FAIL;
 
-    _vector vPos = { 0.f,5.f,0.f,1.f };
+    _vector vPos = { 0.f,8.f,0.f,1.f };
 
     m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
-    m_pTransformCom->Scaling(2.f, 0.3f, 1.f);
+    m_pTransformCom->Scaling(4.f, 0.6f, 1.f);
 
     
 

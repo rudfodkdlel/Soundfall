@@ -6,6 +6,9 @@ void CPlayer_State_Spawn::Enter(CGameObject* pObj)
     __super::Enter(pObj);
 
     m_pModel->Set_Animation(11, false);
+
+    m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+    m_pGameInstance->PlaySound(TEXT("Player_Spawn_Start.wav"), SOUND_PLAYER_EFFECT, 0.6f);
 }
 
 void CPlayer_State_Spawn::Update(CGameObject* pObj, float fTimeDelta)

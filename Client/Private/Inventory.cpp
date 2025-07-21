@@ -18,20 +18,24 @@ HRESULT CInventory::Initialize(CGameObject* pObj)
 	{
 		if (nullptr != pObj)
 		{
-			m_pTarget = static_cast<CPlayer*>(pObj); 
-
-			m_isEmptyFile = true;
+			m_pTarget = static_cast<CPlayer*>(pObj);
 			// 파일이 없으면 임의 값 박을거야
-
+			m_isEmptyFile = true;
+			
 			return S_OK;
 		}
 	}
+
 
 	// 상점에서는 데이터 가져와야 되니까
 	if (nullptr == pObj)
 	{
 		m_pTarget = nullptr;
 		Load_Data();
+	}
+	else
+	{
+		m_pTarget = static_cast<CPlayer*>(pObj);
 	}
 		
 
@@ -174,55 +178,59 @@ HRESULT CInventory::Save_Data()
 	}
 	else
 	{
-		// 상점이 아닐 경우,  파일이 없을때만 다시 만든다
-		ofstream fout("../Bin/Data/Inventory.bin", std::ios::in || std::ios::binary);
-		if (!fout)
+		if (m_isEmptyFile)
 		{
-			ofstream fout("../Bin/Data/Inventory.bin", std::ios::binary);
+			// 상점이 아닐 경우,  파일이 없을때만 다시 만든다
+			ofstream fout("../Bin/Data/Inventory.bin", std::ios::in || std::ios::binary);
 			if (!fout)
 			{
-				return E_FAIL;
+				ofstream fout("../Bin/Data/Inventory.bin", std::ios::binary);
+				if (!fout)
+				{
+					return E_FAIL;
+				}
+
+				m_iMoney = m_pTarget->Get_Money();
+
+				fout.write(reinterpret_cast<const char*>(&m_iMoney), sizeof(_int));
+
+				_int iSize = 4;
+				fout.write(reinterpret_cast<const char*>(&iSize), sizeof(_int));
+
+				WEAPON_ICON_INFO_DESC eDesc = {};
+
+				eDesc.iIndex = 0;
+				eDesc.iTextureType = 0;
+
+				fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
+				fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
+
+				eDesc.iIndex = 1;
+				eDesc.iTextureType = 4;
+
+				fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
+				fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
+
+				eDesc.iIndex = 2;
+				eDesc.iTextureType = 6;
+
+				fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
+				fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
+
+				eDesc.iIndex = 3;
+				eDesc.iTextureType = 7;
+
+				fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
+				fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
+
+				iSize = m_ICons.size();
+
+				fout.write(reinterpret_cast<const char*>(&iSize), sizeof(_int));
+
+				fout.close();
 			}
-
-			m_iMoney = m_pTarget->Get_Money();
-
-			fout.write(reinterpret_cast<const char*>(&m_iMoney), sizeof(_int));
-
-			_int iSize = 4;
-			fout.write(reinterpret_cast<const char*>(&iSize), sizeof(_int));
-
-			WEAPON_ICON_INFO_DESC eDesc = {};
-
-			eDesc.iIndex = 0;
-			eDesc.iTextureType = 0;
-
-			fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
-			fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
-
-			eDesc.iIndex = 1;
-			eDesc.iTextureType = 4;
-
-			fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
-			fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
-
-			eDesc.iIndex = 2;
-			eDesc.iTextureType = 7;
-
-			fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
-			fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
-
-			eDesc.iIndex = 3;
-			eDesc.iTextureType = 8;
-
-			fout.write(reinterpret_cast<const char*>(&eDesc.iTextureType), sizeof(_int));
-			fout.write(reinterpret_cast<const char*>(&eDesc.iIndex), sizeof(_int));
-
-			iSize = m_ICons.size();
-
-			fout.write(reinterpret_cast<const char*>(&iSize), sizeof(_int));
-
-			fout.close();
 		}
+		
 
 	}
 
@@ -251,7 +259,7 @@ HRESULT CInventory::Load_Data()
 	for (int i = 0; i < iSize; ++i)
 	{
 		
-		WEAPON_ICON_INFO_DESC eDesc = {};
+ 		WEAPON_ICON_INFO_DESC eDesc = {};
 
 		fin.read(reinterpret_cast<char*>(&eDesc.iTextureType), sizeof(_int));
 

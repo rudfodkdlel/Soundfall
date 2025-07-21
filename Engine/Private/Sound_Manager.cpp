@@ -16,6 +16,10 @@ void CSound_Manager::Initialize()
 	FMOD_System_Init(m_pSystem, 32, FMOD_INIT_NORMAL, NULL);
 
 	m_mapBPM.emplace(TEXT("Discordance.ogg"), 123);
+	m_mapBPM.emplace(TEXT("TricycleRiot.ogg"), 189);
+	m_mapBPM.emplace(TEXT("Soundfall_TM_Ice_Snowbound.ogg"), 157);
+
+
 
 	m_fBeatInterval = 60.f / m_iBPM;
 

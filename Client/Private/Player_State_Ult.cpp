@@ -30,11 +30,38 @@ void CPlayer_State_Ult::Enter(CGameObject* pObj)
 	else if (WEAPON::AXE == m_eWeaponType)
 	{
 		m_pModel->Set_Animation(22, true);
+
+
 	}
 }
 
 void CPlayer_State_Ult::Update(CGameObject* pObj, float fTimeDelta)
 {
+
+	if (ATTACK::ATTACK_OUT == m_eAttackState)
+	{
+
+
+		if (WEAPON::AXE == m_eWeaponType)
+		{
+			if (!m_bMakeEffect && m_pModel->Get_Current_Anim_Ratio() > 0.7f)
+			{
+
+				CGameObject::GAMEOBJECT_DESC hitDesc = {};
+				XMStoreFloat4(&hitDesc.vPos, m_pPlayer->Get_Transform()->Get_State(STATE::POSITION));
+
+				(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Crack_Effect"),
+					m_pGameInstance->Get_Current_Level(), TEXT("Layer_Effect"), &hitDesc));
+				m_bMakeEffect = true;
+
+				m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+				m_pGameInstance->PlaySound(TEXT("Artifact_Axe_Base_Prim_Ultimate_Impact.wav"), SOUND_PLAYER_EFFECT, 0.6f);
+			}
+
+		}
+	}
+
+
 	if (WEAPON::SICKLE == m_eWeaponType)
 	{
 		if (ATTACK::ATTACK_IN == m_eAttackState)
@@ -84,6 +111,9 @@ void CPlayer_State_Ult::Update(CGameObject* pObj, float fTimeDelta)
 			_vector vDir = XMLoadFloat4(&m_vMousePos) -  m_pPlayer->Get_Transform()->Get_State(STATE::POSITION) ;
 
 			XMStoreFloat4(&m_vDir , XMVector3Normalize(vDir));
+
+			m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+			m_pGameInstance->PlaySound(TEXT("Artifact_Axe_Brass_Ultimate_Start.wav"), SOUND_PLAYER_EFFECT, 0.6f);
 		}
 
 		if (ATTACK::ATTACK_OUT == m_eAttackState)
@@ -94,14 +124,24 @@ void CPlayer_State_Ult::Update(CGameObject* pObj, float fTimeDelta)
 			{
 				vPos += XMLoadFloat4(&m_vDir) * fTimeDelta * 20;
 
-				if (static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")))->isMove(vPos))
+				auto pNavi = static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")));
+
+				if (pNavi == nullptr)
+				{
 					m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+				}
+				else
+				{
+
+					if (pNavi->isMove(vPos))
+						m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+				}
+
 			}
 			
 			
 		}
 	}
-
 
 	m_IsFinish = m_pModel->Play_Animation(fTimeDelta);
 }
@@ -119,6 +159,8 @@ CObject_State* CPlayer_State_Ult::Check_Transition(CGameObject* pObj)
 		m_pPlayer->Get_Range_Weapon()->Set_Active(true);
 		m_pPlayer->Get_Melee_Weapon()->Set_Active(false);
 
+		
+	
 
 		auto ultList = m_pGameInstance->GetLayerList(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Ult_Sickle"));
 
@@ -130,7 +172,6 @@ CObject_State* CPlayer_State_Ult::Check_Transition(CGameObject* pObj)
 					Safe_Release(pObj);
 			}
 		}
-
 		return new CPlayer_State_Idle;
 	}
 

@@ -80,7 +80,7 @@ HRESULT CBody_Artillery::Render()
 #ifdef _DEBUG
 
 
-    m_pColliderCom->Render();
+  
 
 #endif
 

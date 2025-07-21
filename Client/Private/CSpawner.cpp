@@ -66,19 +66,41 @@ void CSpawner::Spawn_Normal_Forest()
 	eDesc.vPos.x = m_vSpawnPoint.x + m_pGameInstance->Compute_Random(-5, 5);
 	eDesc.vPos.z = m_vSpawnPoint.z + m_pGameInstance->Compute_Random(-5, 5);
 
-	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Peon"), ENUM_CLASS(LEVEL::FOREST), TEXT("Layer_Monster"), &eDesc);
-
-	eDesc.vPos = m_vSpawnPoint;
-	eDesc.vPos.x = m_vSpawnPoint.x + m_pGameInstance->Compute_Random(-5, 5);
-	eDesc.vPos.z = m_vSpawnPoint.z + m_pGameInstance->Compute_Random(-5, 5);
-
 	m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Sniper"), ENUM_CLASS(LEVEL::FOREST), TEXT("Layer_Monster"), &eDesc);
 
 }
 
 void CSpawner::Spawn_Loop_Forest()
 {
-	Find_Point();
+
+	CGameObject::GAMEOBJECT_DESC eDesc = {};
+
+	
+
+	eDesc.vPos.y = 0;
+
+	_float4 basePos = { 50.f, 0.f, 50.f, 1.f };
+
+	for (int i = 0; i < 10; ++i)
+	{
+		_float4 vPos = basePos;
+		
+		if (m_pGameInstance->Compute_Random_Normal() > 0.3f)
+		{
+			vPos.x += (m_pGameInstance->Compute_Random(0, 40));
+			vPos.z += (m_pGameInstance->Compute_Random(0, 40));
+		}
+		else
+		{
+			vPos.x -= (m_pGameInstance->Compute_Random(0, 5));
+			vPos.z -= (m_pGameInstance->Compute_Random(0, 5));
+
+		}
+		eDesc.vPos = vPos;
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Peon"), ENUM_CLASS(LEVEL::ARENA), TEXT("Layer_Monster"), &eDesc);
+	}
+
+	
 }
 
 void CSpawner::Spawn_Boss()

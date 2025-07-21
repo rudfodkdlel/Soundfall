@@ -26,6 +26,9 @@ void CMonster_Pattern_Wall::Update(CGameObject* pObj, float fTimeDelta)
 				_vector offset = { float(-20 + 20 * i), 10.f, -13.f * m_iCount, 0.f };
 				vPos += offset;
 
+				m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+				m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_CreateWall_VO_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+
 				XMStoreFloat4(&eDesc.vPos, vPos);
 				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord_Wall"), m_pGameInstance->Get_Current_Level(),
 					TEXT("Layer_Monster_Wall"), &eDesc);
@@ -46,6 +49,9 @@ void CMonster_Pattern_Wall::Update(CGameObject* pObj, float fTimeDelta)
 
 			for (int i = 0; i < 3; ++i)
 			{
+				m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+				m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_CreateWall_VO_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+
 				_vector vPos = basePos;  // 매 반복마다 초기 위치로 복원
 				_vector offset = { float(-20 + 20 * i), 10.f, -13.f * m_iCount, 0.f };
 				vPos += offset;

@@ -99,7 +99,7 @@ HRESULT CWeapon_Defender::Render()
 
 #ifdef _DEBUG
 
-	m_pColliderCom->Render();
+	//m_pColliderCom->Render();
 
 #endif
 
@@ -121,6 +121,11 @@ HRESULT CWeapon_Defender::On_Collision(CCollider* pCollider)
 
 		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Paticle"), m_pGameInstance->Get_Current_Level(),
 			TEXT("Layer_Effect"), &eDesc);
+	}
+	else
+	{
+		m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Defender_ShieldDeploy_2.wav"), SOUND_MONSTER_EFFECT, 1.f);
 	}
 	
 

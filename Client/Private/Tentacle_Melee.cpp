@@ -41,6 +41,11 @@ HRESULT CTentacle_Melee::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Collider(CG_MONSTER, m_pColliderCom, this);
 
+	m_pColliderCom->Set_Active(false);
+
+	
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Spawn_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+
 	return S_OK;
 }
 
@@ -59,7 +64,11 @@ void CTentacle_Melee::Priority_Update(_float fTimeDelta)
 	}
 
 	if (STATE_MAIN::DEAD == m_eMainState && m_IsFinished)
+	{
 		Set_Dead();
+		
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Death_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+	}
 
 	__super::Priority_Update(fTimeDelta);
 }
@@ -119,7 +128,7 @@ HRESULT CTentacle_Melee::Render()
 
 #ifdef _DEBUG
 
-	m_pColliderCom->Render();
+
 
 
 #endif
@@ -168,13 +177,15 @@ void CTentacle_Melee::Select_State()
 			m_eMainState = STATE_MAIN::ATTACK;
 			m_pModelCom->Set_Animation(0, false);
 			m_IsColl = false;
-
+			m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Slasher_Whoosh_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
 			// 공격 받으면 이제 idle에서만 바꾸기
 			
 			break;
 		case Client::STATE_MAIN::ATTACK:
 			m_eMainState = STATE_MAIN::IDLE;
 			m_pModelCom->Set_Animation(5, false);
+		
 			break;
 		case Client::STATE_MAIN::HIT:
 			m_eMainState = STATE_MAIN::IDLE;
@@ -183,6 +194,7 @@ void CTentacle_Melee::Select_State()
 		case Client::STATE_MAIN::SPWAN:
 			m_eMainState = STATE_MAIN::IDLE;
 			m_pModelCom->Set_Animation(5, false);
+			m_pColliderCom->Set_Active(true);
 			break;
 		default:
 			break;
@@ -208,7 +220,7 @@ HRESULT CTentacle_Melee::Ready_Components()
 	eDesc.fRadius = 10.f;
 	eDesc.vCenter = { 0.f,2.f,0.f };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
-		TEXT("Com"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
 		return E_FAIL;
 
 	CCombatStat::COMBAT_DESC eCombatDesc = {};

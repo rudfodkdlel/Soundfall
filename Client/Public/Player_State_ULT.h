@@ -20,6 +20,7 @@ private:
 	ATTACK		m_eAttackState = {};
 	_float4		m_vMousePos = {};
 	_float4     m_vDir = {};
+	_bool		m_bMakeEffect = {false};
 
 };
 

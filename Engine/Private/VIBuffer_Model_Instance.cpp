@@ -121,7 +121,9 @@ void CVIBuffer_Model_Instance::Free()
 {
 	__super::Free();
 
-	for (auto& pMesh : m_MeshIntances)
-		Safe_Release(pMesh);
-
+	if (false == m_isCloned)
+	{
+		for (auto& pMesh : m_MeshIntances)
+			Safe_Release(pMesh);
+	}
 }

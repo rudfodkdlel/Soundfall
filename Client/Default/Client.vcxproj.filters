@@ -76,9 +76,6 @@
     <Filter Include="02.GameObjects\07. Weapon\Base">
       <UniqueIdentifier>{c304dafd-33e1-4bd9-8e6b-6909f5df8e7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="05. Inventory">
-      <UniqueIdentifier>{01a6aa21-4b98-4f58-a8a3-05bf06b5fdb1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\04. Player\Body">
       <UniqueIdentifier>{5609681f-2332-48f8-a2c9-7319d426f6c5}</UniqueIdentifier>
     </Filter>
@@ -366,6 +363,30 @@
     </Filter>
     <Filter Include="02.GameObjects\10. Effect\Texture\Crack">
       <UniqueIdentifier>{1a698bfb-f397-42cc-8101-7c336a6632dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player\Ricochet">
+      <UniqueIdentifier>{459f9bd3-3d5c-401b-9abf-31632ee4ee97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Projectile\Player\Trail">
+      <UniqueIdentifier>{a6aa1959-940a-4a3c-93fb-59f5f5bf3de6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\Player\AttackArea">
+      <UniqueIdentifier>{f5437daf-ac43-4453-8e29-e122efc1db37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Trail\Projectile">
+      <UniqueIdentifier>{b7004cd3-64b4-4761-8965-d1c7e6cfe6be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Trail\Axe">
+      <UniqueIdentifier>{ce897002-d5dc-4dc6-b1d2-2ad48a0c8a51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Texture\Trail\Sickle">
+      <UniqueIdentifier>{51b0f3f2-913c-441c-9e1c-11a12293fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle\Snow">
+      <UniqueIdentifier>{c8c68a62-5d93-4cc7-a38f-effc12878de3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10. Effect\Paticle\Aurora">
+      <UniqueIdentifier>{11a53fe6-85e4-4097-8149-5814755dd360}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -666,6 +687,30 @@
     <ClInclude Include="..\public\Projectile_Fire.h">
       <Filter>02.GameObjects\03. Projectile\Player\Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Crack_Effect.h">
+      <Filter>02.GameObjects\10. Effect\Texture\Crack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Ricochet.h">
+      <Filter>02.GameObjects\03. Projectile\Player\Ricochet</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Attack_Area_Player.h">
+      <Filter>03. UI\Player\AttackArea</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Projectile_Trail.h">
+      <Filter>02.GameObjects\03. Projectile\Player\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trail_Effect_Projectile.h">
+      <Filter>02.GameObjects\10. Effect\Texture\Trail\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trail_Effect_Axe.h">
+      <Filter>02.GameObjects\10. Effect\Texture\Trail\Axe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Snow.h">
+      <Filter>02.GameObjects\10. Effect\Paticle\Snow</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Aurora.h">
+      <Filter>02.GameObjects\10. Effect\Paticle\Aurora</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -959,6 +1004,30 @@
     </ClCompile>
     <ClCompile Include="..\private\Projectile_Fire.cpp">
       <Filter>02.GameObjects\03. Projectile\Player\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Crack_Effect.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture\Crack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Ricochet.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player\Ricochet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Attack_Area_Player.cpp">
+      <Filter>03. UI\Player\AttackArea</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Projectile_Trail.cpp">
+      <Filter>02.GameObjects\03. Projectile\Player\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trail_Effect_Projectile.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture\Trail\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trail_Effect_Axe.cpp">
+      <Filter>02.GameObjects\10. Effect\Texture\Trail\Axe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Snow.cpp">
+      <Filter>02.GameObjects\10. Effect\Paticle\Snow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Aurora.cpp">
+      <Filter>02.GameObjects\10. Effect\Paticle\Aurora</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

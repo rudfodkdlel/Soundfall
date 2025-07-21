@@ -39,6 +39,12 @@
 #include "Navi_Icon.h"
 #include "Item_Icon.h"
 #include "Projectile_Fire.h"
+#include "Crack_Effect.h"
+#include "Projectile_Ricochet.h"
+#include "Attack_Area_Player.h"
+#include "Trail_Effect_Projectile.h"
+#include "Projectile_Trail.h"
+#include "Trail_Effect_Axe.h"
 
 
 CMainApp::CMainApp()
@@ -91,6 +97,20 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Begin_Draw();
 
 	m_pGameInstance->Draw();
+
+
+#ifdef _DEBUG
+	++m_iRenderCount;
+
+	if (m_fTimeAcc >= 1.f)
+	{
+		wsprintf(m_szFPS, TEXT("FPS:%d"), m_iRenderCount);
+		m_fTimeAcc = 0.f;
+		m_iRenderCount = 0;
+	}
+#endif
+
+	m_pGameInstance->Draw_Font(TEXT("Font_151"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	m_pGameInstance->End_Draw();
 
@@ -281,8 +301,24 @@ HRESULT CMainApp::Ready_Static()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Effects/Music_Note.dds"), 1))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Axe_Range_Ult"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Axe_Ult_Range.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Player_Axe_Range"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Player/Axe_Range_%d.dds"), 2))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Hit_Effect"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Effects/Hit_Effect.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Crack_Effect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Effects/Crack_Effect.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Axe_Effect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Effects/Axe_Effect.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile"),
@@ -294,6 +330,10 @@ HRESULT CMainApp::Ready_Static()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Shockwave"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Monster/Shockwave.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Projectile_Trail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Global/Projectile/Trail/Trail_%d.dds"), 1))))
 		return E_FAIL;
 
 	// ¸ðµ¨
@@ -325,12 +365,12 @@ HRESULT CMainApp::Ready_Static()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Rifle/Vocal/Rifle_Vocal.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Keyboard"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Keyboard/Keyboard.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Keyboard_Drum"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Weapon/Keyboard/Drum/Keyboard_Drum.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -401,6 +441,11 @@ HRESULT CMainApp::Ready_Static()
 		CHP_BAR::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Attack_Area_Player"),
+		CAttack_Area_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	/* For.Prototype_GameObject_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Rifle"),
 		CRifle::Create(m_pDevice, m_pContext))))
@@ -463,7 +508,14 @@ HRESULT CMainApp::Ready_Static()
 		CProjectile_Fire::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Projecttile_Monster */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Ricochet"),
+		CProjectile_Ricochet::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Trail"),
+		CProjectile_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HP"),
 		CMonster_HP::Create(m_pDevice, m_pContext))))
@@ -492,8 +544,22 @@ HRESULT CMainApp::Ready_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Texture"),
 		CHit_Effect_Texture::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Hit_Effect_Paticle"),
 		CHit_Effect_Paticle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Crack_Effect"),
+		CCrack_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Trail_Effect_Projectile"),
+		CTrail_Effect_Projectile::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Trail_Effect_Axe"),
+		CTrail_Effect_Axe::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Snow */
@@ -543,7 +609,7 @@ HRESULT CMainApp::Ready_Static()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Weapon_Icon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Shop/Weapon/Icon_Weapon_%d.dds"), 9))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Shop/Weapon/Icon_Weapon_%d.dds"), 8))))
 		return E_FAIL;
 
 

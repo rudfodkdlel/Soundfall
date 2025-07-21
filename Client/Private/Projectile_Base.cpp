@@ -38,6 +38,8 @@ HRESULT CProjectile_Base::Initialize(void* pArg)
 
 	m_vColor = pDesc->vColor;
 
+	
+
 	return S_OK;
 }
 

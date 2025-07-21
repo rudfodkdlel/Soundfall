@@ -48,7 +48,8 @@ HRESULT CSniper::Initialize(void* pArg)
 
 
 
-
+	m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Sniper_Spawn_0.wav"), SOUND_MONSTER_DEATH, 1.f);
 
 
 
@@ -63,8 +64,13 @@ void CSniper::Priority_Update(_float fTimeDelta)
 	}
 
 	if (m_bDead)
+	{
 		Set_Dead();
+		m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Sniper_Voice_Death_0.wav"), SOUND_MONSTER_DEATH, 1.f);
 
+	}
+	
 
 	__super::Priority_Update(fTimeDelta);
 }
@@ -116,6 +122,10 @@ void CSniper::Update(_float fTimeDelta)
 					m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Monster"), m_pGameInstance->Get_Current_Level(),
 						TEXT("Layer_Projectile_Monster"), &eDesc);
 					m_isShoot = true;
+
+					//
+					m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+					m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Sniper_Shot_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
 				}
 
 				if (static_cast<CBody_Sniper*>(m_PartObjects[0])->Get_AnimFinished())

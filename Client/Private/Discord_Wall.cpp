@@ -48,12 +48,18 @@ HRESULT CDiscord_Wall::Initialize(void* pArg)
 void CDiscord_Wall::Priority_Update(_float fTimeDelta)
 {
 	if (m_pCombatCom->Get_Current_HP() <= 0)
+	{
 		Set_Dead();
+		m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Wall_Popup_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+	}
+		
 }
 
 void CDiscord_Wall::Update(_float fTimeDelta)
 {
 	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
+
 }
 
 void CDiscord_Wall::Late_Update(_float fTimeDelta)
@@ -89,7 +95,7 @@ HRESULT CDiscord_Wall::Render()
 
 #ifdef _DEBUG
 
-	m_pColliderCom->Render();
+	
 
 #endif
 

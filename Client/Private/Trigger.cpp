@@ -57,7 +57,7 @@ void CTrigger::Update(_float fTimeDelta)
 void CTrigger::Late_Update(_float fTimeDelta)
 {
 #ifdef _DEBUG
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
 #endif
 }
 

@@ -24,7 +24,7 @@ public:
 	void Reset();
 
 public:
-	HRESULT Ready_Components();
+	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 private:

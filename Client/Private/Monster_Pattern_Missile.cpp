@@ -39,6 +39,9 @@ void CMonster_Pattern_Missile::Update(CGameObject* pObj, float fTimeDelta)
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Artillery"), m_pGameInstance->Get_Current_Level(),
 				TEXT("Layer_Projectile_Monster"), &eDesc);
 			m_fDelay = 0.3f;
+
+			m_pGameInstance->StopSound(SOUND_BOSS);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Meteor_Launch_Extra_VO.wav"), SOUND_BOSS, 1.f);
 		}
 
 

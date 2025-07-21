@@ -25,6 +25,9 @@ private:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
+	_tchar						m_szFPS[MAX_PATH] = {};
+	_uint						m_iRenderCount = {};
+	_float						m_fTimeAcc = {};
 public:
 	HRESULT Ready_Prototype_Component();
 	HRESULT Ready_Font();

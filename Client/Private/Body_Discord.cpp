@@ -105,10 +105,28 @@ HRESULT CBody_Discord::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
             return E_FAIL;
 
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, 6, 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+            return E_FAIL;
+
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+            return E_FAIL;
+
         m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
-        if (FAILED(m_pShaderCom->Begin(0)))
-            return E_FAIL;
+        if (m_isUseRimLight)
+        {
+            if (FAILED(m_pShaderCom->Begin(2)))
+                return E_FAIL;
+        }
+        else
+        {
+            if (FAILED(m_pShaderCom->Begin(0)))
+                return E_FAIL;
+        }
+       
 
         if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;
@@ -116,11 +134,7 @@ HRESULT CBody_Discord::Render()
 
 #ifdef _DEBUG
 
-    for (auto& collider : m_pColliderCom)
-    {
-        if(collider->Get_Active())
-            (collider)->Render();
-    }
+   
         
 #endif
 
@@ -238,6 +252,11 @@ HRESULT CBody_Discord::Ready_Components()
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_AABB"),
         TEXT("Com_Collider_Arm_Right"), reinterpret_cast<CComponent**>(&m_pColliderCom[4]), &AABBDesc)))
         return E_FAIL;
+
+    //* For.Com_Texture */
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Discord_Mask"),
+        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+        return E_FAIL;
     
 
     return S_OK;
@@ -285,6 +304,7 @@ void CBody_Discord::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pTextureCom);
     Safe_Release(m_pModelCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pCombatCom);

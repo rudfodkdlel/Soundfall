@@ -57,7 +57,7 @@ protected:
 	_float	m_fSpeed = {};
 	_float  m_fMaxDistance = {};
 	_float  m_fDistance = {};
-	_float  m_fDuration = { 3.f };
+	_float  m_fDuration = { 1.f };
 	
 
 private:

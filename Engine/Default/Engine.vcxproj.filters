@@ -233,10 +233,16 @@
       <Filter>01.Utility\04.Components\VIBuffer\Instance\Point</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RenderTarget.h">
-      <Filter>12.RenderTargets</Filter>
+      <Filter>01.Utility\12.RenderTargets</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Target_Manager.h">
-      <Filter>12.RenderTargets\Manager</Filter>
+      <Filter>01.Utility\12.RenderTargets\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Frustum.h">
+      <Filter>01.Utility\13. Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Shadow.h">
+      <Filter>01.Utility\14. Shadow</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,10 +439,16 @@
       <Filter>01.Utility\04.Components\VIBuffer\Instance\Point</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RenderTarget.cpp">
-      <Filter>12.RenderTargets</Filter>
+      <Filter>01.Utility\12.RenderTargets</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Target_Manager.cpp">
-      <Filter>12.RenderTargets\Manager</Filter>
+      <Filter>01.Utility\12.RenderTargets\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Frustum.cpp">
+      <Filter>01.Utility\13. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Shadow.cpp">
+      <Filter>01.Utility\14. Shadow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -638,11 +650,17 @@
     <Filter Include="01.Utility\04.Components\VIBuffer\Instance\Point">
       <UniqueIdentifier>{9db7736c-3ec6-4e58-b365-55be7da79fa0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="12.RenderTargets">
+    <Filter Include="01.Utility\12.RenderTargets">
       <UniqueIdentifier>{e315aca4-b2eb-46d8-a816-ad36bf4f68fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="12.RenderTargets\Manager">
+    <Filter Include="01.Utility\12.RenderTargets\Manager">
       <UniqueIdentifier>{247a62dc-6447-402a-a5a8-69be3241ce31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\13. Frustum">
+      <UniqueIdentifier>{eaf55a1d-e174-4a1a-8e5f-aa28e944a134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\14. Shadow">
+      <UniqueIdentifier>{69b79e5a-8e88-43f5-8f6c-fafb77d10bb3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

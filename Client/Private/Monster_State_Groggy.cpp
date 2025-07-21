@@ -14,6 +14,9 @@ void CMonster_State_Groggy::Enter(CGameObject* pObj)
 	m_pDiscord->Get_CombatCom()->Set_Damage(0);
 
     m_pModel->Set_Animation(23, false);
+
+	m_pGameInstance->StopSound(SOUND_BOSS);
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Slam_Ground_0.wav"), SOUND_BOSS, 1.f);
 }
 
 void CMonster_State_Groggy::Update(CGameObject* pObj, float fTimeDelta)
@@ -29,6 +32,8 @@ void CMonster_State_Groggy::Update(CGameObject* pObj, float fTimeDelta)
 	else if (m_eAnimState == ANIMSTATE::ANIM_LOOP)
 	{
 		m_fDuration -= fTimeDelta;
+
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Hurt_VO_2.wav"), SOUND_BOSS, 1.f);
 
 		if (m_IsFinish)
 		{
@@ -52,6 +57,7 @@ void CMonster_State_Groggy::Update(CGameObject* pObj, float fTimeDelta)
 				m_pModel->Set_Animation(24, false);
 				break;
 			}
+
 		}
 
 		

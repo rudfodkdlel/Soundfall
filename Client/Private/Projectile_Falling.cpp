@@ -43,7 +43,13 @@ void CProjectile_Falling::Priority_Update(_float fTimeDelta)
 {
     
     if (m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1] < 0.f)
+    {
         Set_Dead();
+
+        m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+        m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Artillery_ImpactGround_3.wav"), SOUND_MONSTER_EFFECT, 1.f);
+    }
+       
 }
 
 void CProjectile_Falling::Update(_float fTimeDelta)

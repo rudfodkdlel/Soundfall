@@ -71,6 +71,9 @@ HRESULT CStructure_Instance::Render()
 	if (FAILED(m_pVIBufferCom->Bind_Material(m_pShaderCom, "g_NormalTexture", 0, 6, 0)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition(), sizeof(_float4))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
 
@@ -93,8 +96,9 @@ HRESULT CStructure_Instance::Ready_Components(STRUCTURE_INSTANCE_DESC* eDesc)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), eDesc->strBuffertag,
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

@@ -45,7 +45,8 @@ HRESULT CDefender::Initialize(void* pArg)
 
 	
 
-	
+	m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Defender_Voice_Spawn_1.wav"), SOUND_MONSTER_DEATH, 1.f);
 
 	
 
@@ -59,8 +60,12 @@ void CDefender::Priority_Update(_float fTimeDelta)
 		m_pTarget = m_pGameInstance->GetLastObjectFromLayer(m_pGameInstance->Get_Current_Level(), TEXT("Layer_Player"));
 	}
 
-	if(m_bDead)
+	if (m_bDead)
+	{
+		m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Defender_Voice_Death_3.wav"), SOUND_MONSTER_DEATH, 1.f);
 		Set_Dead();
+	}
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -191,6 +196,9 @@ void CDefender::Select_State()
 	{
 		Get_BodyModel()->Set_Animation(1, false); // ATTACK
 		m_eMainState = STATE_MAIN::ATTACK;
+
+		m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Defender_ShieldSlam_2.wav"), SOUND_MONSTER_EFFECT, 1.f);
 	}
 
 }

@@ -32,7 +32,9 @@ void CMonster_Pattern_EchoSlam::Update(CGameObject* pObj, float fTimeDelta)
 
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shockwave"), m_pGameInstance->Get_Current_Level(), TEXT("Layer_Projectile_Monster"), &eDesc);
 
-
+			m_pGameInstance->StopSound(SOUND_BOSS);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Slam_Ground_0.wav"), SOUND_BOSS, 1.f);
+			
 			m_IsAttack = true;
 		}
 	}

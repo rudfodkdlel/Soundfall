@@ -178,6 +178,8 @@ CComponent* CVIBuffer_Mesh_Instance::Clone(void* pArg)
 void CVIBuffer_Mesh_Instance::Free()
 {
 	__super::Free();
-
-	Safe_Delete_Array(m_pVertexInstances);
+	if (false == m_isCloned)
+	{
+		Safe_Delete_Array(m_pVertexInstances);
+	}
 }

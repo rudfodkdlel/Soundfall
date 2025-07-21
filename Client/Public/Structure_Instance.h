@@ -19,11 +19,13 @@ public:
 	typedef struct tagStructInstanceDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_wstring strModeltag;
+		_wstring strBuffertag;
 	}STRUCTURE_INSTANCE_DESC;
 
 	virtual OBJECT_SAVE_DESC Get_Save_Desc() override
 	{
-		OBJECT_SAVE_DESC eDesc = {};
+		OBJECT_SAVE_DESC eDesc = {}; 
+
 		eDesc.strPrototypetag = m_strProtoTag;
 		eDesc.PrototypeLevelIndex = m_iProtoIndex;
 		eDesc.strModeltag = m_strModelTag;
@@ -55,6 +57,7 @@ private:
 
 	_bool	m_isAnim = { false };
 	_wstring m_strModelTag = {};
+	_wstring m_strBufferTag = {};
 private:
 	HRESULT Ready_Components(STRUCTURE_INSTANCE_DESC* eDesc);
 

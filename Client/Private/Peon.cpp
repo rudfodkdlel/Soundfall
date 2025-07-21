@@ -27,7 +27,7 @@ HRESULT CPeon::Initialize(void* pArg)
 
 
 	Desc.fRotationPerSec = 90.f;
-	Desc.fSpeedPerSec = 5.0f;
+	Desc.fSpeedPerSec = 15.0f;
 	Desc.iNumPartObjects = ENUM_CLASS(PART_DEFAULT::END);
 	lstrcpy(Desc.szName, TEXT("Peon"));
 
@@ -45,7 +45,10 @@ HRESULT CPeon::Initialize(void* pArg)
 
 	
 
+	
 
+	m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Peon_Spawn_Voice_0.wav"), SOUND_MONSTER_DEATH, 1.f);
 
 
 	return S_OK;
@@ -59,7 +62,13 @@ void CPeon::Priority_Update(_float fTimeDelta)
 	}
 
 	if (m_bDead)
+	{
 		Set_Dead();
+
+		m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Peon_Death_Voice_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+	}
+		
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -106,10 +115,16 @@ void CPeon::Update(_float fTimeDelta)
 				vDir = { 0.f,-1.f,0.f,0.f };
 			}
 			m_pTransformCom->Turn(vDir, fTimeDelta * 0.05f);
+
+			m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Peon_Idle_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
 		}
 		else if (STATE_MAIN::ATTACK == m_eMainState)
 		{
 			// 공격 콜라이더 생성
+
+			//m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+			//m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Peon_Swhoosh_Down_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
 		}
 	}
 
@@ -133,8 +148,10 @@ void CPeon::Late_Update(_float fTimeDelta)
 			vSumDir += XMLoadFloat4(&pushvector) * 0.2f;
 		}
 
+		
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
+		
 		vPos += vSumDir;
 
 		if (m_pNavigationCom->isMove(vPos))
@@ -234,7 +251,7 @@ HRESULT CPeon::Ready_Components()
 	NaviDesc.iIndex = -1;
 	XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
 
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::FOREST), TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::ARENA), TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
 		return E_FAIL;
 
@@ -243,7 +260,7 @@ HRESULT CPeon::Ready_Components()
 
 CPeon* CPeon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CPeon* pInstance = new CPeon(pDevice, pContext);
+ 	CPeon* pInstance = new CPeon(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -273,5 +290,6 @@ void CPeon::Free()
 
 	Safe_Release(m_pCombatCom);
 	Safe_Release(m_pNavigationCom);
+
 }
 

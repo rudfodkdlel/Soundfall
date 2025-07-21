@@ -65,7 +65,12 @@ void CArtillery::Priority_Update(_float fTimeDelta)
 	}
 
 	if (m_bDead)
+	{
+		m_pGameInstance->StopSound(SOUND_MONSTER_DEATH);
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Artillery_Voice_Death_3.wav"), SOUND_MONSTER_DEATH, 1.f);
 		Set_Dead();
+	}
+		
 
 
 	__super::Priority_Update(fTimeDelta);
@@ -91,6 +96,7 @@ void CArtillery::Update(_float fTimeDelta)
 					m_fPatternTime = 2.f;
 					m_fDuration = 1.f;
 					Get_BodyModel()->Set_Animation(1, true); // LOOP
+
 				}
 				break;
 
@@ -100,6 +106,9 @@ void CArtillery::Update(_float fTimeDelta)
 
 				if (m_fDuration <= 0.f)
 				{
+					m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+					m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Artillery_Shot_3.wav"), SOUND_MONSTER_EFFECT, 1.f);
+
 					CProjectile_Artillery::PROJECTILE_DESC eDesc = {};
 					eDesc.fSpeedPerSec = 1.f;
 					eDesc.vColor = { 1.f,0.f,0.f,0.5f };

@@ -29,6 +29,10 @@ HRESULT CLevel_Shop::Initialize()
 		for (auto& pObj : m_EquipIcons)
 			static_cast<CItem_Icon*>(pObj)->Set_isRender(true);
 
+		m_pGameInstance->StopSound(SOUND_BGM);
+		m_pGameInstance->PlaySound(TEXT("TutorialMusic.ogg"), SOUND_BGM, 0.3f);
+	
+
 	return S_OK;
 }
 
@@ -115,12 +119,27 @@ void CLevel_Shop::Update(_float fTimeDelta)
 		m_pInventory->Update();
 	}
 
+}
+
+HRESULT CLevel_Shop::Render()
+{
+	SetWindowText(g_hWnd, TEXT("Shop 레벨입니다."));
+
 	if (GetKeyState(VK_RETURN) & 0x8000)
 	{
 		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GAMEPLAY))))
-			return;
-	} 
+			return E_FAIL;
+	}
+	else if (GetKeyState('A') & 0x8000)
+	{
+		// go forest
+
+		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::ARENA))))
+			return E_FAIL;
+
+	}
 
 	else if (GetKeyState('F') & 0x8000)
 	{
@@ -128,15 +147,10 @@ void CLevel_Shop::Update(_float fTimeDelta)
 
 		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::FOREST))))
-			return;
+			return E_FAIL;
 
 	}
 
-}
-
-HRESULT CLevel_Shop::Render()
-{
-	SetWindowText(g_hWnd, TEXT("Shop 레벨입니다."));
 
 	return S_OK;
 }
@@ -353,8 +367,6 @@ void CLevel_Shop::Free()
 
 	Safe_Release(m_pShop);
 	Safe_Release(m_pInventory);
-	for (auto& pObj : m_EquipIcons)
-		Safe_Release(pObj);
 
 	
 

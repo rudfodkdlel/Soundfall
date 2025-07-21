@@ -59,9 +59,17 @@ HRESULT CTerrain::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-
-	if (FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
+	if (m_pGameInstance->Get_Current_Level() == static_cast<int>(LEVEL::ARENA))
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+	}
+	
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
 		return E_FAIL;
@@ -70,8 +78,7 @@ HRESULT CTerrain::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-if(nullptr != m_pNavigationCom)
-	m_pNavigationCom->Render();
+
 #endif
 
 	
@@ -117,13 +124,12 @@ HRESULT CTerrain::Ready_Components(TERRAIN_DESC* pDesc)
 	}
 	
 
-	if (pDesc->iCurrentLevel != ENUM_CLASS(LEVEL::ARENA))
-	{
-		/* For.Com_Navigation */
-		if (FAILED(__super::Add_Component(pDesc->iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-			return E_FAIL;
-	}
+	
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(pDesc->iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+	
 	
 	
 	
@@ -149,8 +155,15 @@ HRESULT CTerrain::Bind_ShaderResources()
 	{
 		iType = 0;
 	}
-	else
+	else if (m_pGameInstance->Get_Current_Level() == ENUM_CLASS(LEVEL::FOREST))
+	{
 		iType = 1;
+	}
+	else
+	{
+		iType = 2;
+	}
+		
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", iType)))
 		return E_FAIL;
@@ -158,7 +171,7 @@ HRESULT CTerrain::Bind_ShaderResources()
 	if (FAILED(m_pTextureNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", iType)))
 		return E_FAIL;
 
-	if (m_pGameInstance->Get_Current_Level() != ENUM_CLASS(LEVEL::ARENA))
+	if (m_pTextureMaskCom != nullptr)
 	{
 		if (FAILED(m_pTextureMaskCom->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
 			return E_FAIL;

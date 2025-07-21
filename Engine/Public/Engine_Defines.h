@@ -66,10 +66,18 @@ using namespace std;
 #include "Engine_Typedef.h"
 
 
+
+
 namespace Engine
 {
 	const _wstring	g_strTransformTag = TEXT("Com_Transform");
 	const _uint g_iMaxNumBones = 512;
+
+	//const unsigned int g_iMaxWidth = 16384;
+	//const unsigned int g_iMaxHeight = 9216;	
+
+	const unsigned int g_iMaxWidth =  4096;
+	const unsigned int g_iMaxHeight = 2304;
 }
 
 using namespace Engine;

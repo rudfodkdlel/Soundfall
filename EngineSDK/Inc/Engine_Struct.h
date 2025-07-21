@@ -132,7 +132,7 @@ namespace Engine
 		XMFLOAT4		vTranslation;
 		XMFLOAT2		vLifeTime;
 
-		static const unsigned int					iNumElements = { 7 };
+		static const unsigned int					iNumElements = { 6 };
 		static const D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements];
 	}VTXPOS_PARTICLE_INSTANCE;
 

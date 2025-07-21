@@ -31,7 +31,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
-
+	virtual HRESULT Render_Shadow();
 	virtual HRESULT On_Collision(class CCollider* pCollider) override;
 
 private:

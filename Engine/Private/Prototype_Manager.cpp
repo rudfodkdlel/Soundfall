@@ -23,8 +23,10 @@ HRESULT CPrototype_Manager::Add_Prototype(_uint iPrototypeLevelIndex, const _wst
 		iPrototypeLevelIndex >= m_iNumLevels)
 		return E_FAIL;
 
-	if(nullptr == Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
+	if (nullptr == Find_Prototype(iPrototypeLevelIndex, strPrototypeTag))
 		m_pPrototypes[iPrototypeLevelIndex].emplace(strPrototypeTag, pPrototype);
+	else
+		Safe_Release(pPrototype);
 
 	return S_OK;
 }

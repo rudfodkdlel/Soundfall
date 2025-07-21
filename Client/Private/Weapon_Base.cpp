@@ -70,8 +70,12 @@ void CWeapon_Base::Late_Update(_float fTimeDelta)
 {
 
 
-	if(m_IsActive)
+	if (m_IsActive)
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	}
+		
 }
 
 HRESULT CWeapon_Base::Render()
@@ -102,13 +106,38 @@ HRESULT CWeapon_Base::Render()
 	}
 
 #ifdef _DEBUG
-	if(nullptr != m_pColliderCom && m_pColliderCom->Get_Active())
-		m_pColliderCom->Render();
+
 
 #endif
 
 	return S_OK;
 
+}
+
+HRESULT CWeapon_Base::Render_Shadow()
+{
+
+	/*if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix())))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix())))
+		return E_FAIL;
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMesh; i++)
+	{
+		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}*/
+
+
+	return S_OK;
 }
 
 void CWeapon_Base::Check_Timing()

@@ -52,6 +52,7 @@ HRESULT CProjectile_Player::Initialize(void* pArg)
 
 	m_fMaxDistance = pDesc->fMaxDistance;
 	
+	m_iType = pDesc->iType;
 
 	return S_OK;
 }
@@ -74,20 +75,32 @@ void CProjectile_Player::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Get_Current_Level(), TEXT("Layer_Paticle") , &eDesc)))
 			return;
 
-		CProjectile_Player::PROJECTILE_DESC eProjectileDesc = {};
-		eProjectileDesc.fSpeedPerSec = 1.f;
-		eProjectileDesc.fMaxDistance = 50;
-		
-
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		vPos.m128_f32[1] = 0.f;
-
-		XMStoreFloat4(&eProjectileDesc.vPos, vPos);
+		if (m_iType == 2)
+		{
+			CProjectile_Player::PROJECTILE_DESC eProjectileDesc = {};
+			eProjectileDesc.fSpeedPerSec = 1.f;
+			eProjectileDesc.fMaxDistance = 50;
 
 
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Fire"),
-			m_pGameInstance->Get_Current_Level(), TEXT("Layer_Projectile_Player"), &eProjectileDesc)))
-			return;
+			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			vPos.m128_f32[1] = 0.f;
+
+			XMStoreFloat4(&eProjectileDesc.vPos, vPos);
+
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Fire"),
+				m_pGameInstance->Get_Current_Level(), TEXT("Layer_Projectile_Player"), &eProjectileDesc)))
+				return;
+		}
+
+	
+
+		/*GAMEOBJECT_DESC hitDesc = {};
+		XMStoreFloat4(&hitDesc.vPos, m_pTransformCom->Get_State(STATE::POSITION));
+
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Crack_Effect"),
+			m_pGameInstance->Get_Current_Level(), TEXT("Layer_Effect"), &hitDesc)))
+			return; */
 	}
 		
 }
@@ -116,14 +129,17 @@ void CProjectile_Player::Update(_float fTimeDelta)
 	// 카메라 쳐다보도록
 	//__super::Billboarding();
 
-	
+	 
 	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CProjectile_Player::Late_Update(_float fTimeDelta)
 {
-	if(!m_IsColl)
+	if (!m_IsColl)
+	{
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
+	}
+		
 }
 
 HRESULT CProjectile_Player::Render()

@@ -17,6 +17,7 @@ public:
 	typedef struct tagWeaponDesc : public CPartObject::PARTOBJECT_DESC
 	{
 		const _float4x4* pSocketMatrix = { nullptr };
+		_int			 iModelType = {};
 	}WEAPON_DESC;
 
 public:
@@ -40,6 +41,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_Shadow();
 
 	void Check_Timing();
 
@@ -68,6 +70,9 @@ protected:
 	_bool			m_IsPerfect = {false};
 
 	_wstring		m_strModelTag = {};
+
+	// 사용한 모델에 따라 다른 효과를 분기
+	_int			m_iModelType = {};
 
 private:
 	HRESULT Ready_Components();

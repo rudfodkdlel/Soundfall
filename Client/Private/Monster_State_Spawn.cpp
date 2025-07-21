@@ -6,6 +6,9 @@ void CMonster_State_Spawn::Enter(CGameObject* pObj)
 	__super::Enter(pObj);
 
 	m_pModel->Set_Animation(33, false);
+
+	m_pGameInstance->StopSound(SOUND_BOSS);
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Spawn_VO.wav"), SOUND_BOSS, 1.f);
 }
 
 void CMonster_State_Spawn::Update(CGameObject* pObj, float fTimeDelta)

@@ -33,7 +33,7 @@ HRESULT CProjectile_Shockwave::Initialize(void* pArg)
 	m_pTransformCom->Rotation(vDir, XMConvertToRadians(90.f));
 
 
-	_vector vPos = { 0.f,0.2f + m_pGameInstance->Compute_Random_Normal() * 0.005f,0.f,0.f };
+	_vector vPos = { 0.f, m_pGameInstance->Compute_Random_Normal() * 0.05f,0.f,0.f };
 	vPos += m_pTransformCom->Get_State(STATE::POSITION);
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
@@ -96,8 +96,6 @@ HRESULT CProjectile_Shockwave::Render()
 
 #ifdef _DEBUG
 
-	m_pOuterCollider->Render();
-	m_pInnerCollider->Render();
 
 #endif
 

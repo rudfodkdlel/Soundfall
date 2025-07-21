@@ -37,6 +37,10 @@ HRESULT CLevel_Forest::Initialize()
 
 	//m_pSpawner->Spawn_Normal();
 
+	m_pGameInstance->StopSound(SOUND_BGM);
+	m_pGameInstance->PlaySound(TEXT("TricycleRiot.ogg"), SOUND_BGM, 0.3f);
+	m_pGameInstance->SetBPM(TEXT("TricycleRiot.ogg"));
+
 
 	return S_OK;
 }
@@ -246,6 +250,16 @@ HRESULT CLevel_Forest::Ready_Lights()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vEye = _float4(108.f, 40.f, -16.f,1.f);
+	Desc.vAt = _float4(108.f, 0.f, 10.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(85.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
 		return E_FAIL;
 
 	return S_OK;

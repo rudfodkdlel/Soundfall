@@ -42,6 +42,11 @@ HRESULT CTentacle_Amp::Initialize(void* pArg)
 
 	m_pGameInstance->Add_Collider(CG_MONSTER, m_pColliderCom, this);
 
+	m_pColliderCom->Set_Active(false);
+
+	
+	m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Spawn_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+
 	return S_OK;
 }
 
@@ -59,7 +64,12 @@ void CTentacle_Amp::Priority_Update(_float fTimeDelta)
 	}
 
 	if (STATE_MAIN::DEAD == m_eMainState && m_IsFinished)
+	{
 		Set_Dead();
+	
+		m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Death_0.wav"), SOUND_MONSTER_DEATH, 1.f);
+	}
+		
 
 	__super::Priority_Update(fTimeDelta);
 }
@@ -111,6 +121,10 @@ void CTentacle_Amp::Update(_float fTimeDelta)
 				TEXT("Layer_Projectile_Monster"), &eDesc);
 			 // ÃÑ »ı¼º
 			m_fDelay = 0.f;
+
+			m_pGameInstance->StopSound(SOUND_MONSTER_EFFECT);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Amp_Noise_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
+			m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Tentacle_Amp_Thump_0.wav"), SOUND_MONSTER_EFFECT, 1.f);
 		}
 	}
 
@@ -151,7 +165,7 @@ HRESULT CTentacle_Amp::Render()
 
 #ifdef _DEBUG
 
-	m_pColliderCom->Render();
+	
 
 
 #endif
@@ -201,6 +215,7 @@ void CTentacle_Amp::Select_State()
 		case Client::STATE_MAIN::SPWAN:
 			m_eMainState = STATE_MAIN::IDLE;
 			m_pModelCom->Set_Animation(0, false);
+			m_pColliderCom->Set_Active(true);
 			break;
 		default:
 			break;

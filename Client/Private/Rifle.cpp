@@ -22,7 +22,7 @@ HRESULT CRifle::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
     m_pTransformCom->Scaling(0.8f,0.8f,0.8f);
@@ -122,6 +122,7 @@ void CRifle::Attack(_vector vDir)
     CProjectile_Player::PROJECTILE_DESC eDesc = {};
     eDesc.fSpeedPerSec = 1.f;
     eDesc.fMaxDistance = 50;
+    eDesc.iType = m_iModelType;
     if ((m_IsPerfect))
     {
         eDesc.vColor = m_vColor;
@@ -136,16 +137,39 @@ void CRifle::Attack(_vector vDir)
 
     XMStoreFloat4(&eDesc.vPos, vPos);
     XMStoreFloat4(&eDesc.vDir, vDir);
-    // 투사체 생성해서 날아가게 해보자
-    m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
-        TEXT("Layer_Projectile_Player"), &eDesc);
+
+    if (m_iModelType == 0)
+    {
+        // 투사체 생성해서 날아가게 해보자
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
+            TEXT("Layer_Projectile_Player"), &eDesc);
+    }
+    else if (m_iModelType == 1)
+    {
+        // 투사체 생성해서 날아가게 해보자
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Ricochet"), m_pGameInstance->Get_Current_Level(),
+            TEXT("Layer_Projectile_Player"), &eDesc);
+    }
+    else if (m_iModelType == 2)
+    {
+        // 투사체 생성해서 날아가게 해보자
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
+            TEXT("Layer_Projectile_Player"), &eDesc);
+    }
+    else if (m_iModelType == 3)
+    {
+        // 투사체 생성해서 날아가게 해보자
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
+            TEXT("Layer_Projectile_Player"), &eDesc);
+    }
+
+   
 
     m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shell"), m_pGameInstance->Get_Current_Level(),
         TEXT("Layer_Projectile_Shell"), &eDesc);
 
 
     // 소리 추가
-    m_pGameInstance->StopSound(SOUND_WEAPON);
     m_pGameInstance->PlaySound(TEXT("Assault_Attack.wav"), SOUND_WEAPON, 0.7f);
    
     if (!m_IsPerfect)
@@ -160,19 +184,41 @@ void CRifle::Reset()
     m_fDuration = 0.f;
 }
 
-HRESULT CRifle::Ready_Components()
+HRESULT CRifle::Ready_Components(void* pArg)
 {
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
+    WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
+
+    wstring strModelTag = {};
+
+    if (pDesc->iModelType == 0)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Rifle");
+    }
+    else if (pDesc->iModelType == 1)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Rifle_Light");
+    }
+    else if (pDesc->iModelType == 2)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Rifle_Brass");
+    }
+    else if (pDesc->iModelType == 3)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Rifle_Vocal");
+    }
+
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Rifle"),
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strModelTag,
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
-    m_strModelTag = TEXT("Prototype_Component_Model_Rifle");
+    m_strModelTag = strModelTag;
+    m_iModelType = pDesc->iModelType;
 
     return S_OK;
 }

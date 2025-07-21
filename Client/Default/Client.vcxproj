@@ -158,6 +158,8 @@
   <ItemGroup>
     <ClInclude Include="..\public\Artillery.h" />
     <ClInclude Include="..\public\Attack_Area_Monster.h" />
+    <ClInclude Include="..\public\Attack_Area_Player.h" />
+    <ClInclude Include="..\public\Aurora.h" />
     <ClInclude Include="..\public\Axe.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\public\Body_Artillery.h" />
@@ -174,6 +176,7 @@
     <ClInclude Include="..\Public\CSpawner.h" />
     <ClInclude Include="..\public\Discord.h" />
     <ClInclude Include="..\public\Discord_Wall.h" />
+    <ClInclude Include="..\public\Crack_Effect.h" />
     <ClInclude Include="..\public\Hit_Effect_Paticle.h" />
     <ClInclude Include="..\public\Hit_Effect_Texture.h" />
     <ClInclude Include="..\public\Inventory.h" />
@@ -233,20 +236,25 @@
     <ClInclude Include="..\public\Projectile_Player.h" />
     <ClInclude Include="..\public\Projectile_Player_Ult_Sickle.h" />
     <ClInclude Include="..\public\Projectile_Fire.h" />
+    <ClInclude Include="..\public\Projectile_Ricochet.h" />
     <ClInclude Include="..\public\Projectile_Shell.h" />
     <ClInclude Include="..\public\Projectile_Shockwave.h" />
+    <ClInclude Include="..\public\Projectile_Trail.h" />
     <ClInclude Include="..\public\Range_Effect.h" />
     <ClInclude Include="..\public\Rifle.h" />
     <ClInclude Include="..\public\Shop.h" />
     <ClInclude Include="..\public\Sickle.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Sniper.h" />
+    <ClInclude Include="..\public\Snow.h" />
     <ClInclude Include="..\public\Static_UI.h" />
     <ClInclude Include="..\public\Structure.h" />
     <ClInclude Include="..\public\Structure_Instance.h" />
     <ClInclude Include="..\public\Tentacle_Amp.h" />
     <ClInclude Include="..\public\Tentacle_Melee.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\public\Trail_Effect_Axe.h" />
+    <ClInclude Include="..\public\Trail_Effect_Projectile.h" />
     <ClInclude Include="..\public\Trigger.h" />
     <ClInclude Include="..\public\Weapon_Base.h" />
     <ClInclude Include="..\public\Weapon_Defender.h" />
@@ -259,12 +267,15 @@
   <ItemGroup>
     <ClCompile Include="..\private\Artillery.cpp" />
     <ClCompile Include="..\private\Attack_Area_Monster.cpp" />
+    <ClCompile Include="..\private\Attack_Area_Player.cpp" />
+    <ClCompile Include="..\private\Aurora.cpp" />
     <ClCompile Include="..\private\Body_Artillery.cpp" />
     <ClCompile Include="..\private\Body_Defender.cpp" />
     <ClCompile Include="..\private\Body_Sniper.cpp" />
     <ClCompile Include="..\private\CombatStat.cpp" />
     <ClCompile Include="..\Private\CSpawner.cpp" />
     <ClCompile Include="..\private\Defender.cpp" />
+    <ClCompile Include="..\private\Crack_Effect.cpp" />
     <ClCompile Include="..\private\Hit_Effect_Paticle.cpp" />
     <ClCompile Include="..\private\Hit_Effect_Texture.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
@@ -302,11 +313,14 @@
     <ClCompile Include="..\private\Projectile_Falling.cpp" />
     <ClCompile Include="..\private\Projectile_Player_Ult_Sickle.cpp" />
     <ClCompile Include="..\private\Projectile_Fire.cpp" />
+    <ClCompile Include="..\private\Projectile_Ricochet.cpp" />
     <ClCompile Include="..\private\Projectile_Shell.cpp" />
+    <ClCompile Include="..\private\Projectile_Trail.cpp" />
     <ClCompile Include="..\private\Range_Effect.cpp" />
     <ClCompile Include="..\private\Shop.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Sniper.cpp" />
+    <ClCompile Include="..\private\Snow.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />
     <ClCompile Include="..\private\Structure_Instance.cpp" />
     <ClCompile Include="..\private\Tentacle_Amp.cpp" />
@@ -344,6 +358,8 @@
     <ClCompile Include="..\private\Sickle.cpp" />
     <ClCompile Include="..\private\Structure.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\private\Trail_Effect_Axe.cpp" />
+    <ClCompile Include="..\private\Trail_Effect_Projectile.cpp" />
     <ClCompile Include="..\private\Trigger.cpp" />
     <ClCompile Include="..\private\Weapon_Base.cpp" />
     <ClCompile Include="..\private\Weapon_Defender.cpp" />

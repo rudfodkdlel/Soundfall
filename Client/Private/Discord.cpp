@@ -125,6 +125,11 @@ void CDiscord::Late_Update(_float fTimeDelta)
 	Select_State();
 
 	__super::Late_Update(fTimeDelta);
+
+	if (m_iPhase == 2)
+	{
+		static_cast<CBody_Discord*>(Get_Body())->Set_UseRimLight();
+	}
 }
 
 HRESULT CDiscord::Render()

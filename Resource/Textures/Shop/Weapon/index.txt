@@ -1,0 +1,8 @@
+0 기본 라이플
+1 light
+2 trumpet
+3 vocal
+4 keyboard
+5 keyboard 색 다른거
+6 낫
+7 도끼

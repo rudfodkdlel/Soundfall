@@ -9,6 +9,7 @@
 #include "Player_State_Spawn.h"
 #include "Navigation.h"
 #include "Inventory.h"
+#include "Attack_Area_Player.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CContainerObject{ pDevice, pContext }
@@ -50,6 +51,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
 	m_pInventory = CInventory::Create(m_pDevice, m_pContext, this);
+
+	
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
@@ -348,24 +351,72 @@ HRESULT CPlayer::Ready_PartObjects()
 	if (FAILED(__super::Add_PartObject(PART_BODY, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Player"), &BodyDesc)))
 		return E_FAIL;
 
-	/* For.Weapon */
-	CWeapon_Base::WEAPON_DESC	WeaponDesc{};
+	CAttack_Area_Player::HPBAR_DESC hpDesc{};
 
-	WeaponDesc.pSocketMatrix = dynamic_cast<CBody_Player*>(m_PartObjects[PART_BODY])->Get_SocketMatrix("rt_weapon_SOCKET_jnt");
+	hpDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+	hpDesc.pCombatCom = m_pCombatCom;
 
-	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	if (FAILED(__super::Add_PartObject(PART_WEAPON_0, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Rifle"), &WeaponDesc)))
+	// axe range øÎ
+	if (FAILED(__super::Add_PartObject(PART_EFFECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Attack_Area_Player"), &hpDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_PartObject(PART_WEAPON_1, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Keyboard"), &WeaponDesc)))
-		return E_FAIL;
 
-	if (FAILED(__super::Add_PartObject(PART_WEAPON_MELEE_0, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sickle"), &WeaponDesc)))
-		return E_FAIL;
-	if (FAILED(__super::Add_PartObject(PART_WEAPON_MELEE_1, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Axe"), &WeaponDesc)))
-		return E_FAIL;
+	std::ifstream fin("../Bin/Data/Inventory.bin", std::ios::binary);
+	if (!fin)
+	{
 
+		return S_OK;
+	}
+
+	fin.read(reinterpret_cast<char*>(&m_iMoney), sizeof(_int));
+
+	_int iSize = {};
+
+	fin.read(reinterpret_cast<char*>(&iSize), sizeof(_int));
+
+	// equip∫Œ≈Õa
+
+	for (int i = 0; i < iSize; ++i)
+	{
+
+		WEAPON_ICON_INFO_DESC eDesc = {};
+
+		fin.read(reinterpret_cast<char*>(&eDesc.iTextureType), sizeof(_int));
+
+		fin.read(reinterpret_cast<char*>(&eDesc.iIndex), sizeof(_int));
+
+		CWeapon_Base::WEAPON_DESC	WeaponDesc{};
+
+		WeaponDesc.pSocketMatrix = dynamic_cast<CBody_Player*>(m_PartObjects[PART_BODY])->Get_SocketMatrix("rt_weapon_SOCKET_jnt");
+
+		WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix();
+
+		WeaponDesc.iModelType = eDesc.iTextureType;
+
+		if (WeaponDesc.iModelType <= 3)
+		{
+			if (FAILED(__super::Add_PartObject(eDesc.iIndex + 2, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Rifle"), &WeaponDesc)))
+				return E_FAIL;
+		}
+		else if (WeaponDesc.iModelType <= 5)
+		{
+			if (FAILED(__super::Add_PartObject(eDesc.iIndex + 2, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Keyboard"), &WeaponDesc)))
+				return E_FAIL;
+		}
+		else if (WeaponDesc.iModelType <= 6)
+		{
+			if (FAILED(__super::Add_PartObject(eDesc.iIndex + 2, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sickle"), &WeaponDesc)))
+				return E_FAIL;
+		}
+		else if (WeaponDesc.iModelType <= 7)
+		{
+			if (FAILED(__super::Add_PartObject(eDesc.iIndex + 2, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Axe"), &WeaponDesc)))
+				return E_FAIL;
+		}
+
+		
+	}
+	
 	m_pRangedWeapon = static_cast<CWeapon_Base*>(m_PartObjects[PART_WEAPON_0]);
 
 	m_pMeleeWeapon = static_cast<CWeapon_Base*>(m_PartObjects[PART_WEAPON_MELEE_0]);
@@ -388,17 +439,16 @@ HRESULT CPlayer::Ready_Components(void* pArg)
 		return E_FAIL;
 
 
-	if (ENUM_CLASS(LEVEL::ARENA) != pDesc->iProtoIndex)
-	{
-		/* For.Com_Navigation */
-		CNavigation::NAVIGATION_DESC		NaviDesc{};
-		NaviDesc.iIndex = -1;
-		XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
+	
+	/* For.Com_Navigation */
+	CNavigation::NAVIGATION_DESC		NaviDesc{};
+	NaviDesc.iIndex = -1;
+	XMStoreFloat4(&NaviDesc.vInitPos, m_pTransformCom->Get_State(STATE::POSITION));
 
-		if (FAILED(__super::Add_Component(pDesc->iProtoIndex, TEXT("Prototype_Component_Navigation"),
-			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
-			return E_FAIL;
-	}
+	if (FAILED(__super::Add_Component(pDesc->iProtoIndex, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NaviDesc)))
+		return E_FAIL;
+	
 	
 
 	return S_OK;

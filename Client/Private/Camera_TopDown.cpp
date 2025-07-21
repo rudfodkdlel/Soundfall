@@ -19,16 +19,6 @@ HRESULT CCamera_TopDown::Initialize_Prototype()
 
 HRESULT CCamera_TopDown::Initialize(void* pArg)
 {
-	CCamera::CAMERA_DESC			Desc{};
-
-	Desc.vEye = _float3(0.f, 40.f, -30.f);
-	Desc.vAt = _float3(0.f, 0.f, 0.f);
-	Desc.fFov = XMConvertToRadians(60.0f);
-	Desc.fNear = 0.1f;
-	Desc.fFar = 500.f;
-	Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	Desc.fSpeedPerSec = 10.0f;
-	lstrcpy(Desc.szName, TEXT("Camera"));
 
 	CCamera::CAMERA_DESC* pDesc = static_cast<CAMERA_DESC*>(pArg);
 

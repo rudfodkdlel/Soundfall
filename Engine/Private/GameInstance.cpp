@@ -16,6 +16,8 @@
 #include "Collider_Manager.h"
 #include "Target_Manager.h"
 #include "GameObject.h"
+#include "Shadow.h"
+#include "Frustum.h"
 
 
 IMPLEMENT_SINGLETON(CGameInstance);
@@ -87,6 +89,13 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, _Out_ ID
 	if (nullptr == m_pCollider_Manager)
 		return E_FAIL;
 
+	m_pShadow = CShadow::Create(*ppDeviceOut, *ppContextOut);
+	if (nullptr == m_pShadow)
+		return E_FAIL;
+
+	m_pFrustum = CFrustum::Create();
+	if (nullptr == m_pFrustum)
+		return E_FAIL;
 
 
 	return S_OK;
@@ -102,6 +111,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 	m_pObject_Manager->Priority_Update(fTimeDelta);
 
 	m_pPipeLine->Update();
+
+	m_pFrustum->Transform_ToWorldSpace();
 
 	m_pPicking->Update();
 
@@ -503,9 +514,9 @@ HRESULT CGameInstance::Add_MRT(const _wstring& strMRTTag, const _wstring& strTar
 	return m_pTarget_Manager->Add_MRT(strMRTTag, strTargetTag);
 }
 
-HRESULT CGameInstance::Begin_MRT(const _wstring& strMRTTag)
+HRESULT CGameInstance::Begin_MRT(const _wstring& strMRTTag, ID3D11DepthStencilView* pDSV, _bool isTargetClear, _bool isDepthClear)
 {
-	return m_pTarget_Manager->Begin_MRT(strMRTTag);
+	return m_pTarget_Manager->Begin_MRT(strMRTTag, pDSV, isTargetClear, isDepthClear);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -516,6 +527,11 @@ HRESULT CGameInstance::End_MRT()
 HRESULT CGameInstance::Bind_RT_ShaderResource(const _wstring& strTargetTag, CShader* pShader, const _char* pContantName)
 {
 	return m_pTarget_Manager->Bind_ShaderResource(strTargetTag, pShader, pContantName);
+}
+
+HRESULT CGameInstance::Copy_RT_Resource(const _wstring& strTargetTag, ID3D11Texture2D* pDest)
+{
+	return m_pTarget_Manager->Copy_Resource(strTargetTag, pDest);
 }
 
 #ifdef _DEBUG
@@ -534,8 +550,46 @@ HRESULT CGameInstance::Render_MRT_Debug(const _wstring& strMRTTag, CShader* pSha
 
 #pragma endregion
 
+#pragma region SHADOW
+HRESULT CGameInstance::Ready_Light_For_Shadow(const CShadow::SHADOW_DESC& Desc)
+{
+	return m_pShadow->Ready_Light_For_Shadow(Desc);
+}
+
+const _float4x4* CGameInstance::Get_Light_ViewMatrix()
+{
+	return m_pShadow->Get_Light_ViewMatrix();
+}
+const _float4x4* CGameInstance::Get_Light_ProjMatrix()
+{
+	return m_pShadow->Get_Light_ProjMatrix();
+}
+#pragma endregion
+
+#pragma region FRUSTUM
+
+void CGameInstance::Transform_Frustum_ToLocalSpace(_fmatrix WorldMatrix)
+{
+	m_pFrustum->Transform_ToLocalSpace(WorldMatrix);
+}
+
+_bool CGameInstance::isIn_Frustum_WorldSpace(_fvector vWorldPos, _float fRange)
+{
+	return m_pFrustum->isIn_WorldSpace(vWorldPos, fRange);
+}
+
+_bool CGameInstance::isIn_Frustum_LocalSpace(_fvector vLocalPos, _float fRange)
+{
+	return m_pFrustum->isIn_LocalSpace(vLocalPos, fRange);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
+	Safe_Release(m_pFrustum);
+
+	Safe_Release(m_pShadow);
 
 	Safe_Release(m_pTarget_Manager);
 

@@ -13,6 +13,7 @@ CVIBuffer_Rect_Instance::CVIBuffer_Rect_Instance(const CVIBuffer_Rect_Instance& 
 	, m_pSpeeds{ Prototype.m_pSpeeds }
 	, m_pDirs{Prototype.m_pDirs}
 	, m_isLoop{ Prototype.m_isLoop }
+	
 {
 
 }

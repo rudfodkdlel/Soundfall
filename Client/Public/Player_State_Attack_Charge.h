@@ -1,5 +1,7 @@
 #pragma once
 #include "Player_State_Base.h"
+#include "Attack_Area_Player.h"
+#include "Trail_Effect_Axe.h"
 
 NS_BEGIN(Client)
 
@@ -19,6 +21,9 @@ private:
 	_float  m_fElapsedTime = {0.f};
 	_float  m_fMakeParticleTime = { 0.f };
 	_vector m_vDir = {};
+
+	CTrail_Effect_Axe* m_pTrail = { nullptr };
+	_bool	m_isMakeEffect = { false };
 };
 
 NS_END

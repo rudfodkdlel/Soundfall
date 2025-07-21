@@ -23,8 +23,8 @@ HRESULT CSky::Initialize(void* pArg)
 {
 	GAMEOBJECT_DESC			Desc{};
 
-	Desc.fRotationPerSec = 0.f;
-	Desc.fSpeedPerSec = 0.f;
+	Desc.fRotationPerSec = 90.f;
+	Desc.fSpeedPerSec = 90.f;
 	lstrcpy(Desc.szName, TEXT("Sky"));
 
 	if (FAILED(__super::Initialize(&Desc)))
@@ -43,12 +43,25 @@ void CSky::Priority_Update(_float fTimeDelta)
 
 void CSky::Update(_float fTimeDelta)
 {
+
+	if (ENUM_CLASS(LEVEL::FOREST) == m_pGameInstance->Get_Current_Level())
+	{
+
+		m_fTime += fTimeDelta;
+		_vector vAxis = { 0.f,1.f,0.f,0.f };
+		m_pTransformCom->Rotation(vAxis, XMConvertToRadians(m_fTime));
+	}
+
+
 	m_pTransformCom->Set_State(STATE::POSITION,
 		XMLoadFloat4(m_pGameInstance->Get_CamPosition()));
+
 }
 
 void CSky::Late_Update(_float fTimeDelta)
 {
+	
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PRIORITY, this);
 }
 
@@ -60,14 +73,28 @@ HRESULT CSky::Render()
 	_vector m_vColor = {};
 	if(ENUM_CLASS(LEVEL::GAMEPLAY) == m_pGameInstance->Get_Current_Level())
 		m_vColor = { 0.7f,0.f,0.7f,0.5f };
-	else
+	else if(ENUM_CLASS(LEVEL::FOREST) == m_pGameInstance->Get_Current_Level())
 		m_vColor = { 0.f,0.7f,0.7f,0.5f };
+	else if (ENUM_CLASS(LEVEL::ARENA) == m_pGameInstance->Get_Current_Level())
+		m_vColor = { 0.8f,0.8f,0.8f,0.5f };
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(m_vColor))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
+
+	if (ENUM_CLASS(LEVEL::FOREST) == m_pGameInstance->Get_Current_Level())
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+	}
+	
 
 	if (FAILED(m_pVIBufferCom->Bind_Buffers()))
 		return E_FAIL;

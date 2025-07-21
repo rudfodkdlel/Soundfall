@@ -40,7 +40,7 @@ void CMusic_Note::Priority_Update(_float fTimeDelta)
 {
 	m_fTotalTime += fTimeDelta;
 
-	if (m_fTotalTime > 5.f)
+	if (m_fTotalTime > 2.f)
 		Set_Dead();
 }
 
@@ -55,7 +55,7 @@ void CMusic_Note::Update(_float fTimeDelta)
 void CMusic_Note::Late_Update(_float fTimeDelta)
 {
 	/* WeightBlend */
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONLIGHT, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLUR, this);
 }
 
 HRESULT CMusic_Note::Render()

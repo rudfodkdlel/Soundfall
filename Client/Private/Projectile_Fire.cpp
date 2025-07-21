@@ -29,21 +29,23 @@ HRESULT CProjectile_Fire::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaling(8.f, 8.f, 8.f);
+	m_pTransformCom->Scaling(30.f, 30.f, 30.f);
 	_vector vDir = { 1.f, 0.f,0.f,0.f };
 	m_pTransformCom->Rotation(vDir, XMConvertToRadians(90.f));
 
 
-	//_vector vPos = { 0.f,0.1f + m_pGameInstance->Compute_Random_Normal() * 0.005f,0.f,0.f };
-	//vPos += m_pTransformCom->Get_State(STATE::POSITION);
-	//m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	_vector vPos = { 0.f, m_pGameInstance->Compute_Random_Normal() * 0.05f,0.f,0.f };
+	vPos += m_pTransformCom->Get_State(STATE::POSITION);
+	m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+	m_pGameInstance->Add_Collider(CG_PLAYER_PROJECTILE, m_pColliderCom, this);
 
 	return S_OK;
 }
 
 void CProjectile_Fire::Priority_Update(_float fTimeDelta)
 {
-	if (m_fElaspedTime > 500.f)
+	if (m_fElaspedTime > 5.f)
 		Set_Dead();
 }
 
@@ -51,11 +53,13 @@ void CProjectile_Fire::Update(_float fTimeDelta)
 {
 	m_fElaspedTime += fTimeDelta;
 
+	m_pColliderCom->Update(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()));
+
 }
 
 void CProjectile_Fire::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BLEND, this);
 }
 
 HRESULT CProjectile_Fire::Render()
@@ -66,6 +70,9 @@ HRESULT CProjectile_Fire::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &m_fElaspedTime, sizeof(m_fElaspedTime))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
@@ -88,8 +95,8 @@ HRESULT CProjectile_Fire::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
+	
 
-	//m_pColliderCom->Render();
 
 #endif
 
@@ -98,6 +105,10 @@ HRESULT CProjectile_Fire::Render()
 
 HRESULT CProjectile_Fire::On_Collision(CCollider* pCollider)
 {
+	
+	m_pCombatCom->Attack(static_cast<CCombatStat*>(pCollider->Get_Owner()->Get_Component(TEXT("Com_Combat"))));
+	
+
 	return S_OK;
 }
 
@@ -109,7 +120,7 @@ HRESULT CProjectile_Fire::Ready_Components()
 		return E_FAIL;
 	/* For.Com_Collider */
 	CBounding_Sphere::SPHERE_DESC eDesc{};
-	eDesc.fRadius = 0.5f;
+	eDesc.fRadius = 0.25f;
 	eDesc.vCenter = { 0.f,0.f,0.f };
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Collider_Sphere"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &eDesc)))
@@ -118,7 +129,7 @@ HRESULT CProjectile_Fire::Ready_Components()
 	CCombatStat::COMBAT_DESC eCombatDesc = {};
 	eCombatDesc.iCurrentHp = 1;
 	eCombatDesc.iMaxHp = 1;
-	eCombatDesc.iDamage = 20;
+	eCombatDesc.iDamage = 3;
 
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_CombatStat"),
 		TEXT("Com_Combat"), reinterpret_cast<CComponent**>(&m_pCombatCom), &eCombatDesc)))

@@ -34,7 +34,7 @@ HRESULT CShop::Initialize()
 			eItemDesc.fY = g_iWinSizeY * 0.6f - 200 + 100 * j;
 			eItemDesc.fSizeX = 75.f;
 			eItemDesc.fSizeY = 75.f;
-			eItemDesc.iTextureType = _int(floorf(m_pGameInstance->Compute_Random(0.f, 6.9f)));
+			eItemDesc.iTextureType = _int(floorf(m_pGameInstance->Compute_Random(0.f, 5.9f)));
 
 			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Item_Icon"),
 				static_cast<_uint>(LEVEL::SHOP), TEXT("Layer_Item_Icon"), &eItemDesc)))

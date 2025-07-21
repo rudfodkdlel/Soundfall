@@ -9,6 +9,9 @@ void CPlayer_State_Hit::Enter(CGameObject* pObj)
 
 	m_pModel->Set_Animation(m_pPlayer->Get_Range_Weapon()->Get_HitReactMap()[m_pPlayer->Get_Hit_Dir()], false);
 
+	m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+	m_pGameInstance->PlaySound(TEXT("Player_State_Damaged_0.wav"), SOUND_PLAYER_EFFECT, 0.6f);
+
 }
 
 void CPlayer_State_Hit::Update(CGameObject* pObj, float fTimeDelta)

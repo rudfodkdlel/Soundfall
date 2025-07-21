@@ -10,6 +10,8 @@ void CPlayer_State_Attack_Combo::Enter(CGameObject* pObj)
     m_pPlayer->Get_Range_Weapon()->Set_Active(false);
     m_pPlayer->Get_Melee_Weapon()->Set_Active(true);
     static_cast<CCollider*>(m_pPlayer->Get_Melee_Weapon()->Get_Component(TEXT("Com_Collider")))->Set_Active(true);
+    m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+    m_pGameInstance->PlaySound(TEXT("Artifact_Scythe_Base_Whoosh_0.wav"), SOUND_PLAYER_EFFECT, 0.6f);
 
 }
 
@@ -36,14 +38,23 @@ void CPlayer_State_Attack_Combo::Update(CGameObject* pObj, float fTimeDelta)
             m_iComboCount = 1;
             m_pModel->Set_Animation(6, false);
             m_IsInput = false;
+            m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+            m_pGameInstance->PlaySound(TEXT("Artifact_Scythe_Base_Whoosh_0.wav"), SOUND_PLAYER_EFFECT, 0.6f);
             break;
         case 1:
             if ((m_pGameInstance->Get_Timing() < 0.15f))
             {
                 m_pModel->Set_Animation(8, false);
+                m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);   
+                m_pGameInstance->PlaySound(TEXT("Artifact_Scythe_Brass_UpperCut.wav"), SOUND_PLAYER_EFFECT, 0.6f);
             }
             else
+            {
                 m_pModel->Set_Animation(7, false);
+                m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+                m_pGameInstance->PlaySound(TEXT("Artifact_Scythe_Base_Whoosh_0.wav"), SOUND_PLAYER_EFFECT, 0.6f);
+            }
+               
             m_iComboCount = 2;
             m_eAttackState = ATTACK::ATTACK_OUT;
             break;

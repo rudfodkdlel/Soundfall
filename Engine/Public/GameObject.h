@@ -38,6 +38,8 @@ public:
 
 	void        Set_Dead() { m_bDead = true; }
 	_bool		Get_Dead() { return m_bDead; }
+
+	_float Get_Depth() const {	return m_fDepth; }
 	
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -46,6 +48,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render_Shadow() { return S_OK; }
 
 	// 필요하면 무조건 구현하기
 	virtual HRESULT On_Collision(class CCollider* pCollider) { return E_FAIL; }
@@ -72,6 +75,8 @@ protected:
 	_int										m_iMass = {0};
 	vector<_float4>								m_pushVectors;
 
+	// 카메라 깊이
+	_float				m_fDepth = {};
 
 protected:
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

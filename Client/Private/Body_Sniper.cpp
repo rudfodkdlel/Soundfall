@@ -94,7 +94,7 @@ HRESULT CBody_Sniper::Render()
 #ifdef _DEBUG
 
 
-	m_pColliderCom->Render();
+	//m_pColliderCom->Render();
 
 #endif
 

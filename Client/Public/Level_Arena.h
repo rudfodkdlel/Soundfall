@@ -21,6 +21,7 @@ private:
 	HRESULT Ready_Layer_Camera(const _wstring strLayerTag);
 	HRESULT Ready_Layer_Player();
 	HRESULT Ready_Lights();
+	HRESULT Ready_Map_Data(const char* pFliePath);
 	
 private:
 	class CSpawner* m_pSpawner = { nullptr };

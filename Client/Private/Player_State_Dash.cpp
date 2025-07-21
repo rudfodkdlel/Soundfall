@@ -51,6 +51,7 @@ void CPlayer_State_Dash::Enter(CGameObject* pObj)
 	m_vDir = XMVector3Normalize(m_vDir);
 
 	m_pPlayer->Toggle_Collider(false);
+	m_pPlayer->Get_Range_Weapon()->Set_Active(false);
 }
 
 void CPlayer_State_Dash::Update(CGameObject* pObj, float fTimeDelta)
@@ -58,8 +59,15 @@ void CPlayer_State_Dash::Update(CGameObject* pObj, float fTimeDelta)
 	_vector vPos = m_pPlayer->Get_Transform()->Get_State(STATE::POSITION);
 	vPos += m_vDir * fTimeDelta * 20;
 
-	if (static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")))->isMove(vPos))
+	auto pNavi = static_cast<CNavigation*>(m_pPlayer->Get_Component(TEXT("Com_Navigation")));
+	if (pNavi != nullptr)
+	{
+		if (pNavi->isMove(vPos))
+			m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+	}
+	else
 		m_pPlayer->Get_Transform()->Set_State(STATE::POSITION, vPos);
+	
 
 
 	m_IsFinish = m_pModel->Play_Animation(fTimeDelta * 2.5f);
@@ -76,6 +84,7 @@ CObject_State* CPlayer_State_Dash::Check_Transition(CGameObject* pObj)
 {
 	if (m_IsFinish)
 	{
+		m_pPlayer->Get_Range_Weapon()->Set_Active(true);
 		m_pPlayer->Toggle_Collider(true);
 		return new CPlayer_State_Idle;
 	}

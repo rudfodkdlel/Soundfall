@@ -22,7 +22,7 @@ HRESULT CKeyboard::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Ready_Components()))
+    if (FAILED(Ready_Components(pArg)))
         return E_FAIL;
 
     m_pTransformCom->Scaling(1.25f, 1.25f, 1.25f);
@@ -130,8 +130,19 @@ void CKeyboard::Attack(_vector vDir)
         vRotateDir = XMVector3TransformNormal(vDir, XMMatrixRotationY(XMConvertToRadians(-30.f + 15 * i)));
         XMStoreFloat4(&eDesc.vDir, vRotateDir);
         // 투사체 생성해서 날아가게 해보자
-        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
-            TEXT("Layer_Projectile_Player"), &eDesc);
+
+        if (m_iModelType == 4)
+        {
+            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Player"), m_pGameInstance->Get_Current_Level(),
+                TEXT("Layer_Projectile_Player"), &eDesc);
+        }
+        else
+        {
+            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Trail"), m_pGameInstance->Get_Current_Level(),
+                TEXT("Layer_Projectile_Player"), &eDesc);
+        }
+      
+
     }
 
     m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Projectile_Shell"), m_pGameInstance->Get_Current_Level(),
@@ -139,7 +150,6 @@ void CKeyboard::Attack(_vector vDir)
 
 
     // 소리 추가
-    m_pGameInstance->StopSound(SOUND_WEAPON);
     m_pGameInstance->PlaySound(TEXT("Shotgun_Attack.wav"), SOUND_WEAPON, 0.7f);
    
     m_fDelay = 0.2f;
@@ -151,19 +161,32 @@ void CKeyboard::Reset()
     m_iOverloadCount = 2;
 }
 
-HRESULT CKeyboard::Ready_Components()
+HRESULT CKeyboard::Ready_Components(void* pArg)
 {
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
+    WEAPON_DESC* pDesc = static_cast<WEAPON_DESC*>(pArg);
+
+    wstring strModelTag = {};
+
+    if (pDesc->iModelType == 4)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Keyboard");
+    }
+    else if (pDesc->iModelType == 5)
+    {
+        strModelTag = TEXT("Prototype_Component_Model_Keyboard_Drum");
+    }
+
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Keyboard"),
+    if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strModelTag,
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
-
-    m_strModelTag = TEXT("Prototype_Component_Model_Keyboard");
+    m_strModelTag = strModelTag;
+    m_iModelType = pDesc->iModelType;
 
     return S_OK;
 }

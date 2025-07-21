@@ -45,6 +45,8 @@
 #include "Attack_Area_Monster.h"
 #include "Navi_Icon.h"
 #include "Item_Icon.h"
+#include "Snow.h"
+#include "Aurora.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -249,6 +251,17 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CVIBuffer_Model_Instance::Create(m_pDevice, m_pContext, &structDesc))))
 		return E_FAIL;
 
+	
+	structDesc.iNumInstance = 50;
+	structDesc.vCenter = _float3(64.f, -50.f, 64.0f);
+	structDesc.vRange = _float3(500.f, 50.f, 500.f);
+	structDesc.vSize = _float2(1.f, 1.f);
+	structDesc.strModelDesc = TEXT("Prototype_Component_Model_CorruptionRock_B");
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock_B"),
+		CVIBuffer_Model_Instance::Create(m_pDevice, m_pContext, &structDesc))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_Prototype(GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
 	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
 	//	return E_FAIL;
@@ -274,6 +287,10 @@ HRESULT CLoader::Loading_For_GamePlay()
 		CDiscord::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Discord_Mask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Models/Monster/Discord/T_Boss_Discord_MSK2.dds"), 1))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Discord"),
 		CBody_Discord::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -289,6 +306,33 @@ HRESULT CLoader::Loading_For_GamePlay()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Tentacle_Amp"),
 		CTentacle_Amp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	/* For.Prototype_Component_Texture_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_Texture_Aurora"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resource/Textures/Deco/Aurora.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Explosion*/
+	CVIBuffer_Point_Instance::POINT_INSTANCE_DESC		SnowDesc{};
+	SnowDesc.iNumInstance = 100;
+	SnowDesc.vCenter = _float3(64.f, -50.f, 64.0f);
+	SnowDesc.vRange = _float3(500.f, 50.f, 100.f);
+	SnowDesc.vSize = _float2(1.f, 20.f);
+	SnowDesc.vLifeTime = _float2(5.f, 8.f);
+	SnowDesc.vSpeed = _float2(3.f, 5.f);
+	SnowDesc.isLoop = true;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_Component_VIBuffer_Aurora"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &SnowDesc))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Aurora"),
+		CAurora::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -340,10 +384,6 @@ HRESULT CLoader::Loading_For_Forest()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Artillery/Artillery.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
-		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Sniper"),
@@ -385,13 +425,6 @@ HRESULT CLoader::Loading_For_Forest()
 		CBody_Artillery::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Peon"),
-		CPeon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Peon"),
-		CBody_Peon::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Sniper"),
 		CSniper::Create(m_pDevice, m_pContext))))
@@ -482,10 +515,37 @@ HRESULT CLoader::Loading_For_Edit()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_C.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_PlatformRock_C"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/BossMap/PlatformRock/PlatformRock_C.bin", PreTransformMatrix))))
 		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Building_Snow"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Building_Snow.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_Experiment"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_Experiment.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_Flug"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_Flug.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Tree_SkyBox"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Tree_SkyBox.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_TerrainEdge"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_TerrainEdge.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
@@ -523,6 +583,77 @@ HRESULT CLoader::Loading_For_Shop()
 
 HRESULT CLoader::Loading_For_Arena()
 {
+	_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Peon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../../Resource/Models/Monster/Peon/Peon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Peon"),
+		CPeon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Peon"),
+		CBody_Peon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Building_Snow"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Building_Snow.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_Experiment"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_Experiment.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_Flug"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_Flug.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Tree_SkyBox"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Tree_SkyBox.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Snow_TerrainEdge"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../../Resource/Models/Winter/Snow_TerrainEdge.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	/* Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::ARENA), TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navi_Arena.bin")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::ARENA), TEXT("Prototype_Component_Texture_Snow"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Snow/Snow.png")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Explosion*/
+	CVIBuffer_Point_Instance::POINT_INSTANCE_DESC		SnowDesc{};
+	SnowDesc.iNumInstance = 5000;
+	SnowDesc.vCenter = _float3(64.f, 30.f, 64.0f);
+	SnowDesc.vRange = _float3(192.f, 3.0f, 192.f);
+	SnowDesc.vSize = _float2(0.1f, 0.4f);
+	SnowDesc.vLifeTime = _float2(5.f, 8.f);
+	SnowDesc.vSpeed = _float2(3.f, 5.f);
+	SnowDesc.isLoop = true;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::ARENA), TEXT("Prototype_Component_VIBuffer_Snow"),
+		CVIBuffer_Point_Instance::Create(m_pDevice, m_pContext, &SnowDesc))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Snow */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::ARENA), TEXT("Prototype_GameObject_Snow"),
+		CSnow::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

@@ -25,7 +25,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	// bpm 123
 	m_pGameInstance->StopSound(SOUND_BGM);
-	m_pGameInstance->PlaySound(TEXT("Discordance.ogg"), SOUND_BGM, 0.5f);
+	m_pGameInstance->PlaySound(TEXT("Discordance.ogg"), SOUND_BGM, 0.3f);
 	m_pGameInstance->SetBPM(TEXT("Discordance.ogg"));
 
 	if (FAILED(Ready_Lights()))
@@ -105,18 +105,6 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 		if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Discord"),
 			static_cast<_uint>(LEVEL::GAMEPLAY), TEXT("Layer_Boss"))))
 			return;
-
-		LIGHT_DESC			LightDesc{};
-
-		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-		LightDesc.vPosition = _float4(65.f, 5.f, 130.f, 1.f);
-		LightDesc.fRange = 100.f;
-		LightDesc.vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
-		LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 0.2f);
-		LightDesc.vSpecular = _float4(1.f, 0.f, 0.f, 1.f);
-
-		if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
-			return ; 
 	}
 
 
@@ -126,17 +114,6 @@ void CLevel_GamePlay::Update(_float fTimeDelta)
 HRESULT CLevel_GamePlay::Render()
 {
 	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
-
-	if (GetKeyState('S') & 0x8000)
-	{
-		// go forest
-
-		if (FAILED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHOP))))
-			return E_FAIL;
-
-	}
-
 
 	return S_OK;
 }
@@ -158,10 +135,24 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _wstring strLayerTag)
 	CStructure_Instance::STRUCTURE_INSTANCE_DESC objDesc = {};
 	objDesc.fRotationPerSec = 90;
 	objDesc.vPos = { 0.f,0.f,0.f,1.f };
+	objDesc.strBuffertag = TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Structure_Instance"),
 		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &objDesc)))
 		return E_FAIL;
+
+	objDesc.fRotationPerSec = 90;
+	objDesc.vPos = { 0.f,0.f,0.f,1.f };
+	objDesc.strBuffertag = TEXT("Prototype_Component_VIBuffer_Struct_CorruptionRock_B");
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Structure_Instance"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag, &objDesc)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Aurora"),
+		ENUM_CLASS(LEVEL::GAMEPLAY), strLayerTag)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -171,8 +162,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _wstring strLayerTag)
 
 	CCamera::CAMERA_DESC eDesc = {};
 
-	eDesc.vEye = _float3(0.f, 40.f, -30.f);
-	eDesc.vAt = _float3(0.f, 0.f, 0.f);
+	eDesc.vEye = _float3(65.f, 40.f, -30.f);
+	eDesc.vAt = _float3(65.f, 0.f, 0.f);
 	eDesc.fFov = XMConvertToRadians(60.0f);
 	eDesc.fNear = 0.1f;
 	eDesc.fFar = 500.f;
@@ -302,6 +293,16 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(m_pGameInstance->Add_Light(LightDesc)))
+		return E_FAIL;
+
+	CShadow::SHADOW_DESC		Desc{};
+	Desc.vEye = _float4(65.f, 40.f, -30.f, 1.f);
+	Desc.vAt = _float4(65.f, 0.f, 60.f, 1.f);
+	Desc.fFovy = XMConvertToRadians(90.0f);
+	Desc.fNear = 0.1f;
+	Desc.fFar = 500.f;
+
+	if (FAILED(m_pGameInstance->Ready_Light_For_Shadow(Desc)))
 		return E_FAIL;
 
 	/*LightDesc.eType = LIGHT_DESC::TYPE_POINT;

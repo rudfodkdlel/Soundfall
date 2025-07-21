@@ -42,6 +42,9 @@ HRESULT CBody_Peon::Initialize(void* pArg)
     m_pGameInstance->Add_Collider(CG_MONSTER, m_pColliderCom, this);
     m_pGameInstance->Add_Collider(CG_WEAPON_MONSTER, m_pAttackColliderCom[0], this);
     m_pGameInstance->Add_Collider(CG_WEAPON_MONSTER, m_pAttackColliderCom[1], this);
+
+
+
     return S_OK;
 }
 
@@ -77,14 +80,25 @@ void CBody_Peon::Update(_float fTimeDelta)
     //XMStoreFloat4x4(&m_RtHandCombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
     //XMStoreFloat4x4(&m_LfHandCombinedWorldMatrix, XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(m_pParentMatrix));
 
+   
     m_pColliderCom->Update(XMLoadFloat4x4(&m_CombinedWorldMatrix));
     m_pAttackColliderCom[0]->Update(XMLoadFloat4x4(&m_RtHandCombinedWorldMatrix));
     m_pAttackColliderCom[1]->Update(XMLoadFloat4x4(&m_LfHandCombinedWorldMatrix));
+    
 }
 
 void CBody_Peon::Late_Update(_float fTimeDelta)
 {
-    m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+    _vector vPos = { m_CombinedWorldMatrix.m[3][0],  m_CombinedWorldMatrix.m[3][1],  m_CombinedWorldMatrix.m[3][2], 1.f };
+        
+
+    if (m_pGameInstance->isIn_Frustum_WorldSpace(vPos, 1.f))
+    {
+        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
+        m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
+    }
+
+ 
 }
 
 HRESULT CBody_Peon::Render()
@@ -100,6 +114,9 @@ HRESULT CBody_Peon::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, 1, 0)))
             return E_FAIL;
 
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, 6, 0)))
+            return E_FAIL;
+
         m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
         if (FAILED(m_pShaderCom->Begin(0)))
@@ -112,11 +129,34 @@ HRESULT CBody_Peon::Render()
 #ifdef _DEBUG
 
 
-    m_pColliderCom->Render();
-    m_pAttackColliderCom[0]->Render();
-    m_pAttackColliderCom[1]->Render();
+   
 
 #endif
+
+
+    return S_OK;
+}
+
+HRESULT CBody_Peon::Render_Shadow()
+{
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_CombinedWorldMatrix)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Light_ViewMatrix())))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Light_ProjMatrix())))
+        return E_FAIL;
+    _uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+
+    for (size_t i = 0; i < iNumMesh; i++)
+    {
+        m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
+
+        if (FAILED(m_pShaderCom->Begin(1)))
+            return E_FAIL;
+
+        if (FAILED(m_pModelCom->Render(i)))
+            return E_FAIL;
+    }
 
 
     return S_OK;
@@ -128,8 +168,8 @@ HRESULT CBody_Peon::On_Collision(CCollider* pCollider)
     if (CG_WEAPON_MONSTER == pCollider->Get_Group())
         return S_OK;
 
-    
-    m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
+    if(CG_PLAYER_PROJECTILE != pCollider->Get_Group())
+        m_pushVectors.push_back(m_pColliderCom->Calc_PushVector(pCollider));
     return S_OK;
 }
 

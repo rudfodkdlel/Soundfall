@@ -124,6 +124,9 @@ _bool CItem_Icon::Check_Click()
 	if (ptScreen.y < m_fY - 0.5f * m_fSizeY || ptScreen.y > m_fY + 0.5f * m_fSizeY)
 		return false;
 
+	m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+	m_pGameInstance->PlaySound(TEXT("NPC_Element_Impact_Vocal_Click_0.wav"), SOUND_PLAYER_EFFECT, 0.6f);
+
 	return true;
 }
 

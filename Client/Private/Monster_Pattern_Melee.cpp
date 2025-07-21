@@ -66,6 +66,9 @@ void CMonster_Pattern_Melee::Update(CGameObject* pObj, float fTimeDelta)
 					if (!colliders[idx]->Get_Active())
 						colliders[idx]->Set_Active(true);
 				}
+
+				m_pGameInstance->StopSound(SOUND_BOSS);
+				m_pGameInstance->PlaySound(TEXT("NPC_Enemy_Discord_Slam_Ground_0.wav"), SOUND_BOSS, 1.f);
 			}
 			
 		}
